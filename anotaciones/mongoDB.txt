@@ -1,0 +1,11 @@
+mongod --version
+
+En la unidad c: crear:
+data/db
+
+COMANDOS:
+mongod (Inicia el servidor y se queda a la escucha)
+
+MONGODB ATLAS
+https://www.youtube.com/watch?v=97FfXEy1zas
+https://cloud.mongodb.com/v2/65f7eb073f265f287debd21a#/overview

@@ -1,0 +1,9 @@
+https://console.cloudinary.com/pm/c-6dc37d32fdbb0bb5da05d0cad6a57d/getting-started
+
+
+MONGODB ATLAS
+https://www.youtube.com/watch?v=97FfXEy1zas
+https://cloud.mongodb.com/v2/65f7eb073f265f287debd21a#/overview
+
+AWS
+https://eu-west-3.console.aws.amazon.com/console/home?region=eu-west-3#

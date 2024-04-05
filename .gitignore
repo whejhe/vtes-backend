@@ -1,0 +1,20 @@
+# Node.js
+node_modules/
+
+# Logs y archivos temporales
+logs/
+*.log
+npm-debug.log*
+
+# Archivos generados en tiempo de ejecución
+pids/
+*.pid
+*.seed
+*.pid.lock
+
+# Carpeta de compilación
+dist/
+build/
+
+# Dependencias y configuración local
+.env

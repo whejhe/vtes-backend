@@ -1,0 +1,47 @@
+Estoy desarrollando una aplicación con node, express, mongo , angular y bootstrap. La aplicación 
+consiste en un grupo de herramientas para facilitar la creación de mazos de un juego de cartas
+(Vtes), La aplicación consistira en varias secciones:
+
+- Listado y filtrado de cartas: Dos paginas separadas, una para listar y filtrar los personajes
+y otra para listar y filtrar las cartas de la biblioteca. Para ello me apoyare en una api externa
+con la informacion de todas las cartas: https://static.krcg.org/data/vtes.json
+
+- Construccion y listado de Mazos: Pagina con un formulario con dos partes separadas, Cripta
+y Libreria, donde se podran añadir dinamicamente cartas de las listas anteriores para la creacion
+de mazos. En esta pagina los usuarios podrán guardar los mazos creados de manera publica para 
+toda la comunida o de forma privada si lo prefieren. Dispondra de una opcion para eliminar el mazo 
+o opciones dentro de la tabla para eliminar una unica fila. Los mazos podran tener multiples copias
+de la misma carta. Tambien dispondra de un boton para la impresion del mazo en formato txt y
+otro para la impresion en pdf con las imagenes de las cartas.Otro boton para reaizar una copia de
+un mazo ya creado. Y otro para importar listas de mazos en txt que el jugador tenga.
+Otra pagina donde el jugador podra listar todos los mazos propios o de la comunidad permitiendo un 
+filtrado por tipo o por author.
+
+- La pagina tendra un sistema de registro de usuarios, para mejorar la seguridad utilizaremos 
+JWT para asignar un token a la sesion, bcrypt para encriptar las contraseñas , un sistema de roles
+para acceder a diferentes opciones de la pagina (Admin, Colaborador, usuario, invitado) y implementaremos
+el uso de guardianes en angular para el acceso a las paginas dependiendo de dichos roles y la 
+authenticacion. Los usuarios podran añadir un avatar pesonalizado.
+
+- Otra seccion para la creación y gestión de eventos: Los eventos seran torneos presenciales del
+juego de cartas que contendran toda la informacion del mismo: (Dia, hora, lugar, numero de jugadores 
+maximos, listado de jugadores incritos) Una vez creado el evento este se visualizara en diferentes 
+secciones: Listado de todos los jugadores incritos con algun campo que indique si a realizado el 
+pago o esta pendiente. Una vez que de la hora programada para el torneo se realizara una asignacion 
+aleatoria de posiciones con una tirada digamos de 1 a 1000. Y los jugadores se repartiran en mesas
+de 4 o 5 jugadores dependiendo de los inscritos. Las mesas se visualizaran en la pagina del evento
+con el avatar , nombre de los jugadores y sus posiciones en la mesa.
+Los torneos constan de 3 rondas y final. Para la segunda ronda se realizara una nueva tirada aleatoria
+pero habra que tener en cuenta que dos jugadores no pueden repetir posicion en la mesa uno con respecto
+al otro. Ejemplo: Si en una mesa de 5 el orden es: 1-Carlos, 2-Antonio, 3-Jose, 4-David,5-Fran
+en la siguiente mesa 1-Sara,2-Moi,3-Carlos,4-Antonio,5-Sandra se deberia tirar nuevamente ya que Carlos
+no puede ir justo antes de Antonio. Y lo mismo para la tercera ronda en la que se tendra en cuenta
+la posicion de las dos mesas anteriores.
+Sistema de puntos: Funciona por puntos de victoria y mesas optenidas. Cada mesa dispone de 5 puntos
+de victoria, uno por jugador y un punto de mesa para el que se requiere tener al menos 3 puntos de
+victoria. Los puntos se consiguen eliminando a tu presa(el jugador a tu izquierda en la mesa).
+Si sobrevives a las 2h que es el tiempo maximo de partida obtienes 0.5 puntos de victoria más.
+Si ningun jugador a llegado a los 3 puntos de victoria el punto de mesa se pierde. Cada jugador dispone
+de por si de un punto de victoria, lo que quiere decir que si solo quedas tu en la mesa y haz eliminando
+a otros dos jugadores obtienes 3 puntos de victora y un punto de mesa.
+

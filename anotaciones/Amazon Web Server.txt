@@ -1,0 +1,67 @@
+EC2
+Crear instancia --> Lanzar instancia
+ - Nombre
+ - Imagen del sistema operativo
+ - Tipo de instancia: usamos t2.micro, que es gratis.
+ - Generar par de claves: sirve para la conexion SSH, al crear un nuevo par, se descarga automaticamente.
+ - Configuraciones de red: para manejar todo el tema de puertos entrantes y salientes. No tocar
+ - Configurar almacenamiento: se define el tamaño maximo del disco duro. Se puede tener hasta un USO de 30gb
+   de almacenamiento.
+ - Lanzar instancia
+
+Como conectarse a la maquina virtual
+ Vamos al directorio donde se haya guardado nuestro par de claves (ubuntu.pem)
+ Nos conectamos mediante ssh con:
+ - ssh -i ubuntu.pem ubuntu@(IP publica maquina virtual)
+
+Instalar docker y ejecutar contenedor (backend, frontend, etc)
+Primero, sudo apt update
+(Opcional) sudo apt upgrade
+Segundo, sudo apt install docker docker-compose
+
+Hay que haber subido a Dockerhub el archivo con el servidor instalado y todo bien.
+En carpeta de proyecto a subir, con dockerfile y dockerignore: 
+ - docker build -t whejhe/(nombre repositorio) .     //Construir imagen a partir de dockerfile
+ - docker push whejhe/(nombre repositorio)      //Subir imagen construida a Dockerhub
+
+Una vez hemos comprobado que todo esta bien en cuanto al contenedor en Dockerhub, hacemos el docker-compose.yml
+en la maquina virtual
+
+nano docker-compose.yml
+---
+version: '3'
+
+services:
+  (nombre servicio):
+    image: whejhe/(nombre imagen dockerhub)
+    ports: '3000:3000' (cambiar segun que puerto se exponga)
+
+---
+
+Si al ejecutar el docker-compose, salta un error de Mongo, es debido a que no está añadida la IP publica de la 
+maquina virtual, para que esta pueda acceder a la base de datos
+
+Vamos a la pagina de Mongodb, iniciamos sesion. Nos vamos a nuestro proyecto, y a Network Access en el menu
+lateral de la izquierda. Le damos a "Add IP Address", y añadimos la IP publica de la maquina de AWS
+
+Una vez desplegado el contenedor Docker sin problemas y tal, con el puerto expuesto, hay que abrir el puerto
+en la maquina de AWS. Para ello, nos iremos a Grupos de seguridad, iremos al de la propia máquina, y editaremos
+las reglas de entrada. Le daremos a "Agregar regla", pondremos el puerto que queremos abrir, y la/las direcciones
+IP que van a poder acceder.
+
+Cuando eso esté hecho, ya en principio, estaría todo montado. La maquina virtual de AWS abierta hacia afuera, 
+ejecutando el contenedor de Docker del backend o frontend o lo que sea.
+
+sudo docker-compose up -d //el parametro -d indica que se ejecutara en segundo plano
+
+sudo docker-compose down //paro el contenedor(es) del docker-compose.yml de la carpeta actual
+
+sudo docker-compose pull //para traerse los cambios del docker-compose.yml de la carpeta actual
+
+sudo docker ps //ver dockers ejecutandose, tomar nota de la ID
+
+sudo docker logs (id contenedor) //ver output de contenedor docker, para cuando se ejecute en segundo plano
+
+sudo docker exec -it (id contenedor) sh //por si alguna razon quiero meterme al contenedor para ver lo que sea
+
+
