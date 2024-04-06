@@ -1,5 +1,5 @@
 // Importa el modelo de Post
-import  Post  from "../models/post.model.js";
+import Post from "../models/post.model.js";
 
 // Crear un nuevo post
 const createPost = async (req, res) => {

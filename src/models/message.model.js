@@ -30,4 +30,6 @@ const messageSchema = new Schema({
 });
 
 
-export const Message = connectDB.model('Message', messageSchema);
+const Message = connectDB.model('Message', messageSchema);
+
+export default Message;

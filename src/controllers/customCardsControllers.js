@@ -1,17 +1,7 @@
 //backend/src/controllers/customCardsControllers.js
-import { Cards } from "../models/customCards.model.js";
+import Cards from "../models/customCards.model.js";
 
-// Crear una nueva carta personalizada
-// const createCustomCard = async (req, res) => {
-//     try {
-//         const { deckId, name, cost, image, clan, disciplines, description, group, type } = req.body;
-//         const newCustomCard = new Cards({ deckId, name, cost, image, clan, disciplines, description, group, type });
-//         await newCustomCard.save();
-//         res.status(201).json(newCustomCard);
-//     } catch (error) {
-//         res.status(400).json({ error: error.message });
-//     }
-// };
+
 const createCustomCard = async (req, res) => {
     try {
         const { name, capacity, clan, disciplines, group, logoColor, description } = req.body;
@@ -24,19 +14,7 @@ const createCustomCard = async (req, res) => {
     }
 };
 
-// Obtener imagen por ID
-// const getCustomCardById = async (req, res) => {
-//     try {
-//         const { id } = req.params;
-//         const customCard = await Cards.findById(id);
-//         if (!customCard) {
-//             return res.status(404).json({ error: "Carta personalizada no encontrada" });
-//         }
-//         res.status(200).json(customCard);
-//     } catch (error) {
-//         res.status(400).json({ error: error.message });
-//     }
-// };
+
 const getCustomCardById = async (req, res) => {
     try {
         const { id } = req.params;

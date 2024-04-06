@@ -19,6 +19,18 @@ const deckSchema = new Schema({
         type: String,
         required: [true, 'El nombre del mazo es obligatorio']
     },
+    description:{
+        type: String,
+        required: false,
+    },
+    author:{
+        type: String,
+        require: [true, 'El autor del mazo es obligatorio']
+    },
+    category:{
+        type: String,
+        require: [true, 'La categoría del mazo es obligatoria']
+    },
     publico: {
         type: Boolean,
         default: true,
@@ -29,4 +41,6 @@ const deckSchema = new Schema({
     }
 });
 
-export const Deck = connectDB.model('Deck', deckSchema)
+const Deck = connectDB.model('Deck', deckSchema);
+
+export default Deck;

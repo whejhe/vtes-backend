@@ -7,29 +7,7 @@ import bcrypt from 'bcrypt';
 
 dotenv.config();
 
-// // Iniciar sesión de usuario
-// const loginUser = async (req, res) => {
-//     try {
-//         const { email, password } = req.body;
-//         console.log('Request', req.body)
-//         console.log('Email: ', email, 'Password: ', password);
-//         // Buscar el usuario por email y contraseña
-//         const user = await User.findOne({ email });
-//         console.log('Usuario encontrado: ', user);
-//         if (!user) {
-//             return res.status(401).json({ error: "El usuario no existe" });
-//         } else if (user.password !== password) {
-//             return res.status(401).json({ error: "Contraseña incorrecta" });
-//         }
-//         res.status(200).json(jwt.sign({
-//             _id: user._id,
-//             username: user.nick
-//         }, process.env.JWT_SECRET, { expiresIn: '1h' }));
-//     } catch (error) {
-//         res.status(400).json({ error: error.message });
-//     }
-// };
-
+    // // Iniciar sesión de usuario
 const loginUser = async (req, res) => {
     try {
         const { email, password } = req.body;

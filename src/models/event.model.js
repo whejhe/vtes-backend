@@ -33,4 +33,6 @@ const eventSchema = new Schema({
 });
 
 
-export const Event = connectDB.model('Event', eventSchema)
+const Event = connectDB.model('Event', eventSchema);
+
+export default Event;

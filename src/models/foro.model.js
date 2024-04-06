@@ -29,4 +29,6 @@ const foroSchema = new Schema({
 });
 
 
-export const Foro = connectDB.model('Foro', foroSchema);
+const Foro = connectDB.model('Foro', foroSchema);
+
+export default Foro;

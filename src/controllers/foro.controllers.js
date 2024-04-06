@@ -1,5 +1,5 @@
 // Importa el modelo de Foro
-import { Foro } from "../models/foro.model.js";
+import Foro from "../models/foro.model.js";
 import User  from "../models/user.models.js";
 
 // Crear un nuevo foro

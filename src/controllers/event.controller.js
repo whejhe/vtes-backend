@@ -1,5 +1,5 @@
 // Importa el modelo de Event
-import { Event } from "../models/event.model.js";
+import Event from "../models/event.model.js";
 import User from "../models/user.models.js";
 
 

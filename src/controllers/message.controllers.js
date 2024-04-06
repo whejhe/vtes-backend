@@ -1,5 +1,5 @@
 // Importa el modelo de Message
-import { Message } from "../models/message.model.js";
+import Message from "../models/message.model.js";
 
 // Crear un nuevo mensaje
 const createMessage = async (req, res) => {

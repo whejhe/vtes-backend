@@ -20,9 +20,13 @@ const customCardsSchema = new Schema({
         unique: true,
         required: [true, 'El nombre de la carta es obligatoria']
     },
+    author:{
+        type: String,
+        required: [true, 'El autor de la carta es obligatorio']
+    },
     capacity: {
         type: Number,
-        required: [true, 'La capacidad de la carta es obligatoria'],
+        required: false,
         min: 1,
         max: 11
     },
@@ -44,6 +48,10 @@ const customCardsSchema = new Schema({
         min: 1,
         max: 7
     },
+    type:{
+        type: [String],
+        required: [true, 'El tipo de la carta es obligatorio']
+    },
     logoColor: {
         type: String,
         required: [true, 'El color del logo es obligatorio']
@@ -52,73 +60,24 @@ const customCardsSchema = new Schema({
         type: String,
         required: [true, 'La descripción de la carta es obligatoria']
     },
-    public: {
+    publico: {
         type:Boolean,
-        default: false
+        default: true
+    },
+    costBlood: {
+        type: Number,
+        required: false,
+        min: 0,
+        max:11,
+    },
+    costPool: {
+        type: Number,
+        required: false,
+        min: 0,
+        max: 6,
     }
 });
 
-export const Cards = connectDB.model('customCards', customCardsSchema);
+const Cards = connectDB.model('customCards', customCardsSchema);
 
-// import mongoose from "mongoose";
-// import {connectDB} from "../service/mongoDB.js";
-// import { v4 as uuidv4 } from "uuid";
-
-
-// const { Schema } = mongoose;
-
-// const customCardsSchema = new Schema({
-//     _id:{
-//         type: String,
-//         default: uuidv4
-//     },
-//     deckId: {
-//         type: String,
-//         ref: 'Deck',
-//         required: false,
-//     },
-//     name: {
-//         type: String,
-//         unique: true,
-//         required: [true, 'El nombre de la carta es obligatoria']
-//     },
-//     cost: {
-//         type: Number,
-//         required: [true, 'El coste de la carta es obligatorio'],
-//         min: 1,
-//         max: 11
-//     },
-//     image: {
-//         type: String,
-//         unique: true,
-//         required: [true, 'La imagen de la carta es obligatoria']
-//     },
-//     clan: {
-//         type: String,
-//         required: [true, 'El clan de la carta es obligatorio']
-//     },
-//     disciplines: {
-//         type: [String],
-//         required: [true, 'Las disciplinas de la carta son obligatorias']
-//     },
-//     description: {
-//         type: String,
-//         required: [true, 'La descripción de la carta es obligatoria']
-//     },
-//     group:{
-//         type: Number,
-//         min: 1,
-//         max: 7
-//     },
-//     type: [
-//         {
-//             type: String
-//         }
-//     ],
-//     url: {
-//         type: String,
-//     }
-// });
-
-
-// export const Cards = connectDB.model('customCards', customCardsSchema);
+export default Cards;
