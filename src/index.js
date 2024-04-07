@@ -28,6 +28,10 @@ app.use(multerMiddleware);
 //ROUTES
 app.use(routes);
 
+app.use(cors({
+    origin: '*'
+}));
+
 //MONGODB CONEXION
 app.listen(app.get("port"), () => {
     console.log("Servidor corriendo en el puerto: ", app.get("port"));
