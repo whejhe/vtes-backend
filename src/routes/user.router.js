@@ -2,13 +2,15 @@
 import express from "express";
 import { userControllers } from "../controllers/index.js";
 import { passwordHash } from '../middlewares/passwordHash.js';
+import multerMiddleware from "../middlewares/multer.middleware.js";
 
 const router = express.Router();
 
-const { getUsers, getUserById, updateUser, deleteUser, registerUser, loginUser, forgotPassword } = userControllers;
+const { getUsers, getUserById, updateUser, deleteUser,getAvatarOptions, registerUser, loginUser, forgotPassword } = userControllers;
 
 // Rutas para usuarios
-router.post("/register",passwordHash, registerUser);
+router.get("/avatar-options", getAvatarOptions);
+router.post("/register",multerMiddleware,passwordHash, registerUser);
 router.post("/login", loginUser);
 router.post("/forgot-password", forgotPassword);
 router.get("/", getUsers);

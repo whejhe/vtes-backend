@@ -4,6 +4,7 @@ import jwt from "jsonwebtoken";
 import nodemailer from "nodemailer";
 import dotenv from "dotenv";
 import bcrypt from 'bcrypt';
+import multerMiddleware from "../middlewares/multer.middleware.js";
 
 dotenv.config();
 
@@ -34,14 +35,18 @@ const registerUser = async (req, res) => {
     try {
         console.log("creando usuario ::: ", req.body);
         const { name, nick, email, password, role } = req.body;
+        const { file } = req;
+
         // Verificar si el usuario ya existe
         const existingUser = await User.findOne({ email });
         if (existingUser) {
             return res.status(400).json({ error: "El usuario ya existe" });
         }
+
         // Crear un nuevo usuario
-        const newUser = new User({ name, nick, email, password, role });
+        const newUser = new User({ name, nick, email, password, role, profileImage: file ? file.filename : "default-avatar.png" });
         await newUser.save();
+
         res.status(201).json(newUser);
     } catch (error) {
         res.status(400).json({ error: error.message });
@@ -154,6 +159,64 @@ const deleteUser = async (req, res) => {
     }
 };
 
+// Obtener lista de avatares predeterminados
+const getAvatarOptions = async (req, res) => {
+    try {
+        const avatarOptions = [
+            'Avatar-1.jpg',
+            'Avatar-2.jpg',
+            'Avatar-3.jpg',
+            'Avatar-4.jpg',
+            'Avatar-5.jpg',
+            'Avatar-6.jpg',
+            'Avatar-7.jpg',
+            'Avatar-8.jpg',
+            'Avatar-9.jpg',
+            'Avatar-10.jpg',
+            'Avatar-11.jpg',
+            'Avatar-12.jpg',
+            'Avatar-13.jpg',
+            'Avatar-14.jpg',
+            'Avatar-15.jpg',
+            'Avatar-16.jpg',
+            'Avatar-17.jpg',
+            'Avatar-18.jpg',
+            'Avatar-19.jpg',
+            'Avatar-20.jpg',
+            'Avatar-21.jpg',
+            'Avatar-22.jpg',
+            'Avatar-23.jpg',
+            'Avatar-24.jpg',
+            'Avatar-25.jpg',
+            'Avatar-26.jpg',
+            'Avatar-27.jpg',
+            'Avatar-28.jpg',
+            'Avatar-29.jpg',
+            'Avatar-30.jpg',
+            'Avatar-31.jpg',
+            'Avatar-32.jpg',
+            'Avatar-33.jpg',
+            'Avatar-34.jpg',
+            'Avatar-35.jpg',
+            'Avatar-36.jpg',
+            'Avatar-37.jpg',
+            'Avatar-38.jpg',
+            'Avatar-39.jpg',
+            'Avatar-40.jpg',
+            'Avatar-41.jpg',
+            'Avatar-42.jpg',
+            'Avatar-43.jpg',
+            'Avatar-44.jpg',
+            'Avatar-45.jpg',
+            'Avatar-46.jpg',
+
+        ]
+        res.status(200).json(avatarOptions);
+    } catch (error) {
+        res.status(400).json({ error: error.message });
+    }
+};
+
 const userControllers = {
     loginUser,
     registerUser,
@@ -162,7 +225,8 @@ const userControllers = {
     getUserById,
     updateUser,
     deleteUser,
-    forgotPassword
+    forgotPassword,
+    getAvatarOptions
 };
 
 export default userControllers;
