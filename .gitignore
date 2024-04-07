@@ -18,3 +18,5 @@ build/
 
 # Dependencias y configuración local
 .env
+.env.production
+.env.local

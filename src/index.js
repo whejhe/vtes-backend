@@ -8,8 +8,10 @@ import routes from "./routes/index.js";
 import multerMiddleware from "./middlewares/multer.middleware.js";
 import "./service/mongoDB.js";
 
-if(process.env.NODE_ENV !== "production"){
-    dotenv.config();
+if (process.env.NODE_ENV !== 'production') {
+    dotenv.config({ path: '.env.local' });
+} else {
+    dotenv.config({ path: '.env.production' });
 }
 
 const __dirname = path.resolve();
