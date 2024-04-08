@@ -9,6 +9,51 @@ import multerMiddleware from "../middlewares/multer.middleware.js";
 dotenv.config();
 
     // // Iniciar sesión de usuario
+// const loginUser = async (req, res) => {
+//     try {
+//         const { email, password } = req.body;
+//         const user = await User.findOne({ email });
+//         if (!user) {
+//             return res.status(401).json({ error: "El usuario no existe" });
+//         }
+//         const isPasswordValid = await bcrypt.compare(password, user.password);
+//         if (!isPasswordValid) {
+//             return res.status(401).json({ error: "Contraseña incorrecta" });
+//         }
+//         res.status(200).json(jwt.sign({
+//             _id: user._id,
+//             username: user.nick
+//         }, process.env.JWT_SECRET, { expiresIn: '1h' }));
+//     } catch (error) {
+//         res.status(400).json({ error: error.message });
+//     }
+// };
+
+
+// // Registrar un nuevo usuario
+// const registerUser = async (req, res) => {
+//     try {
+//         console.log("creando usuario ::: ", req.body);
+//         const { name, nick, email, password, role } = req.body;
+//         const { file } = req;
+
+//         // Verificar si el usuario ya existe
+//         const existingUser = await User.findOne({ email });
+//         if (existingUser) {
+//             return res.status(400).json({ error: "El usuario ya existe" });
+//         }
+
+//         // Crear un nuevo usuario
+//         const newUser = new User({ name, nick, email, password: await bcrypt.hash(password, 10), role, profileImage: file ? file.filename : "default-avatar.png" });
+//         // const newUser = new User({ name, nick, email, password, role, profileImage: file ? file.filename : "default-avatar.png" });
+//         await newUser.save();
+
+//         res.status(201).json(newUser);
+//     } catch (error) {
+//         res.status(400).json({ error: error.message });
+//     }
+// };
+// Iniciar sesión de usuario
 const loginUser = async (req, res) => {
     try {
         const { email, password } = req.body;
@@ -16,19 +61,16 @@ const loginUser = async (req, res) => {
         if (!user) {
             return res.status(401).json({ error: "El usuario no existe" });
         }
-        // const isPasswordValid = await bcrypt.compare(password, user.password);
-        // if (!isPasswordValid) {
-        //     return res.status(401).json({ error: "Contraseña incorrecta" });
-        // }
-        // res.status(200).json(jwt.sign({
-        //     _id: user._id,
-        //     // username: user.nick
-        // }, process.env.JWT_SECRET, { expiresIn: '1h' }));
+        const isPasswordValid = await bcrypt.compare(password, user.password);
+        if (!isPasswordValid) {
+            return res.status(401).json({ error: "Contraseña incorrecta" });
+        }
+        // Aquí puedes devolver los datos del usuario sin token
+        res.status(200).json(user);
     } catch (error) {
         res.status(400).json({ error: error.message });
     }
 };
-
 
 // Registrar un nuevo usuario
 const registerUser = async (req, res) => {
@@ -44,10 +86,10 @@ const registerUser = async (req, res) => {
         }
 
         // Crear un nuevo usuario
-        // const newUser = new User({ name, nick, email, password: await bcrypt.hash(password, 10), role, profileImage: file ? file.filename : "default-avatar.png" });
-        const newUser = new User({ name, nick, email, password, role, profileImage: file ? file.filename : "default-avatar.png" });
+        const newUser = new User({ name, nick, email, password: await bcrypt.hash(password, 10), role, profileImage: file ? file.filename : "default-avatar.png" });
         await newUser.save();
 
+        // Aquí puedes devolver los datos del usuario recién creado sin token
         res.status(201).json(newUser);
     } catch (error) {
         res.status(400).json({ error: error.message });
