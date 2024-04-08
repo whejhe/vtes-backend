@@ -14,11 +14,11 @@ const {
     deleteCustomCard } = customCardsControllers;
 
 // Rutas para la entidad Cards
-router.post('/customCards',multerMiddleware, createCustomCard);
+router.post('/customCards',multerMiddleware.single("image"), createCustomCard);
 router.get('/customCards', getAllCustomCards);
 router.get('/customCards/:id', getCustomCardById);
 router.get('/customCards/:deckId', getCustomCardsByDeckId);
-router.put('/customCards/:id',multerMiddleware, updateCustomCard);
+router.put('/customCards/:id',multerMiddleware.single("image"), updateCustomCard);
 router.delete('/customCards/:id', deleteCustomCard);
 
 export default router;

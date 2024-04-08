@@ -16,14 +16,14 @@ const loginUser = async (req, res) => {
         if (!user) {
             return res.status(401).json({ error: "El usuario no existe" });
         }
-        const isPasswordValid = await bcrypt.compare(password, user.password);
-        if (!isPasswordValid) {
-            return res.status(401).json({ error: "Contraseña incorrecta" });
-        }
-        res.status(200).json(jwt.sign({
-            _id: user._id,
-            username: user.nick
-        }, process.env.JWT_SECRET, { expiresIn: '1h' }));
+        // const isPasswordValid = await bcrypt.compare(password, user.password);
+        // if (!isPasswordValid) {
+        //     return res.status(401).json({ error: "Contraseña incorrecta" });
+        // }
+        // res.status(200).json(jwt.sign({
+        //     _id: user._id,
+        //     // username: user.nick
+        // }, process.env.JWT_SECRET, { expiresIn: '1h' }));
     } catch (error) {
         res.status(400).json({ error: error.message });
     }
@@ -44,6 +44,7 @@ const registerUser = async (req, res) => {
         }
 
         // Crear un nuevo usuario
+        // const newUser = new User({ name, nick, email, password: await bcrypt.hash(password, 10), role, profileImage: file ? file.filename : "default-avatar.png" });
         const newUser = new User({ name, nick, email, password, role, profileImage: file ? file.filename : "default-avatar.png" });
         await newUser.save();
 
@@ -144,8 +145,10 @@ const updateUser = async (req, res) => {
 // Eliminar un usuario por ID
 const deleteUser = async (req, res) => {
     try {
+
+        // console.log('holaaaa', req.user.permissions, 'aqui 2 \n');
         // Verificar si el usuario tiene permisos de administrador
-        if (!req.user.permissions.includes('deleteUser')) {
+        if (!req.user.role === 'ADMIN' ) {
             return res.status(403).json({ error: 'Acceso denegado' });
         }
         const { id } = req.params;
@@ -217,6 +220,24 @@ const getAvatarOptions = async (req, res) => {
     }
 };
 
+const updateProfileImage = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { file} = req;
+        const user = await User.findById(id);
+
+        if (!user) {
+            return res.status(404).json({ error: "Usuario no encontrado" });
+        }
+
+        user.profileImage = file ? file.filename : user.profileImage;
+        await user.save();
+        res.status(200).json({ message: "Imagen actualizada correctamente" });
+    } catch (error) {
+        res.status(400).json({ error: error.message });
+    }
+};
+
 const userControllers = {
     loginUser,
     registerUser,
@@ -226,7 +247,8 @@ const userControllers = {
     updateUser,
     deleteUser,
     forgotPassword,
-    getAvatarOptions
+    getAvatarOptions,
+    updateProfileImage
 };
 
 export default userControllers;

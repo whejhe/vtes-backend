@@ -7,8 +7,9 @@ const __dirname = path.resolve();
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
         // Determinar la carpeta de destino según la ruta
-        if (req.path.startsWith('/users/register')) {
-            cb(null, path.join(__dirname, "/profileImage"));
+        console.log(req.path, '\n aqui')
+        if (req.path === '/register') {
+            cb(null, path.join(__dirname, "/uploads/avatars"));
         } else if (req.path.startsWith('/customCards')) {
             cb(null, path.join(__dirname, "/uploads"));
         } else {
@@ -20,6 +21,6 @@ const storage = multer.diskStorage({
     }
 });
 
-const multerMiddleware = multer({ storage }).single("image");
+const multerMiddleware = multer({ storage })
 
 export default multerMiddleware;
