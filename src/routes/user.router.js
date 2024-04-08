@@ -2,8 +2,8 @@
 import express from "express";
 import { userControllers } from "../controllers/index.js";
 import { isPasswordValid, passwordHash } from '../middlewares/passwordHash.js';
-import multerMiddleware from "../middlewares/multer.middleware.js";
 import {auth} from "../middlewares/auth.js";
+import multerMiddleware from "../middlewares/multer.middleware.js";
 
 const router = express.Router();
 
@@ -11,7 +11,7 @@ const { getUsers, getUserById, updateUser,updateProfileImage, deleteUser,getAvat
 
 // Rutas para usuarios
 router.get("/avatar-options", getAvatarOptions);
-router.post("/register",passwordHash,multerMiddleware.single("image"), registerUser);
+router.post("/register",multerMiddleware,registerUser);
 router.post("/login",isPasswordValid, loginUser);
 router.post("/forgot-password", forgotPassword);
 router.get("/", getUsers);

@@ -7,7 +7,8 @@ const { Schema } = mongoose;
 
 
 const emailRegex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
-const passwordRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*]).{8,}$/;
+// const passwordRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*]).{6,}$/;
+const passwordRegex = /^.{6,}$/;
 
 
 const userSchema = new Schema({
@@ -47,7 +48,7 @@ const userSchema = new Schema({
     password:{
         type: String,
         required: [true, 'La contraseña es obligatoria'],
-        minlength: [8, 'La contraseña debe tener al menos 8 caracteres'],
+        minlength: [6, 'La contraseña debe tener al menos 6 caracteres'],
         validate:{
             validator: (v) => passwordRegex.test(v),
             message: 'La contraseña debe contener al menos 8 caracteres, una mayuscula, una minuscula, un numero y un caracter especial de entre !@#$%^&*'
@@ -55,8 +56,8 @@ const userSchema = new Schema({
     },
     profileImage:{
         type: String,
-        default: "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png",
-        trim: true,      
+        default: "default-avatar.png",
+        trim: true,
     }
 }, {
     timestamps: true,

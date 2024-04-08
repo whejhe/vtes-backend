@@ -4,111 +4,74 @@ import jwt from "jsonwebtoken";
 import nodemailer from "nodemailer";
 import dotenv from "dotenv";
 import bcrypt from 'bcrypt';
-import multerMiddleware from "../middlewares/multer.middleware.js";
 
 dotenv.config();
 
-    // // Iniciar sesión de usuario
-// const loginUser = async (req, res) => {
-//     try {
-//         const { email, password } = req.body;
-//         const user = await User.findOne({ email });
-//         if (!user) {
-//             return res.status(401).json({ error: "El usuario no existe" });
-//         }
-//         const isPasswordValid = await bcrypt.compare(password, user.password);
-//         if (!isPasswordValid) {
-//             return res.status(401).json({ error: "Contraseña incorrecta" });
-//         }
-//         res.status(200).json(jwt.sign({
-//             _id: user._id,
-//             username: user.nick
-//         }, process.env.JWT_SECRET, { expiresIn: '1h' }));
-//     } catch (error) {
-//         res.status(400).json({ error: error.message });
-//     }
-// };
-
-
-// // Registrar un nuevo usuario
-// const registerUser = async (req, res) => {
-//     try {
-//         console.log("creando usuario ::: ", req.body);
-//         const { name, nick, email, password, role } = req.body;
-//         const { file } = req;
-
-//         // Verificar si el usuario ya existe
-//         const existingUser = await User.findOne({ email });
-//         if (existingUser) {
-//             return res.status(400).json({ error: "El usuario ya existe" });
-//         }
-
-//         // Crear un nuevo usuario
-//         const newUser = new User({ name, nick, email, password: await bcrypt.hash(password, 10), role, profileImage: file ? file.filename : "default-avatar.png" });
-//         // const newUser = new User({ name, nick, email, password, role, profileImage: file ? file.filename : "default-avatar.png" });
-//         await newUser.save();
-
-//         res.status(201).json(newUser);
-//     } catch (error) {
-//         res.status(400).json({ error: error.message });
-//     }
-// };
 // Iniciar sesión de usuario
 const loginUser = async (req, res) => {
+    const { email, password } = req.body;
     try {
-        const { email, password } = req.body;
-        const user = await User.findOne({ email });
-        if (!user) {
-            return res.status(401).json({ error: "El usuario no existe" });
-        }
+        const user = await User.findOne({ email }).select("+password");
+        if (!user) return res.status(401).json({ error: "El usuario no existe" });
         const isPasswordValid = await bcrypt.compare(password, user.password);
-        if (!isPasswordValid) {
-            return res.status(401).json({ error: "Contraseña incorrecta" });
-        }
-        // Aquí puedes devolver los datos del usuario sin token
+        if (!isPasswordValid) return res.status(401).json({ error: "Contraseña incorrecta" });
+        user.password = undefined;
         res.status(200).json(user);
     } catch (error) {
-        res.status(400).json({ error: error.message });
+        res.status(400).json({ error: 'Error al iniciar sesión' });
     }
 };
 
-// Registrar un nuevo usuario
+
 const registerUser = async (req, res) => {
     try {
-        console.log("creando usuario ::: ", req.body);
         const { name, nick, email, password, role } = req.body;
-        const { file } = req;
-
+        const profileImage = req.body.filename;
+        if (!name || !nick || !email || !password) {
+            return res.status(400).json({ error: 'Todos los campos son obligatorios' });
+        }
         // Verificar si el usuario ya existe
         const existingUser = await User.findOne({ email });
         if (existingUser) {
-            return res.status(400).json({ error: "El usuario ya existe" });
+            return res.status(400).json({ error: 'El usuario ya existe' });
         }
-
+        // Hashear la contraseña
+        const hashedPassword = await bcrypt.hash(password, 10);
+        
+        // Obtener el nombre de la imagen
+        // let profileImage = null;
+        if (req.file) {
+            profileImage = `${Date.now()}-${req.file.originalname}`;
+        }
         // Crear un nuevo usuario
-        const newUser = new User({ name, nick, email, password: await bcrypt.hash(password, 10), role, profileImage: file ? file.filename : "default-avatar.png" });
+        const newUser = new User({ name, nick, email, password: hashedPassword, role, profileImage });
         await newUser.save();
-
-        // Aquí puedes devolver los datos del usuario recién creado sin token
         res.status(201).json(newUser);
     } catch (error) {
-        res.status(400).json({ error: error.message });
+        console.error('Error al registrar el usuario:', error);
+        res.status(400).json({ error: 'Error al registrar el usuario' });
     }
 };
 
+
+
 const forgotPassword = async (req, res) => {
+    const { email } = req.body;
     try {
-        const { email } = req.body;
-        // Buscar el usuario por email
-        const user = await User.findOne({ email });
+        const user = await User.findOne({ email }).select("+password");
         if (!user) {
             return res.status(404).json({ error: "Usuario no encontrado" });
         }
-        // Generar un token de recuperación
-        const resetToken = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, {
-            expiresIn: "1h",
-        });
-        // Enviar el correo de recuperación
+        const resetToken = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, { expiresIn: "1h" });
+        const mailOptions = {
+            from: process.env.EMAIL_USER,
+            to: user.email,
+            subject: "Recuperación de contraseña",
+            text: `Haz clic en el siguiente enlace para restablecer tu contraseña: ${process.env.FRONTEND_URL}/reset-password/${resetToken}`,
+        };
+        process.env.EMAIL_PASSWORD && transporter.sendMail(mailOptions);
+        res.status(200).json({ message: "Se ha enviado un correo de recuperación" });
+    } catch (error) {
         const transporter = nodemailer.createTransport({
             service: "gmail",
             auth: {
@@ -116,15 +79,6 @@ const forgotPassword = async (req, res) => {
                 pass: process.env.EMAIL_PASSWORD,
             },
         });
-        const mailOptions = {
-            from: process.env.EMAIL_USER,
-            to: user.email,
-            subject: "Recuperación de contraseña",
-            text: `Haz clic en el siguiente enlace para restablecer tu contraseña: ${process.env.FRONTEND_URL}/reset-password/${resetToken}`,
-        };
-        await transporter.sendMail(mailOptions);
-        res.status(200).json({ message: "Se ha enviado un correo de recuperación" });
-    } catch (error) {
         res.status(400).json({ error: error.message });
     }
 };
@@ -134,7 +88,7 @@ const forgotPassword = async (req, res) => {
 const createUser = async (req, res) => {
     try {
         // Verificar si el usuario tiene permisos de administrador
-        if (!req.user.permissions.includes('editUserRoles')) {
+        if (req.user.role !== 'ADMIN') {
             return res.status(403).json({ error: 'Acceso denegado' });
         }
         const { id, role, name, nick, email, password } = req.body;
@@ -188,9 +142,7 @@ const updateUser = async (req, res) => {
 const deleteUser = async (req, res) => {
     try {
 
-        // console.log('holaaaa', req.user.permissions, 'aqui 2 \n');
-        // Verificar si el usuario tiene permisos de administrador
-        if (!req.user.role === 'ADMIN' ) {
+        if (req.user.role !== 'ADMIN') {
             return res.status(403).json({ error: 'Acceso denegado' });
         }
         const { id } = req.params;
@@ -265,7 +217,7 @@ const getAvatarOptions = async (req, res) => {
 const updateProfileImage = async (req, res) => {
     try {
         const { id } = req.params;
-        const { file} = req;
+        const { file } = req;
         const user = await User.findById(id);
 
         if (!user) {
