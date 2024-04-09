@@ -11,26 +11,31 @@ dotenv.config();
 const loginUser = async (req, res) => {
     const { email, password } = req.body;
     try {
-        const user = await User.findOne({ email }).select("email");
+        let user = await User.findOne({ email }).select("+password");
         if (!user) return res.status(401).json({ error: "El usuario no existe" });
+        // else if (!password) return res.status(401).json({ error: "El usuario no tiene contraseña" });
 
         // Verificar la contraseña
         const isPasswordValid = await bcrypt.compare(password, user.password);
         if (!isPasswordValid) return res.status(401).json({ error: "Contraseña incorrecta" });
 
-        // Eliminar la contraseña del usuario
-        user.password = undefined;
-        res.status(200).json(user);
+        delete user.password;
+        let user2 = await User.findOne({ email }).select("-password");
+
+        const token = jwt.sign({ _id: user._id }, process.env.JWT_SECRET, { expiresIn: "1h" });
+        if (!token) return res.status(500).json({ error: "Error al generar el token" });
+        res.cookie("token", token, { httpOnly: true });
+        res.status(200).json({ user: user2, token });
     } catch (error) {
-        res.status(400).json({ error: 'Error al iniciar sesión' });
+        console.log(error);
+        res.status(400).json({ msg: 'Error al iniciar sesión', error });
     }
 };
 
 
 const registerUser = async (req, res) => {
     try {
-        const { name, nick, email, password, role } = req.body;
-        const profileImage = req.body.filename;
+        const { name, nick, email, password, role, profileImage } = req.body;
         if (!name || !nick || !email || !password) {
             return res.status(400).json({ error: 'Todos los campos son obligatorios' });
         }
@@ -41,7 +46,8 @@ const registerUser = async (req, res) => {
         }
         // Hashear la contraseña
         const hashedPassword = await bcrypt.hash(password, 10);
-        
+        if (!hashedPassword) return res.status(500).json({ error: 'Error al hashear la contraseña' });
+
         // Obtener el nombre de la imagen
         if (req.file) {
             profileImage = `${Date.now()}-${req.file.originalname}`;
@@ -49,16 +55,18 @@ const registerUser = async (req, res) => {
         // Crear un nuevo usuario
         const newUser = new User({ name, nick, email, password: hashedPassword, role, profileImage });
         await newUser.save();
-        
+        if (!newUser) return res.status(500).json({ error: 'Error al registrar el usuario' });
+
         // Generar el token JWT
-        // const token = jwt.sign({ userId: newUser._id }, process.env.JWT_TOKEN, { expiresIn: '1h' });
-        
-        // Devolver el usuario y el token
-        // res.status(201).json({ user: newUser, token });
-        res.status(201).json(newUser);
+        const token = jwt.sign({ _id: newUser._id }, process.env.JWT_SECRET, { expiresIn: '3h' });
+        if (!token) return res.status(500).json({ error: 'Error al generar el token' });
+
+        res.cookie('token', token, { httpOnly: true });
+        res.status(201).json({ message: 'Usuario registrado exitosamente' });
+
     } catch (error) {
         console.error('Error al registrar el usuario:', error);
-        res.status(400).json({ error: 'Error al registrar el usuario' });
+        res.status(400).json({ error: 'De produjo un error al registrar el usuario' });
     }
 };
 
@@ -131,6 +139,19 @@ const getUserById = async (req, res) => {
         res.status(400).json({ error: error.message });
     }
 };
+
+// Obtener imagen de perfil de usuario
+const getProfileImage = async (req, res) => {
+    try{
+        const user = await User.findById({ _id: req.params.id });
+        if (!user) {
+            return res.status(404).json({ error: "Usuario no encontrado" });
+        }
+        res.status(200).json(user.profileImage);
+    }catch(error){
+        res.status(400).json({ error: error.message });
+    }
+}
 
 // Actualizar un usuario por ID
 const updateUser = async (req, res) => {
@@ -251,6 +272,7 @@ const userControllers = {
     deleteUser,
     forgotPassword,
     getAvatarOptions,
+    getProfileImage,
     updateProfileImage
 };
 
