@@ -12,7 +12,7 @@ const { getUsers, getUserById, updateUser,updateProfileImage, deleteUser,getAvat
 // Rutas para usuarios
 router.get("/avatar-options", getAvatarOptions);
 router.post("/register",multerMiddleware,registerUser);
-router.post("/login",isPasswordValid, loginUser);
+router.post("/login", loginUser);
 router.post("/forgot-password", forgotPassword);
 router.get("/", getUsers);
 router.get("/:id", getUserById);

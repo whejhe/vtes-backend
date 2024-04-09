@@ -11,10 +11,14 @@ dotenv.config();
 const loginUser = async (req, res) => {
     const { email, password } = req.body;
     try {
-        const user = await User.findOne({ email }).select("+password");
+        const user = await User.findOne({ email }).select("email");
         if (!user) return res.status(401).json({ error: "El usuario no existe" });
+
+        // Verificar la contraseña
         const isPasswordValid = await bcrypt.compare(password, user.password);
         if (!isPasswordValid) return res.status(401).json({ error: "Contraseña incorrecta" });
+
+        // Eliminar la contraseña del usuario
         user.password = undefined;
         res.status(200).json(user);
     } catch (error) {
@@ -39,13 +43,18 @@ const registerUser = async (req, res) => {
         const hashedPassword = await bcrypt.hash(password, 10);
         
         // Obtener el nombre de la imagen
-        // let profileImage = null;
         if (req.file) {
             profileImage = `${Date.now()}-${req.file.originalname}`;
         }
         // Crear un nuevo usuario
         const newUser = new User({ name, nick, email, password: hashedPassword, role, profileImage });
         await newUser.save();
+        
+        // Generar el token JWT
+        // const token = jwt.sign({ userId: newUser._id }, process.env.JWT_TOKEN, { expiresIn: '1h' });
+        
+        // Devolver el usuario y el token
+        // res.status(201).json({ user: newUser, token });
         res.status(201).json(newUser);
     } catch (error) {
         console.error('Error al registrar el usuario:', error);
@@ -58,7 +67,7 @@ const registerUser = async (req, res) => {
 const forgotPassword = async (req, res) => {
     const { email } = req.body;
     try {
-        const user = await User.findOne({ email }).select("+password");
+        const user = await User.findOne({ email }).select("password");
         if (!user) {
             return res.status(404).json({ error: "Usuario no encontrado" });
         }
