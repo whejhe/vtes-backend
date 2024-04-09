@@ -75,6 +75,9 @@ const customCardsSchema = new Schema({
         required: false,
         min: 0,
         max: 6,
+    },
+    url:{
+        type: String,
     }
 });
 

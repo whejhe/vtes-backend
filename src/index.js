@@ -26,12 +26,18 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cors());
 
+//Configurar rutas de archivos estaticos (imagenes)
+app.use('/vtes-backend/uploads', express.static(path.join(__dirname, "uploads")));
+app.use('/vtes-backend/uploads/avatars', express.static(path.join(__dirname, "uploads/avatars")));
+app.use('/vtes-backend/uploads/customCards', express.static(path.join(__dirname, "uploads/customCards")));
+
 //ROUTES
 app.use(routes);
 
 app.use(cors({
     origin: '*'
 }));
+
 
 //MONGODB CONEXION
 app.listen(app.get("port"), () => {

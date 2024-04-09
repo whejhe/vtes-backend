@@ -24,11 +24,11 @@ router.use("/users/messages",auth, errorMiddleware, message);
 router.use("/users/libraries",auth, errorMiddleware, libraryRouter);
 router.use("/users/libraries/decks",auth, errorMiddleware, deckRoute);
 router.use("/users/libraries/decks/cards",auth, errorMiddleware, cardsRoute);
-router.use("/",auth, errorMiddleware, eventRoute);
-router.use("/",auth, errorMiddleware, eventUserRoute);
-router.use("/",auth, errorMiddleware, imageRoute);
-router.use("/",auth, errorMiddleware, foroRoute);
-router.use("/",auth, errorMiddleware, customCardsRoute);
+router.use("/images", errorMiddleware, imageRoute);
+router.use("/events",auth, errorMiddleware, eventRoute);
+router.use("/events-users",auth, errorMiddleware, eventUserRoute);
+router.use("/foros",auth, errorMiddleware, foroRoute);
+router.use("/custom-cards",auth, errorMiddleware, customCardsRoute);
 
 
 export default router;

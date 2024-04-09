@@ -7,10 +7,10 @@ const router = express.Router();
 const { createEvent, getEvents, getEventById, updateEvent, deleteEvent } = eventsControllers;
 
 // Rutas para la entidad Event
-router.post('admin/event', createEvent);
-router.get('users/events', getEvents);
-router.get('users/events/:id', getEventById);
-router.put('admin/events/:id', updateEvent);
-router.delete('admin/events/:id', deleteEvent);
+router.post('/admin/', createEvent);
+router.get('/users/', getEvents);
+router.get('users/:id', getEventById);
+router.put('admin/:id', updateEvent);
+router.delete('admin/:id', deleteEvent);
 
 export default router;

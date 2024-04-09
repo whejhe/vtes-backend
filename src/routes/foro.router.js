@@ -7,10 +7,10 @@ const router = express.Router();
 const { createForo, getForos, getForoById, updateForo, deleteForo } = foroControllers;
 
 // Rutas para la entidad Foro
-router.post('/foro', createForo);
-router.get('/foros', getForos);
-router.get('/foros/:id', getForoById);
-router.put('/foros/:id', updateForo);
-router.delete('/foros/:id', deleteForo);
+router.post('/', createForo);
+router.get('/', getForos);
+router.get('/:id', getForoById);
+router.put('/:id', updateForo);
+router.delete('/:id', deleteForo);
 
 export default router;

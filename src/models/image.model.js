@@ -12,7 +12,10 @@ const imageSchema = new Schema({
     userId: {
         type: String,
         ref: 'User',
-        required: [true, 'El identificador de usuario es obligatorio']
+    },
+    customCardId: {
+        type: String,
+        ref: 'CustomCard',
     },
     name: {
         type: String,
@@ -23,13 +26,12 @@ const imageSchema = new Schema({
         type: String,
         required: [true, 'El tipo de la imagen es obligatorio']
     },
-    description: {
-        type: String,
-        required: [true, 'La descripción de la imagen es obligatoria']
-    },
     imageUrl: {
         type: String,
-        required: [true, 'La URL de la imagen es obligatoria']
+    },
+    extension:{
+        type: String,
+        required: [true, 'La extensión de la imagen es obligatoria']
     },
     public: {
         type: Boolean,

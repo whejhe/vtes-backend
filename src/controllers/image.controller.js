@@ -1,11 +1,15 @@
 // Importa el modelo de Image
 import Image from "../models/image.model.js";
+import User  from "../models/user.models.js";
 
 // Crear una nueva imagen
 const createImage = async (req, res) => {
     try {
-        const { userId, name, type, description, imageUrl, publico } = req.body;
-        const newImage = new Image({ userId, name, type, description, imageUrl, publico });
+        const { userId,customCardId, name, type,extension, publico } = req.body;
+        console.log('Req body ==> ', req.protocol);
+        //Ruta para la imagen
+        const imageUrl =  req.protocol + '://' + req.get('host') + `/vtes-backend/uploads/${type}/${name}${extension}`;
+        const newImage = new Image({ userId, customCardId, name, type, imageUrl ,extension, publico });
         await newImage.save();
         res.status(201).json(newImage);
     } catch (error) {
@@ -47,6 +51,20 @@ const getImagesByUserId = async (req, res) => {
     }
 };
 
+//Obtener Imagen por nombre
+const getImageByName = async (req, res) => {
+    try {
+        const { name } = req.params;
+        const image = await Image.findOne({ name });
+        if (!image) {
+            return res.status(404).json({ error: "Imagen no encontrada" });
+        }
+        res.status(200).json(image);
+    } catch (error) {
+        res.status(400).json({ error: error.message });
+    }
+}
+
 // Actualizar una imagen por ID
 const updateImage = async (req, res) => {
     try {
@@ -79,6 +97,7 @@ const deleteImage = async (req, res) => {
 const imageControllers = {
     createImage,
     getImages,
+    getImageByName,
     getImageById,
     getImagesByUserId,
     updateImage,
