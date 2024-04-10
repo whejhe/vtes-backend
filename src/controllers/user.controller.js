@@ -22,7 +22,15 @@ const loginUser = async (req, res) => {
         delete user.password;
         let user2 = await User.findOne({ email }).select("-password");
 
-        const token = jwt.sign({ _id: user._id }, process.env.JWT_SECRET, { expiresIn: "1h" });
+        //si se añaden cosas aqui, más cosas se traen al frontend
+        const token = jwt.sign(
+            {
+                _id: user._id,
+                name: user.name,
+                image: user.profileImage,
+                nick: user.nick,
+            }
+            , process.env.JWT_SECRET, { expiresIn: "1h" });
         if (!token) return res.status(500).json({ error: "Error al generar el token" });
         res.cookie("token", token, { httpOnly: true });
         res.status(200).json({ user: user2, token });
@@ -142,13 +150,13 @@ const getUserById = async (req, res) => {
 
 // Obtener imagen de perfil de usuario
 const getProfileImage = async (req, res) => {
-    try{
+    try {
         const user = await User.findById({ _id: req.params.id });
         if (!user) {
             return res.status(404).json({ error: "Usuario no encontrado" });
         }
         res.status(200).json(user.profileImage);
-    }catch(error){
+    } catch (error) {
         res.status(400).json({ error: error.message });
     }
 }
