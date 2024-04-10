@@ -1,4 +1,4 @@
-// Importa el modelo de Image
+//backend/src/controllers/image.controller.js
 import Image from "../models/image.model.js";
 import User  from "../models/user.models.js";
 
@@ -22,6 +22,16 @@ const getImages = async (req, res) => {
     try {
         const images = await Image.find();
         res.status(200).json(images);
+    } catch (error) {
+        res.status(400).json({ error: error.message });
+    }
+};
+
+// Obtener todos los avatares disponibles
+const getAvatars = async (req, res) => {
+    try {
+        const avatars = await Image.find({ type: 'avatars' });
+        res.status(200).json(avatars);
     } catch (error) {
         res.status(400).json({ error: error.message });
     }
@@ -97,6 +107,7 @@ const deleteImage = async (req, res) => {
 const imageControllers = {
     createImage,
     getImages,
+    getAvatars,
     getImageByName,
     getImageById,
     getImagesByUserId,
