@@ -499,7 +499,7 @@
         "userId": "",
         "customCardId": "",
         "name": "default-avatar",
-        "type": "avatars",
+        "type": "default",
         "imageUrl": "http://localhost:3000/vtes-backend/uploads/avatars/default-avatar.png",
         "extension": ".png",
         "public": true,
