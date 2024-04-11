@@ -36,10 +36,21 @@ const deckSchema = new Schema({
         default: true,
     },
     cardIds:{
-        type: [String],
-        ref: 'Cards'
+        type: [{
+            String,
+            cantidad: { type: Number, default: 1 },
+        }],
+        ref: 'Card',
+        
     }
-});
+    // cardIds:{
+    //     type: [{
+    //       id: {type: String, ref: 'Cards'},
+    //       cantidad: { type: Number, default: 1 },  
+    //     }], 
+        
+    // }
+}, {versionKey: false});
 
 const Deck = connectDB.model('Deck', deckSchema);
 

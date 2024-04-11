@@ -58,6 +58,10 @@ const userSchema = new Schema({
         type: String,
         default: "default-avatar.png",
         trim: true,
+    },
+    blocked:{
+        type: Boolean,
+        default: false
     }
 }, {
     timestamps: true,

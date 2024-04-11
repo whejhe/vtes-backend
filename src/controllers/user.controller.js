@@ -70,7 +70,7 @@ const registerUser = async (req, res) => {
         if (!token) return res.status(500).json({ error: 'Error al generar el token' });
 
         res.cookie('token', token, { httpOnly: true });
-        res.status(201).json({ message: 'Usuario registrado exitosamente' });
+        res.status(201).json({ message: 'Usuario registrado exitosamente', user: newUser, token: token });
 
     } catch (error) {
         console.error('Error al registrar el usuario:', error);
@@ -194,6 +194,30 @@ const deleteUser = async (req, res) => {
     }
 };
 
+const blockUser = async (req,res) =>{
+    if (req.user.role !== 'ADMIN' && req.user.role !== 'COLLABORATOR') {
+        return res.status(403).json({ error: 'Acceso denegado' });
+    }
+    const { id } = req.params;
+    const user = await User.findByIdAndUpdate(id, { blocked: true });
+    if (!user) {
+        return res.status(404).json({ error: "Usuario no encontrado" });
+    }
+    res.status(200).json({ message: "Usuario bloqueado correctamente" });
+}
+
+const unblockUser = async (req,res) =>{
+    if (req.user.role !== 'ADMIN' && req.user.role !== 'COLLABORATOR') {
+        return res.status(403).json({ error: 'Acceso denegado' });
+    }
+    const { id } = req.params;
+    const user = await User.findByIdAndUpdate(id, { blocked: false });
+    if (!user) {
+        return res.status(404).json({ error: "Usuario no encontrado" });
+    }
+    res.status(200).json({ message: "Usuario desbloqueado correctamente" });
+}
+
 // Obtener lista de avatares predeterminados
 const getAvatarOptions = async (req, res) => {
     try {
@@ -281,7 +305,9 @@ const userControllers = {
     forgotPassword,
     getAvatarOptions,
     getProfileImage,
-    updateProfileImage
+    updateProfileImage,
+    blockUser,
+    unblockUser
 };
 
 export default userControllers;

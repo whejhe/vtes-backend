@@ -6,11 +6,11 @@ import User from "../models/user.models.js";
 const createDeck = async (req, res) => {
     try {
         console.log("Dentro de crear mazo ::: ", req.body);
-        const { userId, name, description, publico, cardIds } = req.body;
+        const { userId, name, description,category, publico, cardIds } = req.body;
         //Obtener nick del usuario
-        const user = await User.findById(userId);
+        const user = req.user
         const author = user.nick;
-        const newDeck = new Deck({ userId, name,description, author, publico, cardIds });
+        const newDeck = new Deck({ userId, name,description, category, author, publico, cardIds });
         await newDeck.save();
         res.status(201).json(newDeck);
     } catch (error) {

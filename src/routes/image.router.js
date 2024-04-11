@@ -5,11 +5,12 @@ import { imageControllers } from '../controllers/index.js';
 
 const router = express.Router();
 
-const { createImage, getImages, getAvatars,getImageByName, getImageById, getImagesByUserId, updateImage, deleteImage } = imageControllers;
+const { createImage, getImages, getAvatars,getAvatarByUserId,getImageByName, getImageById, getImagesByUserId, updateImage, deleteImage } = imageControllers;
 
 // Rutas para la entidad Image
 router.post('/', createImage);
 router.get('/avatars', getAvatars);
+router.get('/avatars/:userId',getAvatarByUserId);
 router.get('/', getImages);
 router.get('/:name', getImageByName)
 router.get('/:id', getImageById);

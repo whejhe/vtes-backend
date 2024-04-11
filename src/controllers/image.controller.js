@@ -61,6 +61,20 @@ const getImagesByUserId = async (req, res) => {
     }
 };
 
+// Obtener imagen de perfil de usuario
+const getAvatarByUserId = async (req, res) => {
+    try {
+        const { userId } = req.params;
+        const image = await Image.findOne({ userId, type: 'avatars' });
+        if (!image) {
+            return res.status(404).json({ error: "Imagen no encontrada" });
+        }
+        res.status(200).json(image);
+    } catch (error) {
+        res.status(400).json({ error: error.message });
+    }
+}
+
 //Obtener Imagen por nombre
 const getImageByName = async (req, res) => {
     try {
@@ -108,6 +122,7 @@ const imageControllers = {
     createImage,
     getImages,
     getAvatars,
+    getAvatarByUserId,
     getImageByName,
     getImageById,
     getImagesByUserId,
