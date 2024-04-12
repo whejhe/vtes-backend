@@ -37,7 +37,7 @@ const deckSchema = new Schema({
     },
     cardIds:{
         type: [{
-            String,
+            type: String,
             cantidad: { type: Number, default: 1 },
         }],
         ref: 'Card',
