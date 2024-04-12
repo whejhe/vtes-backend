@@ -19,6 +19,10 @@ const deckSchema = new Schema({
         type: String,
         required: [true, 'El nombre del mazo es obligatorio']
     },
+    type:{
+        type: String,
+        require: [true, 'El tipo de mazo es obligatorio'],
+    },
     description:{
         type: String,
         required: false,
@@ -36,20 +40,13 @@ const deckSchema = new Schema({
         default: true,
     },
     cardIds:{
-        type: [{
-            type: String,
-            cantidad: { type: Number, default: 1 },
-        }],
-        ref: 'Card',
-        
+        type: [
+            {
+                _id: {type: String, ref: 'Cards'},
+                cantidad: { type: Number, default: 1 }
+            }
+        ]
     }
-    // cardIds:{
-    //     type: [{
-    //       id: {type: String, ref: 'Cards'},
-    //       cantidad: { type: Number, default: 1 },  
-    //     }], 
-        
-    // }
 }, {versionKey: false});
 
 const Deck = connectDB.model('Deck', deckSchema);

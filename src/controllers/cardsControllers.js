@@ -4,8 +4,8 @@ import Cards from "../models/cards.model.js";
 // Crear una nueva carta
 const createCard = async (req, res) => {
     try {
-        const { name, url, description, type } = req.body;
-        const newCard = new Cards({ name, url, description, type });
+        const { name, url, types, clans, capacity, disciplines, card_text, sets, group } = req.body;
+        const newCard = new Cards({ name, url, types, clans, capacity, disciplines, card_text, sets, group });
         await newCard.save();
         res.status(201).json(newCard);
     } catch (error) {

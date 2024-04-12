@@ -26,7 +26,8 @@ const messageSchema = new Schema({
         required: [true, 'El contenido del mensaje es obligatorio']
     }
 },{
-    timestamps: true
+    timestamps: true,
+    versionKey: false
 });
 
 

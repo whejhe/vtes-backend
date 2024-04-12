@@ -25,7 +25,7 @@ const librarySchema = new Schema({
         ref: 'Deck',
         required: [true, 'Los identificadores de los mazos son obligatorios']
     }
-});
+},{versionKey: false});
 
 
 const Library = connectDB.model('Library', librarySchema)

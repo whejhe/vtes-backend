@@ -25,7 +25,8 @@ const foroSchema = new Schema({
         required: [true, 'El contenido del foro es obligatorio'],
     }
 },{
-    timestamps: true
+    timestamps: true,
+    versionKey: false
 });
 
 

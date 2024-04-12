@@ -37,7 +37,7 @@ const imageSchema = new Schema({
         type: Boolean,
         default: true,
     }
-});
+},{versionKey: false});
 
 
 const Image = connectDB.model('Image', imageSchema);

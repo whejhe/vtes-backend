@@ -11,7 +11,7 @@ const cardsSchema = new Schema({
         type: String,
         default: uuidv4
     },
-    _name: {
+    name: {
         type: String,
         unique: true,
         required: [true, 'El nombre de la carta es obligatoria']
@@ -40,10 +40,6 @@ const cardsSchema = new Schema({
         type: String,
         required: false
     },
-    description: {
-        type: String,
-        required: [true, 'La descripción de la carta es obligatoria']
-    },
     sets:{
         type: [String],
         required: false
@@ -51,12 +47,8 @@ const cardsSchema = new Schema({
     group:{
         type: String,
         required: false
-    },
-    type: {
-        type: String,
-        required: [true, 'El tipo de la carta es obligatoria']
     }
-});
+},{versionKey: false});
 
 
 const Cards = connectDB.model('Cards', cardsSchema);

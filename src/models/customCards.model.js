@@ -79,7 +79,7 @@ const customCardsSchema = new Schema({
     url:{
         type: String,
     }
-});
+},{versionKey: false});
 
 const Cards = connectDB.model('customCards', customCardsSchema);
 

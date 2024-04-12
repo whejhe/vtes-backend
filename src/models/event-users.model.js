@@ -30,7 +30,7 @@ const eventUsersSchema = new Schema({
         default: 'pending'
     },
     
-});
+},{versionKey: false});
 
 
 const EventUsers = connectDB.model('EventUsers', eventUsersSchema);
