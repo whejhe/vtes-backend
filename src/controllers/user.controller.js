@@ -29,6 +29,8 @@ const loginUser = async (req, res) => {
                 name: user.name,
                 image: user.profileImage,
                 nick: user.nick,
+                blocked: user.blocked,
+                avatarUrl: user.avatarUrl
             }
             , process.env.JWT_SECRET, { expiresIn: "1h" });
         if (!token) return res.status(500).json({ error: "Error al generar el token" });
@@ -43,10 +45,11 @@ const loginUser = async (req, res) => {
 
 const registerUser = async (req, res) => {
     try {
-        const { name, nick, email, password, role, profileImage } = req.body;
+        const { name, nick, email, password, role, profileImage,avatarUrl } = req.body;
         if (!name || !nick || !email || !password) {
             return res.status(400).json({ error: 'Todos los campos son obligatorios' });
         }
+        avatarUrl = `http://localhost:3000/vtes-backend/uploads/avatars/${profileImage}`;
         // Verificar si el usuario ya existe
         const existingUser = await User.findOne({ email });
         if (existingUser) {

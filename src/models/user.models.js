@@ -59,6 +59,11 @@ const userSchema = new Schema({
         default: "default-avatar.png",
         trim: true,
     },
+    avatarUrl:{
+        type: String,
+        default: "http://localhost:3000/vtes-backend/uploads/avatars/default-avatar.png",
+        trim: true,
+    },
     blocked:{
         type: Boolean,
         default: false
