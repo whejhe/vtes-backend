@@ -4,7 +4,7 @@ CREAR package.json
 npm init
 
 DEPENDENCIAS
-npm install express express-handlebars
+npm install express
 npm install morgan
 npm install multer
 npm install mongoose
@@ -12,13 +12,9 @@ npm install nodemon -D
 npm install dotenv (Carga de variables de entorno)
 npm install cross-env
 npm install cors
-npm install cloudinary
 npm install bcrypt jsonwebtoken
 npm install nodemailer
 
-IMAGENES
-nm install openia
-npm install cloudinary
 
 .env
 MONGODB_USER=dominguezalacid
