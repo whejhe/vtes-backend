@@ -30,7 +30,8 @@ const loginUser = async (req, res) => {
                 image: user.profileImage,
                 nick: user.nick,
                 blocked: user.blocked,
-                avatarUrl: user.avatarUrl
+                avatarUrl: user.avatarUrl,
+                role: user.role
             }
             , process.env.JWT_SECRET, { expiresIn: "1h" });
         if (!token) return res.status(500).json({ error: "Error al generar el token" });
