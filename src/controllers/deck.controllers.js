@@ -1,6 +1,9 @@
 // backend/src/controllers/deck.controllers.js
 import Deck from "../models/deck.model.js";
 import User from "../models/user.models.js";
+// import cardsControllers from "../models/cards.model.js";
+import Cards from "../models/cards.model.js";
+// const { getCardsById } = cardsControllers;
 
 // Crear un nuevo mazo
 const createDeck = async (req, res) => {
@@ -39,6 +42,44 @@ const getDeckById = async (req, res) => {
         res.status(200).json(deck);
     } catch (error) {
         res.status(400).json({ error: error.message });
+    }
+};
+
+// Obtener todas las cartas del mazo
+const getCardsByDeckId = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const cardModel = Cards
+        const deck = await Deck.findById(id)
+        if (!deck) {
+            return res.status(404).json({ error: "Mazo no encontrado" });
+        }
+        if(!deck.cardIds || deck.cardIds.length === 0) {
+            return res.status(404).json({ error: "Mazo no contiene cartas" });
+        }
+        console.log(deck, ' deck')
+        const cards = await Promise.all(deck.cardIds.map(async (item) => {
+            console.log(item, ' item')
+            const card = await cardModel.findById(item._id);
+            console.log(card, ' carta')
+            return {
+                _id: card._id,
+                name: card.name,
+                url: card.url,
+                types: card.types,
+                clans: card.clans,
+                capacity: card.capacity,
+                disciplines: card.disciplines,
+                card_text: card.card_text,
+                sets: card.sets,
+                group: card.group,
+                cantidad: item.cantidad
+            };
+        }));
+        res.status(200).json(cards);
+    } catch (error) {
+        console.log(error)
+        res.status(400).send( error );
     }
 };
 
@@ -119,6 +160,7 @@ const deckControllers = {
     getDecks,
     getDeckById,
     getDecksByUserId,
+    getCardsByDeckId,
     updateDeck,
     updateDeckVisibility,
     addCardToDeck,

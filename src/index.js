@@ -50,9 +50,9 @@ app.get('/', (req, res) => {
     res.send('Backend server running...')
 })
 
-app.get('/vtes.json', (req, res) => {
-    res.sendFile(path.join(__dirname, "../public/data/vtes.json"));
-})
+// app.get('/vtes.json', (req, res) => {
+//     res.sendFile(path.join(__dirname, "../public/data/vtes.json"));
+// })
 
 //404
 app.use((req, res, next) => {

@@ -37,17 +37,6 @@ const getCardsById = async (req, res) => {
     }
 };
 
-// Obtener todas las cartas de un mazo
-const getCardsByDeckId = async (req, res) => {
-    try {
-        const { deckId } = req.params;
-        const cards = await Cards.find({ deckId });
-        res.status(200).json(cards);
-    } catch (error) {
-        res.status(400).json({ error: error.message });
-    }
-};
-
 // Actualizar la información de una carta
 const updateCard = async (req, res) => {
     try {
@@ -81,7 +70,6 @@ const cardsControllers = {
     createCard,
     getCards,
     getCardsById,
-    getCardsByDeckId,
     updateCard,
     deleteCard
 };

@@ -6,12 +6,13 @@ import { auth } from "../middlewares/auth.js";
 
 const router = express.Router();
 
-const { createDeck, getDecks ,getDeckById, getDecksByUserId, updateDeck ,updateDeckVisibility, addCardToDeck, deleteDeck } = deckControllers;
+const { createDeck, getDecks ,getDeckById, getCardsByDeckId, getDecksByUserId, updateDeck ,updateDeckVisibility, addCardToDeck, deleteDeck } = deckControllers;
 
 // Rutas para la entidad Deck
 router.get('/', getDecks);
 router.post('/',auth, createDeck);
 router.get('/:id', getDeckById);
+router.get('/:id/cards', getCardsByDeckId);
 router.get('/:userId', getDecksByUserId);
 router.put('/:id',auth, updateDeck);
 router.put('/:id/visibility',auth, updateDeckVisibility);
