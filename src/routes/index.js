@@ -25,7 +25,7 @@ router.use("/users/libraries",auth, errorMiddleware, libraryRouter);
 router.use("/decks", errorMiddleware, deckRoute);
 router.use("/cards", errorMiddleware, cardsRoute);
 router.use("/images", errorMiddleware, imageRoute);
-router.use("/events",auth, errorMiddleware, eventRoute);
+router.use("/events", errorMiddleware, eventRoute);
 router.use("/events-users",auth, errorMiddleware, eventUserRoute);
 router.use("/foros",auth, errorMiddleware, foroRoute);
 router.use("/custom-cards",auth, errorMiddleware, customCardsRoute);

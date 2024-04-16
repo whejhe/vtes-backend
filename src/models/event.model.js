@@ -1,3 +1,4 @@
+//front/src/models/event.model.js
 import mongoose from "mongoose";
 import {connectDB} from "../service/mongoDB.js";
 import { v4 as uuidv4 } from "uuid";
@@ -19,17 +20,41 @@ const eventSchema = new Schema({
         type: String,
         required: [true, 'El nombre del evento es obligatorio']
     },
+    email:{
+        type: String,
+        required: [true, 'El email del evento es obligatorio'],
+    },
+    provincia:{
+        type: String,
+        required: [true, 'La provincia del evento es obligatoria'],
+    },
+    localidad:{
+        type: String,
+        required: [true, 'La localidad del evento es obligatoria'],
+    },
+    direccion:{
+        type: String,
+        required: [true, 'La dirección del evento es obligatoria'],
+    },
     description: {
         type: String,
         required: [true, 'La descripción del evento es obligatoria']
     },
-    date: {
+    fecha: {
         type: Date,
         required: [true, 'La fecha del evento es obligatoria']
+    },
+    hora:{
+        type: String,
+        required: [true, 'La hora del evento es obligatoria'],
+    },
+    numMaxParticipantes:{
+        type: Number,
+        required:false,
     }
 },
 {
-    timestamps: true,
+    timestamps: false,
     versionKey: false
 });
 

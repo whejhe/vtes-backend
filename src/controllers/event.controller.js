@@ -6,9 +6,11 @@ import User from "../models/user.models.js";
 // Crear un nuevo evento
 const createEvent = async (req, res) => {
     try {
-        const { name, description, date } = req.body;
-        const creator = User.findById(req.user._id);
-        const newEvent = new Event({ _id:creator._id, name, description, date });
+        if (req.user.role !== 'ADMIN') {
+            return res.status(403).json({ error: 'Acceso denegado' });
+        }
+        const { name,email, provincia,localidad,direccion, description, fecha, hora, numMaxParticipantes } = req.body;
+        const newEvent = new Event({ creatorId:req.user._id, name, email, provincia,localidad,direccion, description, fecha, hora, numMaxParticipantes });
         await newEvent.save();
         res.status(201).json(newEvent);
     } catch (error) {
