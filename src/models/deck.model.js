@@ -39,7 +39,7 @@ const deckSchema = new Schema({
         type: Boolean,
         default: true,
     },
-    cardIds: [{
+    cards: [{
         _id: { type: String, ref: 'Cards' },
         cantidad: { type: Number, default: 1 }
     }]
