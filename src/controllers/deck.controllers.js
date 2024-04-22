@@ -1,17 +1,16 @@
 // backend/src/controllers/deck.controllers.js
 import Deck from "../models/deck.model.js";
 import User from "../models/user.models.js";
-// import cardsControllers from "../models/cards.model.js";
 import Cards from "../models/cards.model.js";
-// const { getCardsById } = cardsControllers;
+import { error } from "../middlewares/error.js";
 
 // Crear un nuevo mazo
 const createDeck = async (req, res) => {
     try {
         console.log("Dentro de crear mazo ::: ", req.body);
-        const { userId, name, description, category, publico, cards } = req.body;
+        const { userId, name, description, category, publico, cards, author } = req.body;
         //Obtener nick del usuario
-        const newDeck = new Deck({ userId, name, description, category, publico, cards });
+        const newDeck = new Deck({ userId, name, description, category, publico, cards, author });
         await newDeck.save();
         res.status(201).json({ id: newDeck._id, ...newDeck });
     } catch (error) {
@@ -33,7 +32,7 @@ const getDecks = async (req, res) => {
 const getDeckById = async (req, res) => {
     try {
         const { id } = req.params;
-        const deck = await Deck.findById(id);
+        const deck = await Deck.findById(id).populate('cards.card');
         if (!deck) {
             return res.status(404).json({ error: "Mazo no encontrado" });
         }
@@ -71,7 +70,7 @@ const getCardsByDeckId = async (req, res) => {
                 card_text: card.card_text,
                 sets: card.sets,
                 group: card.group,
-                cantidad: item.cantidad
+                quantity: item.quantity
             };
         }));
         res.status(200).json(cards);
@@ -96,8 +95,10 @@ const getDecksByUserId = async (req, res) => {
 const updateDeck = async (req, res) => {
     try {
         const { id } = req.params;
-        const { name, publico, cardIds } = req.body;
-        const updatedDeck = await Deck.findByIdAndUpdate(id, { name, publico, cardIds }, { new: true });
+        const { name, publico, cards, description, category } = req.body;
+        let user = await User.findById(req.user._id);
+
+        const updatedDeck = await Deck.findByIdAndUpdate(id, { name, publico, cards, description, category }, { new: true });
         if (!updatedDeck) {
             return res.status(404).json({ error: "Mazo no encontrado" });
         }
@@ -122,26 +123,32 @@ const updateDeckVisibility = async (req, res) => {
     }
 };
 
-// Agregar una carta a un mazo
 const addCardToDeck = async (req, res) => {
     try {
         const { id } = req.params;
-        const { cardId, cantidad } = req.body;
+        const { card, quantity } = req.body;
         const deck = await Deck.findById(id);
         if (!deck) {
             return res.status(404).json({ error: "Mazo no encontrado" });
         }
-        const card = await Cards.findById(cardId);
-        if (!card) {
-            return res.status(404).json({ error: "Carta no encontrada" });
+        if (card) {
+            const existingCards = deck.cards.filter((cardInDeck) => cardInDeck.card && cardInDeck.card.toString());
+            if (existingCards.length > 0) {
+                existingCards.forEach((card) => {
+                    card.quantity += quantity;
+                });
+                deck.markModified('cards');
+            } else {
+                deck.cards.push({ card: card, quantity: quantity });
+            }
         }
-        deck.cards.push({ card: cardId, cantidad: cantidad || 1 });
         await deck.save();
         res.status(200).json(deck);
     } catch (error) {
         res.status(400).json({ error: error.message });
     }
 };
+
 
 // Eliminar un mazo por ID
 const deleteDeck = async (req, res) => {

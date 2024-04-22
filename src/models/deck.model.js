@@ -19,18 +19,15 @@ const deckSchema = new Schema({
         type: String,
         required: [true, 'El nombre del mazo es obligatorio']
     },
-    // type:{
-    //     type: String,
-    //     require: [true, 'El tipo de mazo es obligatorio'],
-    // },
     description:{
         type: String,
         required: false,
     },
-    // author:{
-    //     type: String,
-    //     require: [true, 'El autor del mazo es obligatorio']
-    // },
+    author:{
+        type: String,
+        default : "Anonymous",
+        require: [true, 'El autor del mazo es obligatorio']
+    },
     category:{
         type: String,
     },
@@ -40,7 +37,7 @@ const deckSchema = new Schema({
     },
     cards: [{
         card: { type: String, ref: 'Cards' },
-        cantidad: { type: Number, default: 1 }
+        quantity: { type: Number, default: 1 }
     }]
 }, {versionKey: false});
 
