@@ -96,17 +96,32 @@ const updateDeck = async (req, res) => {
     try {
         const { id } = req.params;
         const { name, publico, cards, description, category } = req.body;
-        let user = await User.findById(req.user._id);
-
-        const updatedDeck = await Deck.findByIdAndUpdate(id, { name, publico, cards, description, category }, { new: true });
-        if (!updatedDeck) {
+        if (!req.user || !req.user._id) {
+            return res.status(401).json({ error: "No autorizado" });
+        }
+        const userId = req.user._id;
+        const user = await User.findById(userId);
+        if (!user) {
+            return res.status(404).json({ error: "Usuario no encontrado" });
+        }
+        const updateDeck = {
+            userId: req.user._id,
+            name,
+            publico,
+            cards,
+            description,
+            category
+        }
+        const deck = await Deck.findByIdAndUpdate(id, updateDeck, { new: true });
+        if (!deck) {
             return res.status(404).json({ error: "Mazo no encontrado" });
         }
-        res.status(200).json(updatedDeck);
+        res.status(200).json(deck);
     } catch (error) {
         res.status(400).json({ error: error.message });
     }
 };
+
 
 // Actualizar la visibilidad de un mazo
 const updateDeckVisibility = async (req, res) => {
