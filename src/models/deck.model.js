@@ -19,10 +19,10 @@ const deckSchema = new Schema({
         type: String,
         required: [true, 'El nombre del mazo es obligatorio']
     },
-    type:{
-        type: String,
-        require: [true, 'El tipo de mazo es obligatorio'],
-    },
+    // type:{
+    //     type: String,
+    //     require: [true, 'El tipo de mazo es obligatorio'],
+    // },
     description:{
         type: String,
         required: false,
@@ -40,7 +40,7 @@ const deckSchema = new Schema({
         default: true,
     },
     cards: [{
-        _id: { type: String, ref: 'Cards' },
+        card: { type: String, ref: 'Cards' },
         cantidad: { type: Number, default: 1 }
     }]
 }, {versionKey: false});

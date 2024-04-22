@@ -9,11 +9,11 @@ import Cards from "../models/cards.model.js";
 const createDeck = async (req, res) => {
     try {
         console.log("Dentro de crear mazo ::: ", req.body);
-        const { userId, name, type, description,category, publico, cardIds } = req.body;
+        const { userId, name, description,category, publico, cards } = req.body;
         //Obtener nick del usuario
         const user = req.user
         const author = user.nick;
-        const newDeck = new Deck({ userId, name, type, description, category, author, publico, cardIds });
+        const newDeck = new Deck({ userId, name, description, category, author, publico, cards });
         await newDeck.save();
         res.status(201).json(newDeck);
     } catch (error) {
@@ -128,12 +128,16 @@ const updateDeckVisibility = async (req, res) => {
 const addCardToDeck = async (req, res) => {
     try {
         const { id } = req.params;
-        const { cardId } = req.body;
+        const { cardId, cantidad } = req.body;
         const deck = await Deck.findById(id);
         if (!deck) {
             return res.status(404).json({ error: "Mazo no encontrado" });
         }
-        deck.cardIds.push(cardId);
+        const card = await Cards.findById(cardId);
+        if(!card){
+            return res.status(404).json({ error: "Carta no encontrada" });
+        }
+        deck.cards.push({ card: cardId, cantidad: cantidad || 1 });
         await deck.save();
         res.status(200).json(deck);
     } catch (error) {
