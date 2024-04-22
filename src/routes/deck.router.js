@@ -15,7 +15,7 @@ router.post('/', createDeck);
 router.get('/:id', getDeckById);
 router.get('/:id/cards', getCardsByDeckId);
 router.get('/:userId', getDecksByUserId);
-router.put('/:id',auth, updateDeck);
+router.put('/:id', updateDeck);
 router.put('/:id/visibility',auth, updateDeckVisibility);
 router.put('/:id/add-card',auth, addCardToDeck);
 router.delete('/:id',auth, deleteDeck);
