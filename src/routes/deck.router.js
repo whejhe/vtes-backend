@@ -11,7 +11,7 @@ const { createDeck, getDecks ,getDeckById, getCardsByDeckId, getDecksByUserId, u
 
 // Rutas para la entidad Deck
 router.get('/', getDecks);
-router.post('/',auth, createDeck);
+router.post('/', createDeck);
 router.get('/:id', getDeckById);
 router.get('/:id/cards', getCardsByDeckId);
 router.get('/:userId', getDecksByUserId);

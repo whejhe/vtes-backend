@@ -9,13 +9,11 @@ import Cards from "../models/cards.model.js";
 const createDeck = async (req, res) => {
     try {
         console.log("Dentro de crear mazo ::: ", req.body);
-        const { userId, name, description,category, publico, cards } = req.body;
+        const { userId, name, description, category, publico, cards } = req.body;
         //Obtener nick del usuario
-        const user = req.user
-        const author = user.nick;
-        const newDeck = new Deck({ userId, name, description, category, author, publico, cards });
+        const newDeck = new Deck({ userId, name, description, category, publico, cards });
         await newDeck.save();
-        res.status(201).json(newDeck);
+        res.status(201).json({ id: newDeck._id, ...newDeck });
     } catch (error) {
         res.status(400).json({ error: error.message });
     }
@@ -54,7 +52,7 @@ const getCardsByDeckId = async (req, res) => {
         if (!deck) {
             return res.status(404).json({ error: "Mazo no encontrado" });
         }
-        if(!deck.cardIds || deck.cardIds.length === 0) {
+        if (!deck.cardIds || deck.cardIds.length === 0) {
             return res.status(404).json({ error: "Mazo no contiene cartas" });
         }
         console.log(deck, ' deck')
@@ -79,7 +77,7 @@ const getCardsByDeckId = async (req, res) => {
         res.status(200).json(cards);
     } catch (error) {
         console.log(error)
-        res.status(400).send( error );
+        res.status(400).send(error);
     }
 };
 
@@ -134,7 +132,7 @@ const addCardToDeck = async (req, res) => {
             return res.status(404).json({ error: "Mazo no encontrado" });
         }
         const card = await Cards.findById(cardId);
-        if(!card){
+        if (!card) {
             return res.status(404).json({ error: "Carta no encontrada" });
         }
         deck.cards.push({ card: cardId, cantidad: cantidad || 1 });
