@@ -4,8 +4,8 @@ import Cards from "../models/cards.model.js";
 // Crear una nueva carta
 const createCard = async (req, res) => {
     try {
-        const { name, url, types, clans, capacity, disciplines, card_text, sets, group, quantity } = req.body;
-        const newCard = new Cards({ name, url, types, clans, capacity, disciplines, card_text, sets, group, quantity });
+        const { name, url, types, clans, capacity, disciplines, card_text, sets, group } = req.body;
+        const newCard = new Cards({ name, url, types, clans, capacity, disciplines, card_text, sets, group });
         await newCard.save();
         res.status(201).json(newCard);
     } catch (error) {
@@ -41,8 +41,8 @@ const getCardsById = async (req, res) => {
 const updateCard = async (req, res) => {
     try {
         const { id } = req.params;
-        const { name, image, description, type, quantity } = req.body;
-        const updatedCard = await Cards.findByIdAndUpdate(id, { name, image, description, type, quantity }, { new: true });
+        const { name, image, description, type } = req.body;
+        const updatedCard = await Cards.findByIdAndUpdate(id, { name, image, description, type }, { new: true });
         if (!updatedCard) {
             return res.status(404).json({ error: "Carta no encontrada" });
         }

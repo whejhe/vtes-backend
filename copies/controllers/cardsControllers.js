@@ -1,4 +1,4 @@
-//backend/src/controllers/cardsControllers.js
+//copies/src/controllers/cardsControllers.js
 import Cards from "../models/cards.model.js";
 
 // Crear una nueva carta

@@ -1,4 +1,4 @@
-// backend/src/controllers/deck.controllers.js
+// copies/src/controllers/deck.controllers.js
 import Deck from "../models/deck.model.js";
 import User from "../models/user.models.js";
 import Cards from "../models/cards.model.js";

@@ -2,26 +2,16 @@
 import Deck from "../models/deck.model.js";
 import User from "../models/user.models.js";
 import Cards from "../models/cards.model.js";
-import { error } from "../middlewares/error.js";
 
 // Crear un nuevo mazo
 const createDeck = async (req, res) => {
     try {
         console.log("Dentro de crear mazo ::: ", req.body);
-        const { name, description, category, publico, cards, author } = req.body;
-        let userId = req.user._id;
+        const { userId, name, description, category, publico, cards, author } = req.body;
         //Obtener nick del usuario
         const newDeck = new Deck({ userId, name, description, category, publico, cards, author });
         await newDeck.save();
-        res.status(201).json({ 
-            id: newDeck._id,
-            name: newDeck.name,
-            description: newDeck.description,
-            category: newDeck.category,
-            publico: newDeck.publico,
-            cards: newDeck.cards,
-            author: newDeck.author
-        });
+        res.status(201).json({ id: newDeck._id, ...newDeck });
     } catch (error) {
         res.status(400).json({ error: error.message });
     }

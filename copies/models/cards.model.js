@@ -1,4 +1,4 @@
-//backend/src/models/cards.model.js
+//copies/src/models/cards.model.js
 import mongoose from "mongoose";
 import { v4 as uuidv4 } from "uuid";
 import { connectDB } from "../service/mongoDB.js";

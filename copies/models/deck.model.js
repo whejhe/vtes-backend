@@ -1,4 +1,4 @@
-//backend/src/models/deck.model.js
+//copies/src/models/deck.model.js
 import mongoose from "mongoose";
 import { v4 as uuidv4 } from "uuid";
 import {connectDB} from "../service/mongoDB.js";
