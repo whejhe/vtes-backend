@@ -47,6 +47,11 @@ const cardsSchema = new Schema({
     group:{
         type: String,
         required: false
+    },
+    quantity: {
+        type: Number,
+        default: 1,
+        required: true
     }
 },{versionKey: false});
 
