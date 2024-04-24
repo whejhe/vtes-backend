@@ -25,6 +25,10 @@ const cardsSchema = new Schema({
         type: [String],
         required: [true, 'El tipo de la carta es obligatoria']
     },
+    title:{
+        type: String,
+        required: false
+    },
     clans:{
         type: [String],
         required: false
@@ -36,7 +40,27 @@ const cardsSchema = new Schema({
         type: [String],
         required: false
     },
+    multidisc: {
+        type: Boolean,
+        default: false
+    },
     card_text:{
+        type: String,
+        required: false
+    },
+    ordered_sets:{
+        type: [String],
+        required: false
+    },
+    blood_cost:{
+        type: String,
+        required: false
+    },
+    pool_cost:{
+        type: String,
+        required: false
+    },
+    rulings:{
         type: String,
         required: false
     },
@@ -47,11 +71,6 @@ const cardsSchema = new Schema({
     group:{
         type: String,
         required: false
-    },
-    quantity: {
-        type: Number,
-        default: 1,
-        required: true
     }
 },{versionKey: false});
 
