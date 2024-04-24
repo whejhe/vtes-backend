@@ -36,8 +36,11 @@ const deckSchema = new Schema({
         type: Boolean,
         default: true,
     },
-    cards: [{
-        //REVISAR
+    crypt: [{
+        _id: { type: ObjectId, ref: 'Cards' },
+        quantity: { type: Number, default: 1 }
+    }],
+    library: [{
         _id: { type: ObjectId, ref: 'Cards' },
         quantity: { type: Number, default: 1 }
     }]
