@@ -31,7 +31,7 @@ const getDecks = async (req, res) => {
 const getDeckById = async (req, res) => {
     try {
         const { id } = req.params;
-        const deck = await Deck.findById(id).populate('cards.card');
+        const deck = await Deck.findById(id).populate('cards._id');
         if (!deck) {
             return res.status(404).json({ error: "Mazo no encontrado" });
         }

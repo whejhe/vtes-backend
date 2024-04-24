@@ -2,6 +2,7 @@
 import mongoose from "mongoose";
 import { v4 as uuidv4 } from "uuid";
 import {connectDB} from "../service/mongoDB.js";
+import { ObjectId } from "mongodb";
 
 const { Schema } = mongoose;
 
@@ -36,7 +37,8 @@ const deckSchema = new Schema({
         default: true,
     },
     cards: [{
-        card: { type: String, ref: 'Cards' },
+        //REVISAR
+        _id: { type: ObjectId, ref: 'Cards' },
         quantity: { type: Number, default: 1 }
     }]
 }, {versionKey: false});
