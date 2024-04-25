@@ -2,11 +2,13 @@
 import express from 'express';
 import { deckControllers } from '../controllers/index.js';
 import { auth } from "../middlewares/auth.js";
+import {printTxt} from '../middlewares/printTxt.js';
+import { deckCheck } from '../middlewares/deckCheck.js';
 
 
 const router = express.Router();
 
-const { createDeck, getDecks ,getDeckById, getCardsByDeckId, getDecksByUserId, updateDeck ,updateDeckVisibility, addCardToDeck, deleteDeck, printTxt, printtoPDF } = deckControllers;
+const { createDeck, getDecks ,getDeckById, getCardsByDeckId, getDecksByUserId, updateDeck ,updateDeckVisibility, addCardToDeck, deleteDeck, printtoPDF } = deckControllers;
 
 // Rutas para la entidad Deck
 router.get('/', getDecks);
@@ -18,7 +20,7 @@ router.put('/:id',auth, updateDeck);
 router.put('/:id/visibility',auth, updateDeckVisibility);
 router.put('/add-card/:id', addCardToDeck);
 router.delete('/:id',auth, deleteDeck);
-router.post('/printTxt/:id', printTxt);
-router.post('/printPDF/:id', printtoPDF);
+router.post('/printTxt/:id',deckCheck, printTxt);
+router.post('/printPDF/:id',deckCheck, printtoPDF);
 
 export default router;

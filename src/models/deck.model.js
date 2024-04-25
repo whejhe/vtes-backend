@@ -18,7 +18,7 @@ const deckSchema = new Schema({
     },
     name: {
         type: String,
-        required: [true, 'El nombre del mazo es obligatorio']
+        required: [true, 'El nombre del mazo es obligatorio'],
     },
     description:{
         type: String,

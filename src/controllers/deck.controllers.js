@@ -2,7 +2,7 @@
 import Deck from "../models/deck.model.js";
 import User from "../models/user.models.js";
 import Cards from "../models/cards.model.js";
-import writeTxt from "../middlewares/printTxt.js";
+//import writeTxt from "../middlewares/printTxt.js";
 import printPDF from '../middlewares/printPDF.js';
 
 // Crear un nuevo mazo
@@ -164,20 +164,20 @@ const deleteDeck = async (req, res) => {
     }
 };
 
-const printTxt = (deck) => {
-    const { name, description, category, publico, crypt, library } = deck;
-    const filepath = path.join(__dirname, 'print.txt');
-    const fileData = `${new Date().toISOString()} - Deck: ${name}\nDescription: ${description}\nCategory: ${category}\nPublic: ${publico}\nCrypt: ${crypt}\nLibrary: ${library}\n`;
+// const printTxt = (deck) => {
+//     const { name, description, category, publico, crypt, library } = deck;
+//     const filepath = path.join(__dirname, 'print.txt');
+//     const fileData = `${new Date().toISOString()} - Deck: ${name}\nDescription: ${description}\nCategory: ${category}\nPublic: ${publico}\nCrypt: ${crypt}\nLibrary: ${library}\n`;
 
-    fs.appendFile(filepath, fileData, (err) => {
-        if (err) {
-            console.log(err);
-            res.status(500).send('Error en el servidor al escribir el archivo');
-        } else {
-            console.log('Archivo escrito con exito');
-        }
-    });
-}
+//     fs.appendFile(filepath, fileData, (err) => {
+//         if (err) {
+//             console.log(err);
+//             res.status(500).send('Error en el servidor al escribir el archivo');
+//         } else {
+//             console.log('Archivo escrito con exito');
+//         }
+//     });
+// }
 
 const printtoPDF = async (req, res) => {
     const { id } = req.params;
@@ -199,7 +199,6 @@ const deckControllers = {
     updateDeckVisibility,
     addCardToDeck,
     deleteDeck,
-    printTxt,
     printtoPDF
 };
 

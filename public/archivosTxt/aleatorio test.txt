@@ -1,0 +1,20 @@
+Deck: aleatorio test
+------------------------------------------------ 
+Description: cosas
+Category: Combat
+Author: Whejhe
+------------------------------------------------
+Crypt:
+- Ankla Hotep (G2), Clan: Ravnos, Disciplinas: pro,CHI,FOR,OBF,PRE, Quantity: 10
+- Amenophobis (G4), Clan: Ministry, Disciplinas: dom,pre,OBF,SER, Quantity: 1
+------------------------------------------------
+Library:
+- Foldable Machine Gun, Quantity: 36
+- Eyes of Argus, Disciplina(s): aus, Quantity: 10
+- Enhanced Coagulant, Quantity: 1
+- Elephant Guardian, Quantity: 1
+- Disguised Weapon, Disciplina(s): obf, Quantity: 1
+- Crocodile's Tongue, Disciplina(s): aus, Quantity: 1
+- Cats' Guidance, Disciplina(s): ani, Quantity: 1
+------------------------------------------------
+Total Cards: 9

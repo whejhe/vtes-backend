@@ -8,8 +8,7 @@ export const auth = async (req, res, next) => {
     if (!token) {
         return res.status(401).send({ error: 'Please authenticate. testing' });
     }
-    try {
-        
+    try {        
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
         const user = await User.findById(decoded._id).select('-password -__v');
         console.log(user, token, 'desde auth middleware')
