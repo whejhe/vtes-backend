@@ -2,6 +2,8 @@
 import Deck from "../models/deck.model.js";
 import User from "../models/user.models.js";
 import Cards from "../models/cards.model.js";
+import writeTxt from "../middlewares/printTxt.js";
+import printPDF from '../middlewares/printPDF.js';
 
 // Crear un nuevo mazo
 const createDeck = async (req, res) => {
@@ -13,6 +15,7 @@ const createDeck = async (req, res) => {
         await newDeck.save();
         res.status(201).json({ id: newDeck._id, ...newDeck });
     } catch (error) {
+        console.log(error);
         res.status(400).json({ error: error.message });
     }
 };
@@ -54,23 +57,6 @@ const getCardsByDeckId = async (req, res) => {
             return res.status(404).json({ error: "Mazo no contiene cartas" });
         }
         console.log(deck, ' deck')
-        // const cards = await Promise.all(deck.cardIds.map(async (item) => {
-        //     console.log(item, ' item')
-        //     const card = await cardModel.findById(item._id);
-        //     return {
-        //         _id: card._id,
-        //         name: card.name,
-        //         url: card.url,
-        //         types: card.types,
-        //         clans: card.clans,
-        //         capacity: card.capacity,
-        //         disciplines: card.disciplines,
-        //         card_text: card.card_text,
-        //         sets: card.sets,
-        //         group: card.group,
-        //         quantity: item.quantity
-        //     };
-        // }));
         res.status(200).json(cards);
     } catch (error) {
         console.log(error)
@@ -178,6 +164,31 @@ const deleteDeck = async (req, res) => {
     }
 };
 
+const printTxt = (deck) => {
+    const { name, description, category, publico, crypt, library } = deck;
+    const filepath = path.join(__dirname, 'print.txt');
+    const fileData = `${new Date().toISOString()} - Deck: ${name}\nDescription: ${description}\nCategory: ${category}\nPublic: ${publico}\nCrypt: ${crypt}\nLibrary: ${library}\n`;
+
+    fs.appendFile(filepath, fileData, (err) => {
+        if (err) {
+            console.log(err);
+            res.status(500).send('Error en el servidor al escribir el archivo');
+        } else {
+            console.log('Archivo escrito con exito');
+        }
+    });
+}
+
+const printtoPDF = async (req, res) => {
+    const { id } = req.params;
+    const deck = await Deck.findById(id).populate('cards');
+    if (!deck) {
+        return res.status(404).json({ message: 'Deck not found' });
+    }
+    req.deck = deck;
+    printPDF(req, res, next);
+};
+
 const deckControllers = {
     createDeck,
     getDecks,
@@ -187,7 +198,9 @@ const deckControllers = {
     updateDeck,
     updateDeckVisibility,
     addCardToDeck,
-    deleteDeck
+    deleteDeck,
+    printTxt,
+    printtoPDF
 };
 
 export default deckControllers;
