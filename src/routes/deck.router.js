@@ -4,6 +4,7 @@ import { deckControllers } from '../controllers/index.js';
 import { auth } from "../middlewares/auth.js";
 import {printTxt} from '../middlewares/printTxt.js';
 import { deckCheck } from '../middlewares/deckCheck.js';
+import { buildPDF } from '../middlewares/printPDF.js';
 
 
 const router = express.Router();
@@ -21,6 +22,16 @@ router.put('/:id/visibility',auth, updateDeckVisibility);
 router.put('/add-card/:id', addCardToDeck);
 router.delete('/:id',auth, deleteDeck);
 router.post('/printTxt/:id',deckCheck, printTxt);
-router.post('/printPDF/:id',deckCheck, printtoPDF);
+router.get('/printPDF/:id',(req, res) => {
+    const stream = res.writeHead(200, {
+        'Content-Type': 'application/pdf',
+        'Content-Disposition': 'attachment; filename="deck.pdf"',
+    })
+    buildPDF((data) => {
+        stream.write(data),
+        () => stream.end()
+    });
+    res.send('PDF creado con éxito');
+});
 
 export default router;
