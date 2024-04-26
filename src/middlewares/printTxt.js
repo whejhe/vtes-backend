@@ -10,7 +10,7 @@ export const printTxt = async (req, res, next) => {
     if (!deck) {
         return res.status(404).json({ error: 'Deck not found' });
     }
-    let filename = deck.name + '.txt';
+    let filename = deck.name + '-'+ deck.author +'.txt';
     const __dirname = path.resolve();
     const filepath = path.join(__dirname, 'public', 'archivosTxt', filename);
 

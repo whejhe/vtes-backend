@@ -1,3 +1,16 @@
+Relanzar Intancia:
+- Entrar en AWS ec2
+- Ir a Instacias Click derechoi en la instancia para iniciar o detener
+- Copiar direccion IP4 de instancia iniciada (Ip publica)
+
+Desde Github
+- Ir al repositorio de github del proyecto
+- Ir a apartado de configuracion
+- Pestaña Secrets an variables (action)
+- Editar clave AWS_Backend_host
+- Pegar Ip publica de la instancia
+
+
 EC2
 Crear instancia --> Lanzar instancia
  - Nombre
