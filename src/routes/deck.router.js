@@ -20,19 +20,8 @@ router.get('/:userId', getDecksByUserId);
 router.put('/:id',auth, updateDeck);
 router.put('/:id/visibility',auth, updateDeckVisibility);
 router.put('/add-card/:id', addCardToDeck);
-router.delete('/:id',auth, deleteDeck);
+router.delete('/:id', auth, deleteDeck);
 router.post('/printTxt/:id',deckCheck, printTxt);
 router.get('/printPDF/:id',deckCheck,generateDeckPDF);
-// router.get('/printPDF/:id',(req, res) => {
-//     const stream = res.writeHead(200, {
-//         'Content-Type': 'application/pdf',
-//         'Content-Disposition': 'attachment; filename="deck.pdf"',
-//     })
-//     buildPDF((data) => {
-//         stream.write(data),
-//         () => stream.end()
-//     });
-//     res.send('PDF creado con éxito');
-// });
 
 export default router;

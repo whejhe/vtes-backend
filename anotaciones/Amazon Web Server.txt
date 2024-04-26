@@ -10,6 +10,13 @@ Desde Github
 - Editar clave AWS_Backend_host
 - Pegar Ip publica de la instancia
 
+Desde DuckDNS
+- Remplazar currentIp por la ip Publica de la instancia
+
+
+Comprobar si se esta ejecutando correctamente el proxy manager
+- Ir a la carpeta donde tengas el archivo ubuntu.pem
+- ssh -i ubuntu.pem ubuntu@(ip publica)
 
 EC2
 Crear instancia --> Lanzar instancia
