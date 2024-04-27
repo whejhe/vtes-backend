@@ -2,7 +2,7 @@ Deck: Using the Advantage
 ------------------------------------------------ 
 Description: Mazo de bleed basado en cailean
 Category: Bleed
-Author: Anonymous
+Author: Whejhe
 ------------------------------------------------
 Crypt:
 - Cailean (G2), Clan: Nosferatu antitribu, Disciplinas: dom,ANI,OBF,POT,PRE, Quantity: 5

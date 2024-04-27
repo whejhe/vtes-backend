@@ -1,0 +1,34 @@
+Deck: Malkavian Derange
+------------------------------------------------ 
+Description: Mazo de Bleed y Derange
+Category: Bleed
+Author: Whejhe
+------------------------------------------------
+Crypt:
+- Abraham Mellon (G6), Clan: Malkavian, Disciplinas: for,tha,AUS,DOM,OBF, Quantity: 3
+- Alexander Silverson (G6), Clan: Malkavian, Disciplinas: pre,AUS,DOM,OBF, Quantity: 3
+- Cedrick Calhoun (G6), Clan: Nosferatu, Disciplinas: pot,ANI,DOM,OBF, Quantity: 2
+- Nathaniel Bordruff (G6), Clan: Nosferatu, Disciplinas: ani,DOM,OBF,POT, Quantity: 2
+- Gilbert Duane (G6), Clan: Malkavian, Disciplinas: AUS,DOM,OBF, Quantity: 1
+- Jason "Son" Newberry (G6), Clan: Malkavian, Disciplinas: pre,AUS,DOM,OBF, Quantity: 1
+------------------------------------------------
+Library:
+- Giant's Blood, Quantity: 1
+- Heidelberg Castle, Germany, Quantity: 4
+- Malkavian Dementia, Quantity: 8
+- Villein, Quantity: 9
+- Wider View, Quantity: 2
+- Derange, Clan(es): Malkavian,Malkavian antitribu, Quantity: 12
+- Govern the Unaligned, Disciplina(s): dom, Quantity: 12
+- Carlton Van Wyk, Quantity: 1
+- Muddled Vampire Hunter, Clan(es): Malkavian, Quantity: 1
+- Ossian, Quantity: 1
+- Ponticulus, Clan(es): Tremere, Quantity: 1
+- Conditioning, Disciplina(s): dom, Quantity: 5
+- Elder Impersonation, Disciplina(s): obf, Quantity: 6
+- Faceless Night, Disciplina(s): obf, Quantity: 6
+- Lost in Crowds, Disciplina(s): obf, Quantity: 5
+- Seduction, Disciplina(s): dom, Quantity: 8
+- Deflection, Disciplina(s): dom, Quantity: 8
+------------------------------------------------
+Total Cards: 23
