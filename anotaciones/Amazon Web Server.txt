@@ -1,6 +1,6 @@
 Relanzar Intancia:
 - Entrar en AWS ec2
-- Ir a Instacias Click derechoi en la instancia para iniciar o detener
+- Ir a Instacias Click derecho en la instancia para iniciar o detener
 - Copiar direccion IP4 de instancia iniciada (Ip publica)
 
 Desde Github
