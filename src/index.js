@@ -34,7 +34,7 @@ app.use(express.static('./public'));
 app.use(express.static(path.join(__dirname, "../public/data")));
 app.use('/vtes-backend/uploads', express.static(path.join(__dirname, "uploads")));
 app.use('/vtes-backend/uploads/avatars', express.static(path.join(__dirname, "uploads/avatars")));
-app.use('/vtes-backend/uploads/customCards', express.static(path.join(__dirname, "uploads/customCards")));
+app.use('/uploads/customCards', express.static(path.join(__dirname, "uploads/customCards")));
 
 
 //ROUTES
