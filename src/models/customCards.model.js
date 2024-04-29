@@ -17,7 +17,6 @@ const customCardsSchema = new Schema({
     },
     name: {
         type: String,
-        unique: true,
         required: [true, 'El nombre de la carta es obligatoria']
     },
     author:{
@@ -32,7 +31,6 @@ const customCardsSchema = new Schema({
     },
     image: {
         type: String,
-        required: [true, 'La imagen de la carta es obligatoria']
     },
     clan: {
         type: String,
@@ -54,13 +52,12 @@ const customCardsSchema = new Schema({
     },
     logoColor: {
         type: String,
-        required: [true, 'El color del logo es obligatorio']
     },
     description: {
         type: String,
         required: [true, 'La descripción de la carta es obligatoria']
     },
-    publico: {
+    isPublic: {
         type:Boolean,
         default: true
     },

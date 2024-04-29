@@ -16,6 +16,8 @@ npm install bcrypt jsonwebtoken
 npm install nodemailer
 npm install pdfkit
 npm install fs
+npm install sharp @types/sharp
+
 
 
 .env
