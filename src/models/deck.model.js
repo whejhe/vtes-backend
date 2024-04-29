@@ -32,9 +32,10 @@ const deckSchema = new Schema({
     category:{
         type: String,
     },
-    publico: {
+    isPublic: {
         type: Boolean,
         default: true,
+        require: [true, 'El estado del mazo es obligatorio']    
     },
     crypt: [{
         _id: { type: ObjectId, ref: 'Cards' },

@@ -7,9 +7,9 @@ import Cards from "../models/cards.model.js";
 const createDeck = async (req, res) => {
     try {
         console.log("Dentro de crear mazo ::: ", req.body);
-        const { userId, name, description, category, publico, crypt, library, author } = req.body;
+        const { userId, name, description, category, isPublic, crypt, library, author } = req.body;
         //Obtener nick del usuario
-        const newDeck = new Deck({ userId, name, description, category, publico, crypt, library, author });
+        const newDeck = new Deck({ userId, name, description, category, isPublic, crypt, library, author });
         await newDeck.save();
         res.status(201).json({ id: newDeck._id, ...newDeck });
     } catch (error) {
@@ -77,7 +77,7 @@ const getDecksByUserId = async (req, res) => {
 const updateDeck = async (req, res) => {
     try {
         const { id } = req.params;
-        const { name, publico, crypt, library, description, category } = req.body;
+        const { name, isPublic, crypt, library, description, category } = req.body;
         if (!req.user || !req.user._id) {
             return res.status(401).json({ error: "No autorizado" });
         }
@@ -89,7 +89,7 @@ const updateDeck = async (req, res) => {
         const updateDeck = {
             userId: req.user._id,
             name,
-            publico,
+            isPublic,
             crypt,
             library,
             description,
@@ -110,8 +110,8 @@ const updateDeck = async (req, res) => {
 const updateDeckVisibility = async (req, res) => {
     try {
         const { id } = req.params;
-        const { publico } = req.body;
-        const updatedDeck = await Deck.findByIdAndUpdate(id, { publico }, { new: true });
+        const { isPublic } = req.body;
+        const updatedDeck = await Deck.findByIdAndUpdate(id, { isPublic }, { new: true });
         if (!updatedDeck) {
             return res.status(404).json({ error: "Mazo no encontrado" });
         }
@@ -167,15 +167,6 @@ const deleteDeck = async (req, res) => {
     }
 };
 
-// const printtoPDF = async (req, res) => {
-//     const { id } = req.params;
-//     const deck = await Deck.findById(id).populate('cards');
-//     if (!deck) {
-//         return res.status(404).json({ message: 'Deck not found' });
-//     }
-//     req.deck = deck;
-//     printPDF(req, res, next);
-// };
 
 const deckControllers = {
     createDeck,

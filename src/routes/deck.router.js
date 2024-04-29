@@ -9,7 +9,7 @@ import {generateDeckPDF} from '../middlewares/printPDF.js';
 
 const router = express.Router();
 
-const { createDeck, getDecks ,getDeckById, getCardsByDeckId, getDecksByUserId, updateDeck ,updateDeckVisibility, addCardToDeck, deleteDeck, printtoPDF } = deckControllers;
+const { createDeck, getDecks ,getDeckById, getCardsByDeckId, getDecksByUserId, updateDeck ,updateDeckVisibility, addCardToDeck, deleteDeck } = deckControllers;
 
 // Rutas para la entidad Deck
 router.get('/', getDecks);
@@ -22,6 +22,6 @@ router.put('/:id/visibility',auth, updateDeckVisibility);
 router.put('/add-card/:id', addCardToDeck);
 router.delete('/:id', auth, deleteDeck);
 router.post('/printTxt/:id',deckCheck, printTxt);
-router.get('/printPDF/:id',deckCheck,generateDeckPDF);
+router.get('/printPDF/:id',generateDeckPDF);
 
 export default router;
