@@ -17,7 +17,7 @@ npm install nodemailer
 npm install pdfkit
 npm install fs
 npm install sharp @types/sharp
-
+npm install got
 
 
 .env
