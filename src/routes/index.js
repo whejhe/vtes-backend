@@ -28,7 +28,7 @@ router.use("/images", errorMiddleware, imageRoute);
 router.use("/events", errorMiddleware, eventRoute);
 router.use("/events-users",auth, errorMiddleware, eventUserRoute);
 router.use("/foros",auth, errorMiddleware, foroRoute);
-router.use("/custom-cards",auth, errorMiddleware, customCardsRoute);
+router.use("/custom-cards", errorMiddleware, customCardsRoute);
 
 
 export default router;

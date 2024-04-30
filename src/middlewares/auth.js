@@ -6,12 +6,12 @@ export const auth = async (req, res, next) => {
     const token = req.headers.authorization?.split(' ')[1];
     console.log('llegando', token)
     if (!token) {
-        return res.status(401).send({ error: 'Please authenticate. testing' });
+        return res.status(401).send({ error: 'Please authenticate. (middleware-auth)' });
     }
     try {        
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
         const user = await User.findById(decoded._id).select('-password -__v');
-        console.log(user, token, 'desde auth middleware')
+        // console.log(user, token, 'desde auth middleware')
         if (!user) {
             throw new Error();
         }

@@ -3,6 +3,9 @@ import path from "path";
 import fs from "fs";
 
 const resizeImage = async (req, res, next) => {
+
+    console.log(req.body)
+
     if (!req.file) {
         console.log('No se proporcionó una imagen');
         return next();

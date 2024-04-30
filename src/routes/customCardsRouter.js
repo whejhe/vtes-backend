@@ -17,12 +17,12 @@ const {
     deleteCustomCard } = customCardsControllers;
 
 // Rutas para la entidad Cards
-router.post('/', multerMiddleware, createCustomCard);
+router.post('/',auth, multerMiddleware, createCustomCard);
 router.get('/', getAllCustomCards);
 router.put('/upload', auth, multerMiddleware, resizeImage, uploadCustomCard);
 router.get('/:id', getCustomCardById);
 router.get('/:deckId', getCustomCardsByDeckId);
-router.put('/:id', multerMiddleware, updateCustomCard);
-router.delete('/:id', deleteCustomCard);
+router.put('/:id',auth, multerMiddleware, updateCustomCard);
+router.delete('/:id',auth, deleteCustomCard);
 
 export default router;

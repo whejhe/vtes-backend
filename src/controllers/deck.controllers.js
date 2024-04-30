@@ -9,7 +9,7 @@ const createDeck = async (req, res) => {
         console.log("Dentro de crear mazo ::: ", req.body);
         const { userId, name, description, category, isPublic, crypt, library, author } = req.body;
         //Obtener nick del usuario
-        const newDeck = new Deck({ userId, name, description, category, isPublic, crypt, library, author });
+        const newDeck = new Deck({ userId, name, description, category, isPublic, crypt, library, author});
         await newDeck.save();
         res.status(201).json({ id: newDeck._id, ...newDeck });
     } catch (error) {
@@ -23,6 +23,8 @@ const getDecks = async (req, res) => {
     try {
         const decks = await Deck.find();
         res.status(200).json(decks);
+        // if(decks.isPublic === true || (decks.isOwner === true && decks.isPublic === false)) {
+        // }
     } catch (error) {
         res.status(400).json({ error: error.message });
     }

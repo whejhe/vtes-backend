@@ -59,29 +59,32 @@ export const generateDeckPDF = async (req, res) => {
         const doc = new PDFDocument({ size: 'A4', margin: 50 });
         const buffers = [];
 
-        // Agrega el título del mazo
-        doc.fontSize(18).text(`Mazo: ${deck.name}`, { align: 'center' });
-        doc.moveDown(2);
+        const pageWidth = 595.28;
+        const pageHeight = 841.89;
+        const cardsPerRow = 3;
+        const cardsPerColumn = 3;
 
-        // Agrega las cartas de la cripta
-        doc.fontSize(14).text('Cripta:', { underline: true });
-        doc.moveDown(1);
-        for (const card of cards) {
-            doc.image(card.imageUrl, { fit: [100, 150] });
-            doc.moveUp(2);
-            doc.fontSize(12).text(card.name, { align: 'center' });
-            doc.moveDown(3);
-        }
+        const cardWidth = (pageWidth - 100) / cardsPerRow;
+        const cardHeight = (pageHeight - 100) / cardsPerColumn;
 
-        // Agrega las cartas de la biblioteca
-        doc.addPage();
-        doc.fontSize(14).text('Biblioteca:', { underline: true });
-        doc.moveDown(1);
-        for (const card of libraryCards) {
-            doc.image(card.imageUrl, { fit: [100, 150] });
-            doc.moveUp(2);
-            doc.fontSize(12).text(card.name, { align: 'center' });
-            doc.moveDown(3);
+        const allCards = [...deck.crypt, ...deck.library];
+        for (let i = 0; i < allCards.length; i++) {
+            const card = allCards[i];
+            const cardIndex = i % (cardsPerRow * cardsPerColumn);
+
+            const x = (cardIndex % cardsPerRow) * cardWidth + (pageWidth - (cardsPerRow * cardWidth)) / 2;
+            const y = Math.floor(cardIndex / cardsPerRow) * cardHeight + (pageHeight - (cardsPerColumn * cardHeight)) / 2;
+
+            const cardData = await Cards.findById(card._id);
+            if (cardData && cardData.url) {
+                const imageUrl = await downloadAndSaveImage(cardData.url, cardData.name);
+                doc.image(imageUrl, x, y, { width: cardWidth, height: cardHeight });
+                doc.rect(x, y, cardWidth, cardHeight).stroke();
+
+            }
+            if (cardIndex === (cardsPerRow * cardsPerColumn) - 1 && i < allCards.length - 1) {
+                doc.addPage();
+            }
         }
 
         doc.on('data', buffers.push.bind(buffers));
@@ -93,6 +96,7 @@ export const generateDeckPDF = async (req, res) => {
         });
 
         doc.end();
+
     } catch (error) {
         console.log('Error: ', error);
         return res.status(400).json({ error: error.message });

@@ -28,7 +28,7 @@ const deckSchema = new Schema({
         type: String,
         default : "Anonymous",
         require: [true, 'El autor del mazo es obligatorio']
-    },
+    },    
     category:{
         type: String,
     },

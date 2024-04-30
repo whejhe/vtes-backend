@@ -5,9 +5,10 @@ import User from "../models/user.models.js";
 
 const createCustomCard = async (req, res) => {
     try {
-        const { name, capacity, clan, disciplines, group, logoColor, description } = req.body;
+        const { name, capacity, clan, disciplines, group, logoColor, description, filename } = req.body;
         const image = req.file.path;
-        const newCustomCard = new Cards({ name, capacity, image, clan, disciplines, group, logoColor, description });
+        const url = `http://localhost:3000/uploads/customCards/${filename}`;
+        const newCustomCard = new Cards({ name, capacity, image, clan, disciplines, group, logoColor, description, url });
         await newCustomCard.save();
         res.status(201).json(newCustomCard);
     } catch (error) {
@@ -22,9 +23,11 @@ const uploadCustomCard = async (req, res) => {
         if (!user) {
             return res.status(404).json({ error: "Usuario no encontrado" });
         }
+        
         const { name, disciplines, clan, capacity, group, type, isPublic, description, filename } = req.body;
         const author = req.user.nick;
-        const newCustomCard = new Cards({userId, disciplines, author, name, clan, capacity, group, type, isPublic, description, image: filename });
+        const url = `http://localhost:3000/uploads/customCards/${filename}`;
+        const newCustomCard = new Cards({userId, disciplines, author, name, clan, capacity, group, type, isPublic, description, image: filename, url });
         await newCustomCard.save();
         res.status(201).json(newCustomCard);
     }catch(error){
@@ -73,12 +76,12 @@ const getAllCustomCards = async (req, res) => {
 const updateCustomCard = async (req, res) => {
     try {
         const { id } = req.params;
-        const { name, capacity, clan, disciplines, group, type, logoColor, description, isPublic, costPool, costBoold } = req.body;
+        const { name, capacity, clan, disciplines, group, type, logoColor, description, isPublic, costPool, costBoold, url } = req.body;
         let image = req.body.image;
         if (req.file) {
             image = req.file.path;
         }
-        const updatedCustomCard = await Cards.findByIdAndUpdate(id, { name, capacity, image, clan, disciplines, group,type, logoColor, description, isPublic, costPool, costBoold }, { new: true });
+        const updatedCustomCard = await Cards.findByIdAndUpdate(id, { name, capacity, image, clan, disciplines, group,type, logoColor, description, isPublic, costPool, costBoold, url }, { new: true });
         if (!updatedCustomCard) {
             return res.status(404).json({ error: "Carta personalizada no encontrada" });
         }
