@@ -16,18 +16,22 @@ export const generateDeckPDF = async (req, res) => {
 
         const cards = await Promise.all(deck.crypt.map(async (card) => {
             const cardData = await Cards.findById(card._id);
-            return {
-                name: cardData.name,
-                imageUrl: cardData.imageUrl,
-            };
+            if (cardData && cardData.imageUrl) { 
+                return {
+                    name: cardData.name,
+                    imageUrl: cardData.imageUrl,
+                };
+            }
         }));
 
         const libraryCards = await Promise.all(deck.library.map(async (card) => {
             const cardData = await Cards.findById(card._id);
-            return {
-                name: cardData.name,
-                imageUrl: cardData.imageUrl,
-            };
+            if (cardData && cardData.imageUrl) { 
+                return {
+                    name: cardData.name,
+                    imageUrl: cardData.imageUrl,
+                };
+            }
         }));
 
         const doc = new PDFDocument({ size: 'A4', margin: 50 });
