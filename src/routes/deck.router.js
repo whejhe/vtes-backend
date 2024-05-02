@@ -21,7 +21,7 @@ router.put('/:id',auth, updateDeck);
 router.put('/:id/visibility',auth, updateDeckVisibility);
 router.put('/add-card/:id', addCardToDeck);
 router.delete('/:id', auth, deleteDeck);
-router.post('/printTxt/:id',deckCheck, printTxt);
+router.post('/printTxt/:id',auth, deckCheck, printTxt);
 router.get('/printPDF/:id',generateDeckPDF);
 
 export default router;
