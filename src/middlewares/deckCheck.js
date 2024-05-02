@@ -15,7 +15,7 @@ export const deckCheck = async (req, res, next) => {
             return res.status(404).json({ message: 'Deck not found' });
         }
         // Verificar si el mazo es público o pertenece al usuario actual
-        if (!deck.isPublic && deck.userId !== user._id.toString()) {
+        if (!deck.isPublic) {
             return res.status(403).json({ message: 'Acceso denegado' });
         }
 
