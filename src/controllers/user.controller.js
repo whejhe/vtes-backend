@@ -5,7 +5,15 @@ import nodemailer from "nodemailer";
 import dotenv from "dotenv";
 import bcrypt from 'bcrypt';
 
-dotenv.config();
+// dotenv.config();
+if (process.env.NODE_ENV !== 'production') {
+    dotenv.config({ path: '.env' });
+} else {
+    dotenv.config({ path: '.env.production' });
+}
+
+const url = process.env.URL
+
 
 // Iniciar sesión de usuario
 const loginUser = async (req, res) => {
@@ -13,7 +21,6 @@ const loginUser = async (req, res) => {
     try {
         let user = await User.findOne({ email }).select("+password");
         if (!user) return res.status(401).json({ error: "El usuario no existe" });
-        // else if (!password) return res.status(401).json({ error: "El usuario no tiene contraseña" });
 
         // Verificar la contraseña
         const isPasswordValid = await bcrypt.compare(password, user.password);
@@ -50,7 +57,8 @@ const registerUser = async (req, res) => {
         if (!name || !nick || !email || !password) {
             return res.status(400).json({ error: 'Todos los campos son obligatorios' });
         }
-        avatarUrl = `http://localhost:3000/vtes-backend/uploads/avatars/${profileImage}`;
+        // avatarUrl = `http://localhost:3000/vtes-backend/uploads/avatars/${profileImage}`;
+        avatarUrl = `${url}/vtes-backend/uploads/avatars/${profileImage}`;
         // Verificar si el usuario ya existe
         const existingUser = await User.findOne({ email });
         if (existingUser) {

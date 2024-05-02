@@ -23,8 +23,6 @@ const getDecks = async (req, res) => {
     try {
         const decks = await Deck.find();
         res.status(200).json(decks);
-        // if(decks.isPublic === true || (decks.isOwner === true && decks.isPublic === false)) {
-        // }
     } catch (error) {
         res.status(400).json({ error: error.message });
     }

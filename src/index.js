@@ -8,7 +8,7 @@ import routes from "./routes/index.js";
 import "./service/mongoDB.js";
 
 if (process.env.NODE_ENV !== 'production') {
-    dotenv.config({ path: '.env.local' });
+    dotenv.config({ path: '.env' });
 } else {
     dotenv.config({ path: '.env.production' });
 }
