@@ -26,7 +26,6 @@ const storage = multer.diskStorage({
         const { nick } = req.user;
         const filename = `${name}-${nick}${extension}`;
         console.log(req.body, 'raro')
-        // const filename = `${Date.now()}${originalname.slice(0, originalname.lastIndexOf('.'))}${extension}`;
         req.body.filename = filename;
         cb(null, filename);
     }

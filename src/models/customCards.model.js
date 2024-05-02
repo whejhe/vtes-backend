@@ -34,15 +34,12 @@ const customCardsSchema = new Schema({
     },
     clan: {
         type: String,
-        required: [true, 'El clan de la carta es obligatorio']
     },
     disciplines: {
         type: [String],
-        required: [true, 'Las disciplinas de la carta son obligatorias']
     },
     group: {
         type: Number,
-        required: [true, 'El grupo de la carta es obligatorio'],
         min: 1,
         max: 7
     },
@@ -55,7 +52,6 @@ const customCardsSchema = new Schema({
     },
     description: {
         type: String,
-        required: [true, 'La descripción de la carta es obligatoria']
     },
     isPublic: {
         type:Boolean,

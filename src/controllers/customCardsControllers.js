@@ -9,14 +9,13 @@ if (process.env.NODE_ENV !== 'production') {
     dotenv.config({ path: '.env.production' });
 }
 
-const url = process.env.URL
 
 const createCustomCard = async (req, res) => {
+    const direction = process.env.NODE_ENV === 'production' ? process.env.URL : 'http://localhost:3000';
     try {
         const { name, capacity, clan, disciplines, group, logoColor, description, filename } = req.body;
         const image = req.file.path;
-        // const url = `http://localhost:3000/uploads/customCards/${filename}`;
-        url = `${url}/uploads/customCards/${filename}`
+        const url = `${direction}/uploads/customCards/${filename}`
         const newCustomCard = new Cards({ name, capacity, image, clan, disciplines, group, logoColor, description, url });
         await newCustomCard.save();
         res.status(201).json(newCustomCard);
@@ -26,6 +25,7 @@ const createCustomCard = async (req, res) => {
 };
 
 const uploadCustomCard = async (req, res) => {
+    const direction = process.env.NODE_ENV === 'production' ? process.env.URL : 'http://localhost:3000';
     try{
         const userId = req.user._id;
         const user = await User.findById(userId);
@@ -35,8 +35,7 @@ const uploadCustomCard = async (req, res) => {
         
         const { name, disciplines, clan, capacity, group, type, isPublic, description, filename } = req.body;
         const author = req.user.nick;
-        // const url = `http://localhost:3000/uploads/customCards/${filename}`;
-        url = `${url}/uploads/customCards/${filename}`
+        const url = `${direction}/uploads/customCards/${filename}`
         const newCustomCard = new Cards({userId, disciplines, author, name, clan, capacity, group, type, isPublic, description, image: filename, url });
         await newCustomCard.save();
         res.status(201).json(newCustomCard);
