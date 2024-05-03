@@ -9,8 +9,8 @@ const createEvent = async (req, res) => {
         if (req.user.role !== 'ADMIN') {
             return res.status(403).json({ error: 'Acceso denegado' });
         }
-        const { name,email, provincia,localidad,direccion, description, fecha, hora, numMaxParticipantes } = req.body;
-        const newEvent = new Event({ creatorId:req.user._id, name, email, provincia,localidad,direccion, description, fecha, hora, numMaxParticipantes });
+        const { name,email,type, provincia,localidad,direccion, description, fecha, hora, numMaxParticipantes } = req.body;
+        const newEvent = new Event({ creatorId:req.user._id, name, email,type, provincia,localidad,direccion, description, fecha, hora, numMaxParticipantes });
         await newEvent.save();
         res.status(201).json(newEvent);
     } catch (error) {

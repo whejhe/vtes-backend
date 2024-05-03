@@ -24,6 +24,10 @@ const eventSchema = new Schema({
         type: String,
         required: [true, 'El email del evento es obligatorio'],
     },
+    type: {
+        type: String,
+        required: [true, 'El tipo de evento es obligatorio'],
+    },
     provincia:{
         type: String,
         required: [true, 'La provincia del evento es obligatoria'],

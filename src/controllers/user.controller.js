@@ -12,7 +12,7 @@ if (process.env.NODE_ENV !== 'production') {
     dotenv.config({ path: '.env.production' });
 }
 
-const url = process.env.URL
+const url = process.env.URL || process.env.URL_LOCAL
 
 
 // Iniciar sesión de usuario
