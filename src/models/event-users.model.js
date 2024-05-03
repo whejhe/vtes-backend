@@ -13,12 +13,12 @@ const eventUsersSchema = new Schema({
     eventId: {
         type: String,
         ref: 'Event',
-        required: [true, 'El identificador del evento es obligatorio']
+        // required: [true, 'El identificador del evento es obligatorio']
     },
     userId: {
         type: String,
         ref: 'User',
-        required: [true, 'El identificador de usuario es obligatorio']
+        // required: [true, 'El identificador de usuario es obligatorio']
     },
     score: {
         type: Number,

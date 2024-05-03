@@ -1,4 +1,4 @@
-// Importa el modelo de Event
+// backend/src/controllers/event.controller.js
 import Event from "../models/event.model.js";
 import User from "../models/user.models.js";
 
