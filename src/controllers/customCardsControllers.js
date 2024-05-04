@@ -3,15 +3,17 @@ import Cards from "../models/customCards.model.js";
 import User from "../models/user.models.js";
 import dotenv from "dotenv";
 
-if (process.env.NODE_ENV !== 'production') {
-    dotenv.config({ path: '.env' });
-} else {
-    dotenv.config({ path: '.env.production' });
-}
+// if (process.env.NODE_ENV !== 'production') {
+//     dotenv.config({ path: '.env' });
+// } else {
+//     dotenv.config({ path: '.env.production' });
+// }
+
+dotenv.config();
 
 
 const createCustomCard = async (req, res) => {
-    const direction = process.env.NODE_ENV === 'production' ? process.env.URL : 'http://localhost:3000';
+    const direction = process.env.URL || 'http://localhost:3000';
     try {
         const { name, capacity, clan, disciplines, group, logoColor, description, filename } = req.body;
         const image = req.file.path;
@@ -25,7 +27,7 @@ const createCustomCard = async (req, res) => {
 };
 
 const uploadCustomCard = async (req, res) => {
-    const direction = process.env.NODE_ENV === 'production' ? process.env.URL : 'http://localhost:3000';
+    const direction = process.env.URL || 'http://localhost:3000';
     try{
         const userId = req.user._id;
         const user = await User.findById(userId);

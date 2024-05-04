@@ -7,11 +7,13 @@ import cors from "cors";
 import routes from "./routes/index.js";
 import "./service/mongoDB.js";
 
-if (process.env.NODE_ENV !== 'production') {
-    dotenv.config({ path: '.env' });
-} else {
-    dotenv.config({ path: '.env.production' });
-}
+// if (process.env.NODE_ENV !== 'production') {
+//     dotenv.config({ path: '.env' });
+// } else {
+//     dotenv.config({ path: '.env.production' });
+// }
+
+dotenv.config();
 
 const __dirname = path.resolve();
 const app = express();

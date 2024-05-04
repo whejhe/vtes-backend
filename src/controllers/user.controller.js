@@ -5,14 +5,14 @@ import nodemailer from "nodemailer";
 import dotenv from "dotenv";
 import bcrypt from 'bcrypt';
 
-// dotenv.config();
-if (process.env.NODE_ENV !== 'production') {
-    dotenv.config({ path: '.env' });
-} else {
-    dotenv.config({ path: '.env.production' });
-}
+dotenv.config();
+// if (process.env.NODE_ENV !== 'production') {
+//     dotenv.config({ path: '.env' });
+// } else {
+//     dotenv.config({ path: '.env.production' });
+// }
 
-const url = process.env.URL
+const url = process.env.URL || 'http://localhost:3000';
 
 
 // Iniciar sesión de usuario
@@ -57,7 +57,6 @@ const registerUser = async (req, res) => {
         if (!name || !nick || !email || !password) {
             return res.status(400).json({ error: 'Todos los campos son obligatorios' });
         }
-        // avatarUrl = `http://localhost:3000/vtes-backend/uploads/avatars/${profileImage}`;
         avatarUrl = `${url}/vtes-backend/uploads/avatars/${profileImage}`;
         // Verificar si el usuario ya existe
         const existingUser = await User.findOne({ email });
