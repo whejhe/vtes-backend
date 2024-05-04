@@ -12,7 +12,11 @@ dotenv.config();
 //     dotenv.config({ path: '.env.production' });
 // }
 
+<<<<<<< HEAD
 const url = process.env.URL || 'http://localhost:3000';
+=======
+const url = process.env.URL || process.env.URL_LOCAL
+>>>>>>> ffa0e39dc9bf4713c11b4f19bd43a90762bb4b2d
 
 
 // Iniciar sesión de usuario
