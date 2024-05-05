@@ -17,7 +17,8 @@ const createCustomCard = async (req, res) => {
     try {
         const { name, capacity, clan, disciplines, group, logoColor, description, filename } = req.body;
         const image = req.file.path;
-        const url = `${direction}/uploads/customCards/${filename}`
+        // const url = `${direction}/uploads/customCards/${filename}`
+        const url = `/uploads/customCards/${filename}`
         const newCustomCard = new Cards({ name, capacity, image, clan, disciplines, group, logoColor, description, url });
         await newCustomCard.save();
         res.status(201).json(newCustomCard);
@@ -37,7 +38,8 @@ const uploadCustomCard = async (req, res) => {
         
         const { name, disciplines, clan, capacity, group, type, isPublic, description, filename } = req.body;
         const author = req.user.nick;
-        const url = `${direction}/uploads/customCards/${filename}`
+        // const url = `${direction}/uploads/customCards/${filename}`
+        const url = `/uploads/customCards/${filename}`
         const newCustomCard = new Cards({userId, disciplines, author, name, clan, capacity, group, type, isPublic, description, image: filename, url });
         await newCustomCard.save();
         res.status(201).json(newCustomCard);
