@@ -23,8 +23,16 @@ const addUserToEvent = async (req, res) => {
 const getUsersForEvent = async (req, res) => {
     try {
         const { eventId } = req.params;
-        const users = await EventUsers.find({ eventId });
-        res.status(200).json(users);
+        const event = await EventUsers.findById(eventId);
+        if(!event) {
+            return res.status(404).json({ error: "Evento no encontrado" });
+        }
+        const eventUsers = await EventUsers.find({ eventId }).populate('userId');
+        // const users = eventUsers.map(eventUser => eventUser.userId);
+        // if (!users) {
+        //     return res.status(404).json({ error: "No se encontraron usuarios" });
+        // }
+        res.status(200).json(eventUsers);
     } catch (error) {
         res.status(400).json({ error: error.message });
     }
