@@ -9,7 +9,6 @@ const __dirname = path.resolve();
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
         console.log(req.path, 'path');
-        // Determinar la carpeta de destino según la ruta
         if (req.path === '/register') {
             cb(null, path.join(__dirname, "/uploads/avatars"));
         }else if(req.path === '/upload'){
