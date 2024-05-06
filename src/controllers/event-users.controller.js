@@ -1,14 +1,20 @@
-// Importa el modelo de EventUsers
+// backend/src/controllers/event-users.controller.js
 import EventUsers from "../models/event-users.model.js";
 
-// Asignar usuario a un evento
-const assignUserToEvent = async (req, res) => {
+// Añadir usuarios a un evento
+const addUserToEvent = async (req, res) => {
     try {
-        const { eventId, userId } = req.body;
-        const newEventUser = new EventUsers({ eventId, userId });
-        await newEventUser.save();
-        res.status(201).json(newEventUser);
+        const { eventId } = req.params;
+        const { userId } = req.body;
+        if (!userId) {
+            console.log(userId, 'userId');
+            return res.status(400).json({ error: 'No se proporcionaron IDs de usuarios' });
+        }
+        const eventUser = new EventUsers({ eventId, userId });
+        await eventUser.save();
+        res.status(201).json({ message: "Usuarios agregados correctamente" });
     } catch (error) {
+        console.error('Error al añadir usuarios: ', error);
         res.status(400).json({ error: error.message });
     }
 };
@@ -25,7 +31,7 @@ const getUsersForEvent = async (req, res) => {
 };
 
 // Actualizar el estado de inscripción de un usuario a un evento
-const updateRegistrationStatus = async (req, res) => {
+const updateStatus = async (req, res) => {
     try {
         const { id } = req.params;
         const { registrationStatus } = req.body;
@@ -40,9 +46,9 @@ const updateRegistrationStatus = async (req, res) => {
 };
 
 const eventUsersControllers = {
-    assignUserToEvent,
+    addUserToEvent,
     getUsersForEvent,
-    updateRegistrationStatus
+    updateStatus
 };
 
 export default eventUsersControllers;

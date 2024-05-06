@@ -1,3 +1,4 @@
+// backend/src/models/event-users.model.js
 import mongoose from "mongoose";
 import { v4 as uuidv4 } from "uuid";
 import {connectDB} from "../service/mongoDB.js";
