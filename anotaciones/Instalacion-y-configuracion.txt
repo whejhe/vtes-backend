@@ -21,15 +21,14 @@ npm install got
 
 
 .env
+URL=http://localhost:3000
 MONGODB_USER=dominguezalacid
 MONGODB_PASSWORD=Go5pINGCTevTV0tV
 MONGO_PORT=8093
 MONGO_DB_NAME=VtesDB
 MONGODB_URL=mongodb+srv://dominguezalacid:Go5pINGCTevTV0tV@vtesdb.gf9nbee.mongodb.net/?retryWrites=true&w=majority&appName=VtesDB
-
 PORT=3000
 JWT_SECRET=W8945R83/B0RYNC43@98CEMU2!X9U8?HFEUF8
-
 EMAIL_USER=cfergon349t@g.educaand.es
 EMAIL_PASSWORD=AHGKFD
 FRONTEND_URL=http://localhost:4200
