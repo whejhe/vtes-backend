@@ -1,6 +1,7 @@
 // backend/src/controllers/event.controller.js
 import Event from "../models/event.model.js";
 import User from "../models/user.models.js";
+import EventUsers from "../models/event-users.model.js";
 
 
 // Crear un nuevo evento
@@ -9,9 +10,11 @@ const createEvent = async (req, res) => {
         if (req.user.role !== 'ADMIN') {
             return res.status(403).json({ error: 'Acceso denegado' });
         }
-        const { name,email,type, provincia,localidad,direccion, description, fecha, hora, numMaxParticipantes } = req.body;
-        const newEvent = new Event({ creatorId:req.user._id, name, email,type, provincia,localidad,direccion, description, fecha, hora, numMaxParticipantes });
+        const { name,email,type, precio, provincia,localidad,direccion, description, fecha, hora, numMaxParticipantes } = req.body;
+        const newEvent = new Event({ creatorId:req.user._id, name, email,type, precio, provincia,localidad,direccion, description, fecha, hora, numMaxParticipantes });
         await newEvent.save();
+        const newEventUsers = new EventUsers({ eventId: newEvent._id});
+        await newEventUsers.save();
         res.status(201).json(newEvent);
     } catch (error) {
         res.status(400).json({ error: error.message });
