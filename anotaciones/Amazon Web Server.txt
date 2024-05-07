@@ -34,7 +34,7 @@ Como conectarse a la maquina virtual
  Nos conectamos mediante ssh con:
  - ssh -i ubuntu.pem ubuntu@(IP publica maquina virtual)
 
-Instalar docker y ejecutar contenedor (backend, frontend, etc)
+Instalar docker y ejecutar contenedor (backend )
 Primero, sudo apt update
 (Opcional) sudo apt upgrade
 Segundo, sudo apt install docker docker-compose

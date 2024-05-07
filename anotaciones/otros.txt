@@ -45,3 +45,5 @@ Si ningun jugador a llegado a los 3 puntos de victoria el punto de mesa se pierd
 de por si de un punto de victoria, lo que quiere decir que si solo quedas tu en la mesa y haz eliminando
 a otros dos jugadores obtienes 3 puntos de victora y un punto de mesa.
 
+
+

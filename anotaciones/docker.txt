@@ -1,0 +1,84 @@
+** Paso 1: Crear un archivo Dockerfile **
+# Indicamos la imagen base de Node.js versión 20
+FROM node:20
+
+# Establecemos el directorio de trabajo
+WORKDIR /app
+
+# Copiamos el archivo package.json
+COPY package*.json ./
+
+# Instalamos las dependencias
+RUN npm install
+
+# Copiamos el código de la aplicación
+COPY . .
+
+# Exponemos el puerto 3000
+EXPOSE 3000
+
+# Ejecutamos el comando para iniciar la aplicación
+CMD ["npm", "start"]
+---------------------------------------------------------------
+** Paso 2: Crear un archivo docker-compose.yml **
+En el mismo directorio, crea un archivo llamado docker-compose.yml con el siguiente contenido:
+version: '3'
+services:
+  app:
+    build: .
+    ports:
+      - "3000:3000"
+    depends_on:
+      - mongo
+    environment:
+      - MONGO_URI=mongodb://mongo:27017/
+
+  mongo:
+    image: mongo:latest
+    volumes:
+      - mongo-data:/data/db
+
+volumes:
+  mongo-data:
+--------------------------------------------------------------------------------------
+** Paso 3: Construir la imagen de Docker **
+En el directorio raíz del proyecto, ejecuta el comando docker-compose build para construir la imagen de Docker.
+----------------------------------------------------------------
+** Paso 4: Iniciar el contenedor **
+Ejecuta el comando docker-compose up para iniciar el contenedor.
+-----------------------------------------------------------------------------
+** Paso 5: Subir la imagen a Docker Hub **
+Crea un cuenta en Docker Hub y ejecuta el comando
+docker tag my-app:latest <tu-usuario>/my-app:latest para etiquetar la imagen con tu usuario y 
+nombre de la aplicación. Luego, ejecuta el comando docker push <tu-usuario>/my-app:latest para 
+subir la imagen a Docker Hub.
+---------------------------------------------------------------------------------
+** Paso 6: Crear un contenedor en AWS **
+Crea un cuenta en AWS y sigue estos pasos:
+
+    Ve a la consola de AWS y selecciona "Elastic Container Service" (ECS).
+    Haz clic en "Create a cluster" y selecciona "EC2 Linux + Networking".
+    Selecciona la región y el tipo de instancia que deseas utilizar.
+    En la sección "Container instances", selecciona "Add container instance" y proporciona un nombre y una descripción.
+    En la sección "Container", selecciona "Add container" y proporciona un nombre y una descripción.
+    En la sección "Image", selecciona "Use an existing image" y proporciona la URL de la imagen en Docker Hub.
+    Configura los puertos y las variables de entorno según sea necesario.
+    Haz clic en "Create cluster" para crear el cluster.
+----------------------------------------------------------------------------------
+** Paso 7: Asignar un nombre de dominio con DuckDNS **
+Crea un cuenta en DuckDNS y sigue estos pasos:
+
+    Ve a la consola de DuckDNS y haz clic en "Add a domain".
+    Selecciona "Use a subdomain" y proporciona un nombre de subdominio (por ejemplo, "myapp").
+    Selecciona "Use an IP address" y proporciona la dirección IP pública de tu instancia de AWS.
+    Haz clic en "Add domain" para agregar el dominio.
+-------------------------------------------------------------------------------------
+** Paso 8: Configurar el enrutamiento en AWS **
+Ve a la consola de AWS y sigue estos pasos:
+
+    Selecciona "Route 53" y haz clic en "Create a hosted zone".
+    Selecciona "Public hosted zone" y proporciona el nombre de dominio que creaste en DuckDNS.
+    Haz clic en "Create hosted zone" para crear la zona de hosting.
+    Selecciona "Create a record set" y proporciona el nombre de dominio y la dirección IP pública de tu instancia de AWS.
+    Haz clic en "Create record set" para crear el registro.
+---------------------------------------------------------------------------------------
