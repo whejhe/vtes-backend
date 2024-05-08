@@ -64,18 +64,22 @@ const deleteUserFromEvent = async (req, res) => {
         if (!userToDelete) {
             return res.status(404).json({ error: 'Usuario no encontrado' });
         }
-        const eventUser = await EventUsers.findOne({ eventId: id, userId: userId });
+        const eventUser = await EventUsers.findOne({ eventId: id});
         if (!eventUser) {
             return res.status(404).json({ error: 'Usuario no es parte del evento' });
         }
-        await EventUsers.findByIdAndDelete(eventUser._id);
+        for(let usuario of eventUser.userId){
+            if (userId === usuario) {
+                eventUser['userId'].splice(eventUser['userId'].indexOf(userId), 1);
+                await eventUser.save();
+            }
+        }
         res.status(200).json({ message: 'Usuario eliminado correctamente' });
     } catch (error) {
         console.log('Error al eliminar usuario del evento: ', error);
         res.status(400).json({ error: error.message });
     }
 };
-
 
 // Actualizar el estado de inscripción de un usuario a un evento
 const updateStatus = async (req, res) => {

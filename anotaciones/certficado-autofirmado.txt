@@ -1,0 +1,16 @@
+Generar Certificado autofirmado HTTPS desde consola Git:
+openssl genrsa -out client-key.pem 2048
+openssl req -new -key client-key.pem -out client.csr
+openssl x509 -req -in client.csr -signkey client-key.pem -out client-cert.pem
+
+https.createServer({
+    key:fs.readFileSync('cert/client-key.pem'),
+    cert:fs.readFileSync('cert/client-cert.pem')},
+    app).listen(3000,() =>{
+    console.log('Servidor escuchando en el puerto 3000')
+})
+
+
+Comentar Y Descomentar Codigo en bloque
+ctrl + k + c (comentar)
+ctrl + k + u (descomentar)

@@ -1,17 +1,13 @@
 //backend/src/index.js
 import express from "express";
+import https from 'https';
+import fs from 'fs';
 import morgan from "morgan";
 import path from "path";
 import dotenv from "dotenv";
 import cors from "cors";
 import routes from "./routes/index.js";
 import "./service/mongoDB.js";
-
-// if (process.env.NODE_ENV !== 'production') {
-//     dotenv.config({ path: '.env' });
-// } else {
-//     dotenv.config({ path: '.env.production' });
-// }
 
 dotenv.config();
 
@@ -48,13 +44,17 @@ app.listen(app.get("port"), () => {
     console.log("En el modo: ", process.env.NODE_ENV);
 })
 
+// https.createServer({
+//     key:fs.readFileSync('cert/client-key.pem'),
+//     cert:fs.readFileSync('cert/client-cert.pem')},
+//     app).listen(3000,() =>{
+//     console.log('Servidor escuchando en el puerto 3000')
+// })
+
 app.get('/', (req, res) => {
     res.send('Backend server running...')
 })
 
-// app.get('/vtes.json', (req, res) => {
-//     res.sendFile(path.join(__dirname, "../public/data/vtes.json"));
-// })
 
 //404
 app.use((req, res, next) => {
