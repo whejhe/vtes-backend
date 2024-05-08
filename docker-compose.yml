@@ -7,7 +7,7 @@ networks:
 services:
 
   app:
-    build: .
+    image: whejhe/vtes-backend-app
     ports:
       - "3000:3000"
     environment:

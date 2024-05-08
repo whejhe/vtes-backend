@@ -26,10 +26,10 @@ jobs:
         password: ${{ secrets.DOCKER_PASSWORD }}
  
     - name: Build Docker image
-      run: docker build -t whejhe/backend-pi:v1 .
+      run: docker build -t whejhe/vtes-backend-app .
       
     - name: Push Docker image to Docker Hub
-      run: docker push whejhe/backend-pi:v1
+      run: docker push whejhe/vtes-backend-app
  
     - name: SSH into AWS and update container
       uses: appleboy/ssh-action@master
@@ -38,7 +38,7 @@ jobs:
         username: ${{ secrets.AWS_USERNAME }}
         key: ${{ secrets.AWS_SSH_KEY }}
         script: |
-          cd /home/ubuntu/backend
+          cd /home/admin
           sudo docker-compose down
           sudo docker-compose pull
           sudo docker-compose up -d

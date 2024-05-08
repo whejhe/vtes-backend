@@ -84,7 +84,7 @@ networks:
 services:
 
   app:
-    build: .
+    image: whejhe/vtes-backend-app
     ports:
       - "3000:3000"
     environment:
@@ -96,3 +96,16 @@ services:
 PS C:\Users\cfg\Downloads\Par de claves-AWS> ssh -i ubuntu.pem admin@35.180.65.153
 sudo apt update
 sudo apt install docker docker-compose
+
+----------------------------------------------------------------------
+añadir docker compose
+nano docker-compose.yml
+
+sudo docker-compose up -d  (-d es `para que se mantenga en ejecucion aunque cierre terminal)
+--------------------------------------------------------------------------
+cambiar reglas de seguridad en AWS
+- ir a seguridad
+- añadir puertos
+http://vtesapp.duckdns.org:3000/
+
+-----------------------------------------------------------
