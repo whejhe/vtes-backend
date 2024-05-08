@@ -1,6 +1,6 @@
 ** Paso 1: Crear un archivo Dockerfile **
 # Indicamos la imagen base de Node.js versión 20
-FROM node:20
+FROM node:20-alpine
 
 # Establecemos el directorio de trabajo
 WORKDIR /app
@@ -18,7 +18,8 @@ COPY . .
 EXPOSE 3000
 
 # Ejecutamos el comando para iniciar la aplicación
-CMD ["npm", "start"]
+CMD ["node", "src/index.js"]
+
 ---------------------------------------------------------------
 ** Paso 2: Crear un archivo docker-compose.yml **
 En el mismo directorio, crea un archivo llamado docker-compose.yml con el siguiente contenido:
@@ -42,6 +43,7 @@ volumes:
   mongo-data:
 --------------------------------------------------------------------------------------
 ** Paso 3: Construir la imagen de Docker **
+Ejecuta docker desktop si no esta encendido.
 En el directorio raíz del proyecto, ejecuta el comando docker-compose build para construir la imagen de Docker.
 ----------------------------------------------------------------
 ** Paso 4: Iniciar el contenedor **
@@ -52,6 +54,10 @@ Crea un cuenta en Docker Hub y ejecuta el comando
 docker tag my-app:latest <tu-usuario>/my-app:latest para etiquetar la imagen con tu usuario y 
 nombre de la aplicación. Luego, ejecuta el comando docker push <tu-usuario>/my-app:latest para 
 subir la imagen a Docker Hub.
+
+docker tag vtes-backend-app vtes-backend-app
+docker push whejhe/vtes-backend-app
+docker pull whejhe/vtes-backend-app
 ---------------------------------------------------------------------------------
 ** Paso 6: Crear un contenedor en AWS **
 Crea un cuenta en AWS y sigue estos pasos:
@@ -82,3 +88,34 @@ Ve a la consola de AWS y sigue estos pasos:
     Selecciona "Create a record set" y proporciona el nombre de dominio y la dirección IP pública de tu instancia de AWS.
     Haz clic en "Create record set" para crear el registro.
 ---------------------------------------------------------------------------------------
+docker-compose.yml
+
+version: '3'
+
+networks:
+  app-network:
+    driver: bridge
+
+services:
+
+  app:
+    build: .
+    ports:
+      - "3000:3000"
+    depends_on:
+      - mongo
+    environment:
+      - MONGODB_URL=mongodb+srv://dominguezalacid:Go5pINGCTevTV0tV@vtesdb.gf9nbee.mongodb.net/?retryWrites=true&w=majority&appName=VtesDB
+    networks:
+      - app-network
+
+  mongo:
+    image: mongo:latest
+    volumes:
+      - mongo-data:/data/db
+    networks:
+      - app-network
+
+volumes:
+  mongo-data:
+-----------------------------------------------------------------------------------
