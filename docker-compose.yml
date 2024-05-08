@@ -1,0 +1,16 @@
+version: '3'
+
+networks:
+  app-network:
+    driver: bridge
+
+services:
+
+  app:
+    build: .
+    ports:
+      - "3000:3000"
+    environment:
+      - MONGODB_URL=mongodb+srv://dominguezalacid:Go5pINGCTevTV0tV@vtesdb.gf9nbee.mongodb.net/?retryWrites=true&w=majority&appName=VtesDB
+    networks:
+      - app-network

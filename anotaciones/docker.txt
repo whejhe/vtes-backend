@@ -29,40 +29,25 @@ services:
     build: .
     ports:
       - "3000:3000"
-    depends_on:
-      - mongo
     environment:
       - MONGO_URI=mongodb://mongo:27017/
-
-  mongo:
-    image: mongo:latest
-    volumes:
-      - mongo-data:/data/db
-
-volumes:
-  mongo-data:
 --------------------------------------------------------------------------------------
 ** Paso 3: Construir la imagen de Docker **
 Ejecuta docker desktop si no esta encendido.
 En el directorio raíz del proyecto, ejecuta el comando docker-compose build para construir la imagen de Docker.
+docker build -t whejhe/vtes-backend-app . (el punto es importante!!)
+docker push whejhe/vtes-backend-app
 ----------------------------------------------------------------
 ** Paso 4: Iniciar el contenedor **
 Ejecuta el comando docker-compose up para iniciar el contenedor.
 -----------------------------------------------------------------------------
-** Paso 5: Subir la imagen a Docker Hub **
-Crea un cuenta en Docker Hub y ejecuta el comando
-docker tag my-app:latest <tu-usuario>/my-app:latest para etiquetar la imagen con tu usuario y 
-nombre de la aplicación. Luego, ejecuta el comando docker push <tu-usuario>/my-app:latest para 
-subir la imagen a Docker Hub.
-
-docker tag vtes-backend-app vtes-backend-app
-docker push whejhe/vtes-backend-app
-docker pull whejhe/vtes-backend-app
 ---------------------------------------------------------------------------------
 ** Paso 6: Crear un contenedor en AWS **
 Crea un cuenta en AWS y sigue estos pasos:
 
     Ve a la consola de AWS y selecciona "Elastic Container Service" (ECS).
+    - Lanzar instancia
+    - Generar par de claves
     Haz clic en "Create a cluster" y selecciona "EC2 Linux + Networking".
     Selecciona la región y el tipo de instancia que deseas utilizar.
     En la sección "Container instances", selecciona "Add container instance" y proporciona un nombre y una descripción.
@@ -102,20 +87,12 @@ services:
     build: .
     ports:
       - "3000:3000"
-    depends_on:
-      - mongo
     environment:
       - MONGODB_URL=mongodb+srv://dominguezalacid:Go5pINGCTevTV0tV@vtesdb.gf9nbee.mongodb.net/?retryWrites=true&w=majority&appName=VtesDB
     networks:
       - app-network
-
-  mongo:
-    image: mongo:latest
-    volumes:
-      - mongo-data:/data/db
-    networks:
-      - app-network
-
-volumes:
-  mongo-data:
+ 
 -----------------------------------------------------------------------------------
+PS C:\Users\cfg\Downloads\Par de claves-AWS> ssh -i ubuntu.pem admin@35.180.65.153
+sudo apt update
+sudo apt install docker docker-compose
