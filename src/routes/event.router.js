@@ -9,7 +9,7 @@ const { createEvent, getEvents, getEventById, updateEvent, deleteEvent } = event
 
 // Rutas para la entidad Event
 router.post('/admin/',auth, createEvent);
-router.get('/users/', getEvents);
+router.get('/', getEvents);
 router.get('/users/:id', getEventById);
 router.put('/admin/:id',auth, updateEvent);
 router.delete('/admin/:id',auth, deleteEvent);
