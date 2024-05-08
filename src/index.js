@@ -39,16 +39,19 @@ app.use('/uploads/customCards', express.static(path.join(__dirname, "uploads/cus
 app.use(routes);
 
 //MONGODB CONEXION
-app.listen(app.get("port"), () => {
+const options = {
+    key: fs.readFileSync('cert/client-key.pem'),
+    cert: fs.readFileSync('cert/client-cert.pem')
+}
+
+https.createServer(options, app).listen(app.get("port"), () => {
     console.log("Servidor corriendo en el puerto: ", app.get("port"));
     console.log("En el modo: ", process.env.NODE_ENV);
 })
 
-// https.createServer({
-//     key:fs.readFileSync('cert/client-key.pem'),
-//     cert:fs.readFileSync('cert/client-cert.pem')},
-//     app).listen(3000,() =>{
-//     console.log('Servidor escuchando en el puerto 3000')
+// app.listen(app.get("port"), () => {
+//     console.log("Servidor corriendo en el puerto: ", app.get("port"));
+//     console.log("En el modo: ", process.env.NODE_ENV);
 // })
 
 app.get('/', (req, res) => {
