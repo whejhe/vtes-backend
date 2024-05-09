@@ -52,7 +52,7 @@ const registerUser = async (req, res) => {
         if (!name || !nick || !email || !password) {
             return res.status(400).json({ error: 'Todos los campos son obligatorios' });
         }
-        avatarUrl = `${url}/vtes-backend/uploads/avatars/${profileImage}`;
+        const NewAvatarUrl = `/vtes-backend/uploads/avatars/${profileImage}`;
         // Verificar si el usuario ya existe
         const existingUser = await User.findOne({ email });
         if (existingUser) {
@@ -62,12 +62,8 @@ const registerUser = async (req, res) => {
         const hashedPassword = await bcrypt.hash(password, 10);
         if (!hashedPassword) return res.status(500).json({ error: 'Error al hashear la contraseña' });
 
-        // Obtener el nombre de la imagen
-        if (req.file) {
-            profileImage = `${Date.now()}-${req.file.originalname}`;
-        }
         // Crear un nuevo usuario
-        const newUser = new User({ name, nick, email, password: hashedPassword, role, profileImage });
+        const newUser = new User({ name, nick, email, password: hashedPassword, role, profileImage, avatarUrl: NewAvatarUrl });
         await newUser.save();
         if (!newUser) return res.status(500).json({ error: 'Error al registrar el usuario' });
 
