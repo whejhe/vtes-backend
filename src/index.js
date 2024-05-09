@@ -40,11 +40,11 @@ app.use(routes);
 
 //MONGODB CONEXION
 const options = {
-    key: fs.readFileSync('cert/client-key.pem'),
-    cert: fs.readFileSync('cert/client-cert.pem')
+    key: fs.readFileSync('cert/privkey.pem'),
+    cert: fs.readFileSync('cert/fullchain.pem')
 }
 
-https.createServer(options, app).listen(app.get("port"), () => {
+https.createServer(options, app).listen(443, () => {
     console.log("Servidor corriendo en el puerto: ", app.get("port"));
     console.log("En el modo: ", process.env.NODE_ENV);
 })
