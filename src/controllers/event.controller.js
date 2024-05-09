@@ -7,10 +7,10 @@ import EventUsers from "../models/event-users.model.js";
 // Crear un nuevo evento
 const createEvent = async (req, res) => {
     try {
-        if (req.user.role !== 'ADMIN' && req.user.role !== 'COLLABORATOR') {
-            console.log(req.user.role);
-            return res.status(403).json({ error: 'Acceso denegado' });
-        }
+        // if (req.user.role !== 'ADMIN' && req.user.role !== 'COLLABORATOR') {
+        //     console.log(req.user.role);
+        //     return res.status(403).json({ error: 'Acceso denegado' });
+        // }
         const { name,email,type, precio, provincia,localidad,direccion, description, fecha, hora, numMaxParticipantes } = req.body;
         const newEvent = new Event({ creatorId:req.user._id, name, email,type, precio, provincia,localidad,direccion, description, fecha, hora, numMaxParticipantes });
         await newEvent.save();

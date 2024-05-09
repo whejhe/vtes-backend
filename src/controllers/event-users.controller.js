@@ -96,11 +96,57 @@ const updateStatus = async (req, res) => {
     }
 };
 
+//Aadir usuarios a un evento por email
+const addUserByEmail = async (req, res) => {
+    const { eventId, email } = req.body;
+    const token = req.header('Authorization').replace('Bearer ', '');
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const user = await User.findById(decoded._id).select('-password -__v');
+    if (user.role !== 'ADMIN' && user.role !== 'COLLABORATOR') {
+        return res.status(403).json({ error: 'No tienes los permisos para añadir otros Usuarios' });
+    }
+
+    try {
+        let evento;
+        const { eventId } = req.params;
+        if (eventId) {
+            evento = await EventUsers.findOne({ eventId });
+        }else{
+            return res.status(404).json({ error: 'ID de evento no proporcionado' });
+        }
+
+        const user = await User.findOne({ email });
+        if (!user) {
+            return res.status(404).json({ error: 'Usuario no encontrado' });
+        }
+
+        const eventUser = await EventUsers.findOne({ eventId });
+        if (!eventUser) {
+            return res.status(404).json({ error: 'Evento sin usuarios asignados' });
+        }
+
+        if (eventUser.userId.includes(user._id)) {
+            return res.status(400).json({ error: 'El usuario ya se encuentra en el evento' });
+        }
+
+        eventUser.userId.push(user._id);
+        await eventUser.save();
+
+        res.status(201).json({ message: 'Usuario agregado correctamente por correo electrónico' });
+    } catch (error) {
+        console.error('Error al añadir usuario por correo electrónico: ', error);
+        res.status(400).json({ error: error.message });
+    }
+};
+
+
 const eventUsersControllers = {
     addUserToEvent,
     getUsersForEvent,
     updateStatus,
-    deleteUserFromEvent
+    deleteUserFromEvent,
+    addUserByEmail
 };
 
 export default eventUsersControllers;
+

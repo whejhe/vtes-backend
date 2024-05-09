@@ -6,13 +6,8 @@ import dotenv from "dotenv";
 import bcrypt from 'bcrypt';
 
 dotenv.config();
-// if (process.env.NODE_ENV !== 'production') {
-//     dotenv.config({ path: '.env' });
-// } else {
-//     dotenv.config({ path: '.env.production' });
-// }
 
-const url = process.env.URL || 'http://localhost:3000';
+const url = process.env.URL || 'https://localhost';
 
 
 // Iniciar sesión de usuario

@@ -4,18 +4,11 @@ import User from "../models/user.models.js";
 import dotenv from "dotenv";
 import fs from "fs";
 
-
-// if (process.env.NODE_ENV !== 'production') {
-//     dotenv.config({ path: '.env' });
-// } else {
-//     dotenv.config({ path: '.env.production' });
-// }
-
 dotenv.config();
 
 
 const createCustomCard = async (req, res) => {
-    const direction = process.env.URL || 'http://localhost:3000';
+    const direction = process.env.URL || 'https://localhost';
     try {
         const { name, capacity, clan, disciplines, group, logoColor, description, filename } = req.body;
         const image = req.file.path;
@@ -30,7 +23,7 @@ const createCustomCard = async (req, res) => {
 };
 
 const uploadCustomCard = async (req, res) => {
-    const direction = process.env.URL || 'http://localhost:3000';
+    const direction = process.env.URL || 'https://localhost';
     try {
         const userId = req.user._id;
         const user = await User.findById(userId);
