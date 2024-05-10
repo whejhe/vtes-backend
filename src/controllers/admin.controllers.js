@@ -1,3 +1,4 @@
+import { error } from "../middlewares/error.js";
 import User from "../models/user.models.js";
 import jwt from "jsonwebtoken";
 
@@ -37,23 +38,37 @@ const loginAdmin = async (req, res) => {
 const cambiarPermisos = async (req, res) => {
     try{
         const { email, newRole } = req.body;
-        const currenUser = await User.finById(req.user._id);
-        if(!currenUser){
-            return res.status(401).json({ error: "El usuario no existe" });
+
+        // Validar entrada
+        if(!email || !newRole){
+            return res.status(400).json({ error: 'Todos los campos son obligatorios' });
         }
-        if(currenUser.role !== 'ADMIN'){
+        const currenUser = await User.findById(req.user._id);
+        
+        // Comprobar permisos
+        if(currenUser.role !== 'ADMIN' && currenUser.role !== 'COLLABORATOR'){
             return res.status(403).json({ error: 'Acceso denegado' });
         }
+        // Obtener usuario a cambiar
         const userToChange = await User.findOne({ email });
         if(!userToChange){
             return res.status(401).json({ error: "El usuario no existe" });
         }
+
+        // Comprobar si el usuario a cambiar es administrador
+        if(userToChange.role === 'ADMIN'){
+            return res.status(400).json({ error: 'No puedes cambiar el rol de un administrador' });
+        }
         //Actualizar rol
         userToChange.role = newRole;
         await userToChange.save();
+
         res.status(200).json({ message: 'Rol cambiado correctamente' });
     }catch(error){
         console.log('Error al cambiar el rol del Usuario: ',error);
+        if(error.name === 'CastError'){
+            return res.status(401).json({ error: `No se encontro el usuario con ID ${req.user._id}` });
+        }
         res.status(400).json({ error: error.message });
     }
 };

@@ -29,6 +29,17 @@ const addUserToEvent = async (req, res) => {
     }
 };
 
+//Metodo para actualizar el estado de inscripción de un usuario a un evento, si el usuario a sido eliminado de borra de la tabla event-users
+const updateUsersForEvent = async (req, res) => {
+    try{
+        
+
+    }catch(error){
+        console.log('Error al actualizar usuarios: ', error);
+        res.status(400).json({ error: error.message });
+    }
+}
+
 // Obtener todos los usuarios asignados a un evento
 const getUsersForEvent = async (req, res) => {
     try {
