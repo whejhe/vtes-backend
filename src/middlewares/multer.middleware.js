@@ -1,36 +1,66 @@
-//backend/src/middlewares/multer.middleware.js
-import customCard from "../models/customCards.model.js";
+// backend/src/middlewares/multer.middleware.js
 import { error } from "console";
 import multer from "multer";
 import path from "path";
+import sharp from "sharp";
+import fs from 'fs';
 
 const __dirname = path.resolve();
 
-const storage = multer.diskStorage({
-    destination: (req, file, cb) => {
-        console.log(req.path, 'path');
-        if (req.path === '/register') {
-            cb(null, path.join(__dirname, "/uploads/avatars"));
-        }else if(req.path === '/upload'){
-            cb(null, path.join(__dirname, "/uploads/customCards"));
-        }else{
-            error("No se encontro la ruta");
+const multerMiddleware = multer({
+    storage: multer.diskStorage({
+        destination: (req, file, cb) => {
+            cb(null, path.join(__dirname, "/uploads/temp"));
+        },
+        filename: (req, file, cb) => {
+            const { originalname } = file;
+            const extension = originalname.substring(originalname.lastIndexOf('.'));
+            const { name } = req.body;
+            const { nick } = req.user;
+            const filename = `${name}-${nick}${extension}`;
+            req.body.filename = filename;
+            cb(null, filename);
         }
-    },
-    filename: (req, file, cb) => {
-        const { originalname } = file;
-        const extension = originalname.substring(originalname.lastIndexOf('.'));
-        // Guardar con el nombre asignado mas el author
-        const { name } = req.body;
-        const { nick } = req.user;
-        const filename = `${name}-${nick}${extension}`;
-        console.log(req.body, 'raro')
-        req.body.filename = filename;
-        cb(null, filename);
+    }),
+}).single("image");
+
+const resizeImage = async (req, res, next) => {
+    // Modificamos la ruta dependiendo de origen
+    let newPath;
+    let width;
+    let height;
+    if (req.path === '/upload') {
+        width = 375;
+        height = 525;
+        newPath = path.join(__dirname, `/uploads/customCards/${req.body.filename}`);
+    } else {
+        error("No se encontro la ruta");
     }
-});
 
+    // Verificar si se proporcionó una imagen
+    if (!req.file) {
+        console.log('No se proporcionó una imagen');
+        return next();
+    }
+    try {
+        await sharp(req.file.path)
+            .resize(width, height)
+            .toFile(newPath);
 
-const multerMiddleware = multer({ storage }).single("image");
+        // Renombrar la imagen original
+        const originalPath = path.join(__dirname, "/uploads/temp", req.file.filename);
+        const newOriginalPath = path.join(__dirname, "/uploads/temp", "theLastImageUpload" + path.extname(req.file.filename));
+        fs.rename(originalPath, newOriginalPath, (err) => {
+            if (err) {
+                console.log('Error al renombrar la imagen original: ', err);
+                return next(err);
+            }
+            next();
+        });
+    } catch (error) {
+        console.log('Error al redimensionar la imagen: ', error);
+        res.status(500).json({ error: 'Error al redimensionar la imagen' });
+    }
+};
 
-export default multerMiddleware;
+export { multerMiddleware, resizeImage };

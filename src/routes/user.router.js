@@ -3,7 +3,7 @@ import express from "express";
 import { userControllers } from "../controllers/index.js";
 // import { isPasswordValid, passwordHash } from '../middlewares/passwordHash.js';
 import {auth} from "../middlewares/auth.js";
-import multerMiddleware from "../middlewares/multer.middleware.js";
+import {multerMiddleware} from "../middlewares/multer.middleware.js";
 
 const router = express.Router();
 

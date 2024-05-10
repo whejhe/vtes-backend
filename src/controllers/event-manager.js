@@ -8,7 +8,6 @@ function addPlayer(player) {
 }
 
 function removePlayer(index) {
-    // Remove player from the array and update table assignments
     let playerIndex = index;
     if (tables[playerIndex]) {
         for (let i = playerIndex + 1; i < players.length && tables[i]; ++i) {

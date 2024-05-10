@@ -33,14 +33,17 @@ const uploadCustomCard = async (req, res) => {
 
         const { name, disciplines, clan, capacity, group, type, isPublic, description, filename } = req.body;
         const author = req.user.nick;
-        // const url = `${direction}/uploads/customCards/${filename}`
         const url = `/uploads/customCards/${filename}`
         const newCustomCard = new Cards({ userId, disciplines, author, name, clan, capacity, group, type, isPublic, description, image: filename, url });
         await newCustomCard.save();
         res.status(201).json(newCustomCard);
     } catch (error) {
         console.log('Error al subir la Imagen: ', error);
-        res.status(400).json({ error: error.message });
+        if(error.name === 'ValidationError') {
+            return res.status(400).json({ error: error.message });
+        }else{
+            return res.status(500).json({ error: 'Error al subir la imagen' });
+        }
     }
 }
 

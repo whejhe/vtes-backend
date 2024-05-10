@@ -31,9 +31,25 @@ const getReports = async (req, res) => {
     }
 };
 
+// Elimina Reporte por ID
+const deleteReport = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const deletedReport = await Report.findByIdAndDelete(id);
+        if (!deletedReport) {
+            return res.status(404).json({ message: 'Reporte no encontrado' });
+        }
+        res.status(200).json({ message: 'Reporte eliminado correctamente' });
+    } catch (error) {
+        console.log("Error al eliminar el reporte: ",error);
+        res.status(400).json({ error: error.message });
+    }
+};
+
 const reportController = {
     createReport,
-    getReports
+    getReports,
+    deleteReport
 }
 
 export default reportController;
