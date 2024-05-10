@@ -1,16 +1,16 @@
-import express from 'express';
-// import { createForo, getForos, getForoById, updateForo, deleteForo } from '../controllers/foro.controllers.js';
-import { foroControllers } from '../controllers/index.js';
+// import express from 'express';
+// // import { createForo, getForos, getForoById, updateForo, deleteForo } from '../controllers/foro.controllers.js';
+// import { foroControllers } from '../controllers/index.js';
 
-const router = express.Router();
+// const router = express.Router();
 
-const { createForo, getForos, getForoById, updateForo, deleteForo } = foroControllers;
+// const { createForo, getForos, getForoById, updateForo, deleteForo } = foroControllers;
 
-// Rutas para la entidad Foro
-router.post('/', createForo);
-router.get('/', getForos);
-router.get('/:id', getForoById);
-router.put('/:id', updateForo);
-router.delete('/:id', deleteForo);
+// // Rutas para la entidad Foro
+// router.post('/', createForo);
+// router.get('/', getForos);
+// router.get('/:id', getForoById);
+// router.put('/:id', updateForo);
+// router.delete('/:id', deleteForo);
 
-export default router;
+// export default router;
