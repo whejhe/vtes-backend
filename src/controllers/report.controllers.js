@@ -20,8 +20,20 @@ const createReport = async (req, res) => {
     }
 };
 
+// Obtener todos los reportes
+const getReports = async (req, res) => {
+    try {
+        const reports = await Report.find();
+        res.status(200).json(reports);
+    } catch (error) {
+        console.log("Error al obtener los reportes: ",error);
+        res.status(400).json({ error: error.message });
+    }
+};
+
 const reportController = {
     createReport,
+    getReports
 }
 
 export default reportController;

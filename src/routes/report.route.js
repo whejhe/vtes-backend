@@ -5,8 +5,9 @@ import { auth } from "../middlewares/auth.js";
 
 const router = express.Router();
 
-const { createReport } = reportController;
+const { createReport , getReports} = reportController;
 
 router.post("/",auth, createReport);
+router.get("/list",auth, getReports);
 
 export default router;
