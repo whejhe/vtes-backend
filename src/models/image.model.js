@@ -10,7 +10,7 @@ const imageSchema = new Schema({
         default: uuidv4
     },
     userId: {
-        type: String,
+        type: [String],
         ref: 'User',
     },
     customCardId: {
@@ -19,19 +19,21 @@ const imageSchema = new Schema({
     },
     name: {
         type: String,
-        unique: true,
         required: [true, 'El nombre de la imagen es obligatorio']
+    },
+    image: {
+        type: String,
     },
     type: {
         type: String,
         required: [true, 'El tipo de la imagen es obligatorio']
     },
+    author: {
+        type: String,
+        required: true
+    },
     imageUrl: {
         type: String,
-    },
-    extension:{
-        type: String,
-        required: [true, 'La extensión de la imagen es obligatoria']
     },
     public: {
         type: Boolean,

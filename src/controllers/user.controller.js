@@ -29,7 +29,7 @@ const loginUser = async (req, res) => {
             {
                 _id: user._id,
                 name: user.name,
-                image: user.profileImage,
+                profileImage: user.profileImage,
                 nick: user.nick,
                 blocked: user.blocked,
                 avatarUrl: user.avatarUrl,

@@ -1,14 +1,16 @@
 //backend/src/routes/image.router.js
 import express from 'express';
-// import { createImage, getImages, getImageById, updateImage, deleteImage } from '../controllers/image.controller.js';
 import { imageControllers } from '../controllers/index.js';
+import { multerMiddleware, resizeImage } from '../middlewares/multer.middleware.js';
+import { auth } from '../middlewares/auth.js';
 
 const router = express.Router();
 
-const { createImage, getImages, getAvatars,getAvatarByUserId,getImageByName, getImageById, getImagesByUserId, updateImage, deleteImage } = imageControllers;
+const { createImage, uploadAvatar, getImages, getAvatars,getAvatarByUserId,getImageByName, getImageById, getImagesByUserId, updateImage, deleteImage } = imageControllers;
 
 // Rutas para la entidad Image
 router.post('/', createImage);
+router.put('/upload/:userId', auth ,multerMiddleware, resizeImage, uploadAvatar);
 router.get('/avatars', getAvatars);
 router.get('/avatars/:userId',getAvatarByUserId);
 router.get('/', getImages);
