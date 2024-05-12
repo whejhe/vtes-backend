@@ -26,6 +26,10 @@ const reportSchema = new Schema({
             message: 'El email no es valido'
         }
     },
+    notification: {
+        type: Boolean,
+        default: true,
+    },
     comment:{
         type: String,
         required: [true, 'El comentario del reporte es obligatorio']

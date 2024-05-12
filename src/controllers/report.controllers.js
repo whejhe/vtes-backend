@@ -10,8 +10,9 @@ const url = process.env.URL || 'https://localhost';
 // Crear un nuevo reporte
 const createReport = async (req, res) => {
     try {
-        const { name, email, comment, authorOfCard, nameOfCard } = req.body;
-        const newReport = new Report({ name, email, comment, authorOfCard, nameOfCard });
+        
+        const { name, email, comment, authorOfCard, nameOfCard, notification } = req.body;
+        const newReport = new Report({ name, email, comment, authorOfCard, nameOfCard, notification });
         await newReport.save();
         res.status(201).json(newReport);
     } catch (error) {
