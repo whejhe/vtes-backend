@@ -1,6 +1,7 @@
 //backend/src/controllers/image.controller.js
 import Image from "../models/image.model.js";
 import User  from "../models/user.models.js";
+import path from "path";
 
 // Añadir Imagen a un usuario
 const uploadAvatar = async (req, res) => {
@@ -10,9 +11,11 @@ const uploadAvatar = async (req, res) => {
         if (!user) {
             return res.status(404).json({ error: "Usuario no encontrado" });
         }
-        const { name, filename, type } = req.body;
-        const imageUrl = `/uploads/avatars/${filename}`;
+        const { name, filename } = req.body;
+        // const imageUrl = path.join('/uploads', 'avatars', filename);
         const author = req.user.nick;
+        const imageUrl = `/uploads/avatars/${filename}`;
+        const type = 'private-avatar';
         const newAvatar = new Image({ userId, name, type, image: filename, imageUrl, author });
         await newAvatar.save();
         console.log('newAvatar: ', newAvatar);

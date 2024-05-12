@@ -35,7 +35,7 @@ const loginUser = async (req, res) => {
                 avatarUrl: user.avatarUrl,
                 role: user.role
             }
-            , process.env.JWT_SECRET, { expiresIn: "1h" });
+            , process.env.JWT_SECRET, { expiresIn: "12h" });
         if (!token) return res.status(500).json({ error: "Error al generar el token" });
         res.cookie("token", token, { httpOnly: true });
         res.status(200).json({ user: user2, token });

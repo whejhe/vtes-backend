@@ -19,18 +19,15 @@ const imageSchema = new Schema({
     },
     name: {
         type: String,
-        required: [true, 'El nombre de la imagen es obligatorio']
     },
     image: {
         type: String,
     },
     type: {
         type: String,
-        required: [true, 'El tipo de la imagen es obligatorio']
     },
     author: {
         type: String,
-        required: true
     },
     imageUrl: {
         type: String,

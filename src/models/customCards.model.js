@@ -71,7 +71,6 @@ const customCardsSchema = new Schema({
     },
     url:{
         type: String,
-        // default: 'hppt://localhost:3000/uploads/customCards/undefined'
     }
 },{versionKey: false});
 

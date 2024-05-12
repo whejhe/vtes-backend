@@ -15,11 +15,13 @@ const multerMiddleware = multer({
         filename: (req, file, cb) => {
             const { originalname } = file;
             const extension = originalname.substring(originalname.lastIndexOf('.'));
-            const { name } = req.body;
+            let { name } = req.body;
             const { nick } = req.user;
             const filename = `${name}-${nick}${extension}`;
+            // const filename = `${Date.now()}${extension}`;
             req.body.filename = filename;
             cb(null, filename);
+            console.log('filename: ', filename); //Aqui me dice que el nombre es undefined-ninck.png
         }
     }),
 }).single("image");
@@ -33,12 +35,10 @@ const resizeImage = async (req, res, next) => {
         width = 375;
         height = 525;
         newPath = path.join(__dirname, `/uploads/customCards/${req.body.filename}`);
-    }else if(req.path === '/images'){
+    }else{
         width = 150;
         height = 150;
         newPath = path.join(__dirname, `/uploads/avatars/${req.body.filename}`);
-    } else {
-        error("No se encontro la ruta");
     }
 
     // Verificar si se proporcionó una imagen
@@ -46,8 +46,8 @@ const resizeImage = async (req, res, next) => {
         console.log('No se proporcionó una imagen');
         return next();
     }
-    console.log('Name original: ', req.file.filename);
     try {
+        console.log('Name original: ', req.file.filename);
         await sharp(req.file.path)
             .resize(width, height)
             .toFile(newPath);
