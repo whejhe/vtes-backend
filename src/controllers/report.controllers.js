@@ -32,6 +32,36 @@ const getReports = async (req, res) => {
     }
 };
 
+const getReportById = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const report = await Report.findById(id);
+        if (!report) {
+            return res.status(404).json({ message: 'Reporte no encontrado' });
+        }
+        res.status(200).json(report);
+    } catch (error) {
+        console.log("Error al obtener el reporte: ",error);
+        res.status(400).json({ error: error.message });
+    }
+};
+
+// Actualizar estado de reporte
+const updateReport = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { notification } = req.body;
+        const updatedReport = await Report.findByIdAndUpdate(id,{ notification }, { new: true });
+        if (!updatedReport) {
+            return res.status(404).json({ message: 'Reporte no encontrado' });
+        }
+        res.status(200).json(updatedReport);
+    } catch (error) {
+        console.log("Error al actualizar el reporte: ",error);
+        res.status(400).json({ error: error.message });
+    }
+};
+
 // Elimina Reporte por ID
 const deleteReport = async (req, res) => {
     try {
@@ -50,6 +80,8 @@ const deleteReport = async (req, res) => {
 const reportController = {
     createReport,
     getReports,
+    getReportById,
+    updateReport,
     deleteReport
 }
 

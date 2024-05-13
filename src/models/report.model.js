@@ -28,7 +28,6 @@ const reportSchema = new Schema({
     },
     notification: {
         type: Boolean,
-        default: true,
     },
     comment:{
         type: String,
@@ -43,7 +42,7 @@ const reportSchema = new Schema({
         ref: 'CustomCard',
     }
 },{
-    timestamps: true,
+    timestamps: false,
     versionKey: false,
     autoCreate: false
 });

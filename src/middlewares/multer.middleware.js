@@ -4,6 +4,8 @@ import multer from "multer";
 import path from "path";
 import sharp from "sharp";
 import fs from 'fs';
+import Image from "../models/image.model.js";
+import { v4 as uuidv4 } from "uuid";
 
 const __dirname = path.resolve();
 
@@ -18,10 +20,11 @@ const multerMiddleware = multer({
             let { name } = req.body;
             const { nick } = req.user;
             const filename = `${name}-${nick}${extension}`;
+            
             // const filename = `${Date.now()}${extension}`;
             req.body.filename = filename;
             cb(null, filename);
-            console.log('filename: ', filename); //Aqui me dice que el nombre es undefined-ninck.png
+            console.log('filename: ', filename);
         }
     }),
 }).single("image");
@@ -47,6 +50,13 @@ const resizeImage = async (req, res, next) => {
         return next();
     }
     try {
+        // Verificar si la imagen ya existe
+        const existingImage = await Image.findOne({ name: req.body.filename });
+        if (existingImage) {
+            console.log('La imagen ya existe con ese nombre');
+            return res.status(400).json({ error: 'La imagen ya existe con ese nombre' });
+        }
+        
         console.log('Name original: ', req.file.filename);
         await sharp(req.file.path)
             .resize(width, height)

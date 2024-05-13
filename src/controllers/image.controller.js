@@ -16,6 +16,8 @@ const uploadAvatar = async (req, res) => {
         const author = req.user.nick;
         const imageUrl = `/uploads/avatars/${filename}`;
         const type = 'private-avatar';
+        
+        // Crear una nueva imagen
         const newAvatar = new Image({ userId, name, type, image: filename, imageUrl, author });
         await newAvatar.save();
         console.log('newAvatar: ', newAvatar);
