@@ -3,11 +3,7 @@ import { Router } from "express";
 const router = Router();
 
 import userRouter from "./user.router.js";
-// import post from "./post.router.js";
-import message from "./message.router.js";
-// import libraryRouter from "./library.router.js";
 import imageRoute from "./image.router.js";
-// import foroRoute from "./foro.router.js";
 import eventRoute from "./event.router.js";
 import eventUserRoute from "./event-users.router.js";
 import deckRoute from "./deck.router.js";
@@ -20,15 +16,11 @@ import reportRoute from "./report.route.js";
 
 router.use("/users", errorMiddleware, userRouter);
 router.use("/admin",auth, errorMiddleware, adminRoute);
-// router.use("/users/posts",auth, errorMiddleware, post);
-router.use("/users/messages",auth, errorMiddleware, message);
-// router.use("/users/libraries",auth, errorMiddleware, libraryRouter);
 router.use("/decks", errorMiddleware, deckRoute);
 router.use("/cards", errorMiddleware, cardsRoute);
 router.use("/images", errorMiddleware, imageRoute);
 router.use("/events", errorMiddleware, eventRoute);
 router.use("/events-users",auth, errorMiddleware, eventUserRoute);
-// router.use("/foros",auth, errorMiddleware, foroRoute);
 router.use("/custom-cards", errorMiddleware, customCardsRoute);
 router.use("/report", errorMiddleware, reportRoute);
 
