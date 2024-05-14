@@ -63,7 +63,7 @@ const updateReport = async (req, res) => {
 };
 
 // Elimina Reporte por ID
-const deleteReport = async (req, res) => {
+const deleteReportById = async (req, res) => {
     try {
         const { id } = req.params;
         const deletedReport = await Report.findByIdAndDelete(id);
@@ -82,7 +82,7 @@ const reportController = {
     getReports,
     getReportById,
     updateReport,
-    deleteReport
+    deleteReportById
 }
 
 export default reportController;

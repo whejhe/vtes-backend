@@ -1,0 +1,28 @@
+Deck: Copy of Nephandus
+------------------------------------------------ 
+Description: Mazo de Tremeres Antirivus con aliados y Frontal Assault
+Category: Ally
+Author: test100
+------------------------------------------------
+Crypt:
+- Antonio d'Erlette (G4), Clan: Tremere antitribu, Disciplinas: dom,for,pot,THA, Quantity: 4
+- Carmen (G5), Clan: Tremere antitribu, Disciplinas: aus,dom,THA, Quantity: 4
+- Anarch Convert (ANY), Clan: Caitiff, Disciplinas: , Quantity: 4
+------------------------------------------------
+Library:
+- Fame, Quantity: 1
+- Frontal Assault, Quantity: 9
+- Haven Uncovered, Quantity: 4
+- Secure Haven, Quantity: 1
+- Wider View, Quantity: 2
+- Computer Hacking, Quantity: 15
+- Constant Revolution, Quantity: 3
+- Graverobbing, Disciplina(s): dom, Quantity: 2
+- Nephandus, Clan(es): Tremere antitribu, Quantity: 15
+- Mirror Walk, Disciplina(s): tha, Quantity: 15
+- Molotov Cocktail, Quantity: 8
+- Trap, Quantity: 10
+- Scourge of the Enochians, Quantity: 2
+- The Unmasking, Quantity: 3
+------------------------------------------------
+Total Cards: 17

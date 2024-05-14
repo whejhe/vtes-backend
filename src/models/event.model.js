@@ -46,7 +46,7 @@ const eventSchema = new Schema({
         type: String,
     },
     fecha: {
-        type: Date,
+        type: String,
         // required: [true, 'La fecha del evento es obligatoria']
     },
     hora:{

@@ -11,7 +11,7 @@ const loginAdmin = async (req, res) => {
             if(!user){
                 return res.status(401).json({ error: "El usuario no existe" });
             }
-            if(user.role !== 'ADMIN'){
+            if(user.role !== 'ADMIN' && user.role !== 'SUPER_ADMIN'){
                 return res.status(403).json({ error: 'Acceso denegado' });
             }
         }catch(error){
@@ -46,7 +46,7 @@ const cambiarPermisos = async (req, res) => {
         const currenUser = await User.findById(req.user._id);
         
         // Comprobar permisos
-        if(currenUser.role !== 'ADMIN' && currenUser.role !== 'COLLABORATOR'){
+        if(currenUser.role !== 'ADMIN' && currenUser.role !== 'SUPER_ADMIN'){
             return res.status(403).json({ error: 'Acceso denegado' });
         }
         // Obtener usuario a cambiar

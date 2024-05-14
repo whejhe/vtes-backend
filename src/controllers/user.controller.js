@@ -116,7 +116,7 @@ const forgotPassword = async (req, res) => {
 const createUser = async (req, res) => {
     try {
         // Verificar si el usuario tiene permisos de administrador
-        if (req.user.role !== 'ADMIN') {
+        if (req.user.role !== 'ADMIN' && req.user.role !== 'SUPER_ADMIN') {
             return res.status(403).json({ error: 'Acceso denegado' });
         }
         const { id, role, name, nick, email, password } = req.body;
@@ -198,7 +198,7 @@ const deleteUser = async (req, res) => {
 };
 
 const blockUser = async (req,res) =>{
-    if (req.user.role !== 'ADMIN' && req.user.role !== 'COLLABORATOR') {
+    if (req.user.role !== 'ADMIN' && req.user.role !== 'COLLABORATOR' && req.user.role !== 'SUPER_ADMIN') {
         return res.status(403).json({ error: 'Acceso denegado' });
     }
     const { id } = req.params;
@@ -210,7 +210,7 @@ const blockUser = async (req,res) =>{
 }
 
 const unblockUser = async (req,res) =>{
-    if (req.user.role !== 'ADMIN' && req.user.role !== 'COLLABORATOR') {
+    if (req.user.role !== 'ADMIN' && req.user.role !== 'COLLABORATOR' && req.user.role !== 'SUPER_ADMIN') {
         return res.status(403).json({ error: 'Acceso denegado' });
     }
     const { id } = req.params;

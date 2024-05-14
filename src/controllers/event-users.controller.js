@@ -61,7 +61,7 @@ const deleteUserFromEvent = async (req, res) => {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
     const user = await User.findById(decoded._id).select('-password -__v');
     console.log('Usuario: ', user);
-    if (user.role !== 'ADMIN' && user.role !== 'COLLABORATOR') {
+    if (user.role !== 'ADMIN' && user.role !== 'COLLABORATOR' && user.role !== 'SUPER_ADMIN') {
         return res.status(403).json({ error: 'No tienes los permisos para eliminar este usuario' });
     }
     const { id } = req.params;
@@ -113,7 +113,7 @@ const addUserByEmail = async (req, res) => {
     const token = req.header('Authorization').replace('Bearer ', '');
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
     const user = await User.findById(decoded._id).select('-password -__v');
-    if (user.role !== 'ADMIN' && user.role !== 'COLLABORATOR') {
+    if (user.role !== 'ADMIN' && user.role !== 'COLLABORATOR' && user.role !== 'SUPER_ADMIN') {
         return res.status(403).json({ error: 'No tienes los permisos para añadir otros Usuarios' });
     }
 

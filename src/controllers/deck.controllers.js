@@ -9,7 +9,7 @@ const createDeck = async (req, res) => {
         console.log("Dentro de crear mazo ::: ", req.body);
         const { userId, name, description, category, isPublic, crypt, library, author } = req.body;
         //Obtener nick del usuario
-        const newDeck = new Deck({ userId, name, description, category, isPublic, crypt, library, author});
+        const newDeck = new Deck({ userId, name, description, category, isPublic, crypt, library, author });
         await newDeck.save();
         res.status(201).json({ id: newDeck._id, ...newDeck });
     } catch (error) {
@@ -21,7 +21,11 @@ const createDeck = async (req, res) => {
 // Obtener todos los mazos
 const getDecks = async (req, res) => {
     try {
-        const decks = await Deck.find();
+        const userId = req.user._id;
+        console.log(req.user._id, '_id')
+        const decks = await Deck.find({
+            $or: [{ userId: { $in: [userId] } }, { isPublic: true }],
+        });
         res.status(200).json(decks);
     } catch (error) {
         res.status(400).json({ error: error.message });

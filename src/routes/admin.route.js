@@ -3,7 +3,7 @@ import { adminControllers } from "../controllers/index.js";
 
 const router = express.Router();
 
-const { loginAdmin, cambiarPermisos } = adminControllers;
+const { cambiarPermisos, loginAdmin } = adminControllers;
 
 // Rutas para administradores
 router.post("/login", loginAdmin);
