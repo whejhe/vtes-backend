@@ -53,6 +53,9 @@ const registerUser = async (req, res) => {
         if (!name || !nick || !email || !password) {
             return res.status(400).json({ error: 'Todos los campos son obligatorios' });
         }
+        if(!profileImage) {
+            profileImage = "default-avatar.png";
+        }
         const NewAvatarUrl = `/vtes-backend/uploads/avatars/${profileImage}`;
         // Verificar si el usuario ya existe
         const existingUser = await User.findOne({ email });
@@ -183,7 +186,7 @@ const updateUser = async (req, res) => {
 const deleteUser = async (req, res) => {
     try {
 
-        if (req.user.role !== 'ADMIN') {
+        if (req.user.role !== 'ADMIN' && req.user.role !== 'SUPER_ADMIN') {
             return res.status(403).json({ error: 'Acceso denegado' });
         }
         const { id } = req.params;

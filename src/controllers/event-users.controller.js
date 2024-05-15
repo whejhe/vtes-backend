@@ -83,42 +83,6 @@ const deleteUserFromEvent = async (req, res) => {
     }
 };
 
-// const deleteUserFromEvent = async (req, res) => {
-//     const token = req.header('Authorization').replace('Bearer ', '');
-//     const decoded = jwt.verify(token, process.env.JWT_SECRET);
-//     const user = await User.findById(decoded._id).select('-password -__v');
-//     console.log('Usuario: ', user);
-//     if (user.role !== 'ADMIN' && user.role !== 'COLLABORATOR' && user.role !== 'SUPER_ADMIN') {
-//         return res.status(403).json({ error: 'No tienes los permisos para eliminar este usuario' });
-//     }
-//     const { id } = req.params;
-//     const { userId } = req.body;
-//     try {
-//         const event = await Event.findById(id);
-//         if (!event) {
-//             return res.status(404).json({ error: 'Evento no encontrado' });
-//         }
-//         const userToDelete = await User.findById(userId);
-//         if (!userToDelete) {
-//             return res.status(404).json({ error: 'Usuario no encontrado' });
-//         }
-//         const eventUser = await EventUsers.findOne({ eventId: id});
-//         if (!eventUser) {
-//             return res.status(404).json({ error: 'Usuario no es parte del evento' });
-//         }
-//         for(let usuario of eventUser.userId){
-//             if (userId === usuario) {
-//                 eventUser['userId'].splice(eventUser['userId'].indexOf(userId), 1);
-//                 await eventUser.save();
-//             }
-//         }
-//         res.status(200).json({ message: 'Usuario eliminado correctamente' });
-//     } catch (error) {
-//         console.log('Error al eliminar usuario del evento: ', error);
-//         res.status(400).json({ error: error.message });
-//     }
-// };
-
 // Actualizar el estado de inscripción de un usuario a un evento
 const updateStatus = async (req, res) => {
     try {
