@@ -69,48 +69,7 @@ const deleteEvent = async (req, res) => {
     }
 };
 
-// export const sortearMesa = async (req, res) => {
-//     try{
-//         const eventId = req.params.eventId;
-//         const eventUsers = await EventUsers.findOne({ eventId }).populate('userId');
-//         if (!eventUsers) {
-//             return res.status(404).json({ error: 'No se encontraron usuarios inscritos en el evento' });
-//         }
-//         // Obtener el numero de jugadores apuntados al torneo
-//         let players = eventUsers.userId.map(user => user._id);
-//         let totalPlayers = players.length;
 
-//         // Repartir a los jugadores en mesas de 5 jugadores cada una
-//         let playersPerTable = 5;
-//         let tables = [];
-//         for (let i = 0; i < totalPlayers; i += playersPerTable) {
-//             tables.push(players.slice(i, i + playersPerTable));
-//         }
-//         // Si una mesa tiene menos de 4 jugadores, se elimina un jugador de una mesa de 5 y se añade a la nueva
-//         tables = tables.map(table => {
-//             if (table.length < 4) {
-//                 table.pop();
-//                 table.push(players[Math.floor(Math.random() * players.length)]);
-//             }
-//             return table;
-//         });
-//         // Se actualizan los jugadores de las mesas
-//         for (let i = 0; i < tables.length; i++) {
-//             const table = tables[i];
-//             for (let j = 0; j < table.length; j++) {
-//                 const player = table[j];
-//                 await EventUsers.findOneAndUpdate({ eventId, userId: player }, { table: i + 1 });
-//             }
-//         }
-//         console.log('Las mesas han sido actualizadas');
-//         console.log('Numero de mesas: ', tables.length);
-//         res.status(200).json({ tables });
-
-//     }catch(error){
-//         console.log('Error al sortear las mesas: ', error);
-//         res.status(400).json({ error: error.message });
-//     }
-// }
 // SORTEAR MESAS DE UN EVENTO
 export const sortearMesa = async (req, res) => {
     try {
@@ -143,7 +102,25 @@ export const sortearMesa = async (req, res) => {
                     tables.push([playerToMove]);
                 }
             } else {
-                break;
+                // Si hay una mesa con menos de 4 jugadores y es la única mesa restante, buscar al usuario anónimo y agregarlo
+                const tableWithLessThanFour = tables.find(table => table.length < 4);
+                console.log("tableWithLessThanFour:", tableWithLessThanFour);
+                console.log("tables.length:", tables.length);
+                if (tableWithLessThanFour) {
+                    console.log("Pase por aqui");
+                    const anonymousUser = await User.findOne({ email: 'anonimo@gmail.com' });
+                    if(!anonymousUser){
+                        return res.status(404).json({ error: 'Jugador ficticio no encontrado' });
+                    }
+                    // console.log("anonymousUser:", anonymousUser);
+                    if (anonymousUser) {
+                        tableWithLessThanFour.push(anonymousUser._id);
+                    } else {
+                        break;
+                    }
+                } else {
+                    break;
+                }
             }
         }
 
@@ -156,6 +133,7 @@ export const sortearMesa = async (req, res) => {
             }
         }
 
+        
         console.log('Las mesas han sido actualizadas');
         console.log('Número de mesas: ', tables.length);
         res.status(200).json({ tables });
