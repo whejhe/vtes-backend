@@ -6,10 +6,10 @@ import User from "../models/user.models.js";
 // Crear un nuevo evento
 const createEvent = async (req, res) => {
     try {
-        const { name,email,type, precio, provincia,localidad,direccion, description, fecha, hora, numMaxParticipantes } = req.body;
-        const newEvent = new Event({ creatorId:req.user._id, name, email,type, precio, provincia,localidad,direccion, description, fecha, hora, numMaxParticipantes });
+        const { name, email, type, precio, provincia, localidad, direccion, description, fecha, hora, numMaxParticipantes } = req.body;
+        const newEvent = new Event({ creatorId: req.user._id, name, email, type, precio, provincia, localidad, direccion, description, fecha, hora, numMaxParticipantes });
         await newEvent.save();
-        const newEventUsers = new EventUsers({ eventId: newEvent._id});
+        const newEventUsers = new EventUsers({ eventId: newEvent._id });
         await newEventUsers.save();
         res.status(201).json(newEvent);
     } catch (error) {
@@ -69,6 +69,48 @@ const deleteEvent = async (req, res) => {
     }
 };
 
+// export const sortearMesa = async (req, res) => {
+//     try{
+//         const eventId = req.params.eventId;
+//         const eventUsers = await EventUsers.findOne({ eventId }).populate('userId');
+//         if (!eventUsers) {
+//             return res.status(404).json({ error: 'No se encontraron usuarios inscritos en el evento' });
+//         }
+//         // Obtener el numero de jugadores apuntados al torneo
+//         let players = eventUsers.userId.map(user => user._id);
+//         let totalPlayers = players.length;
+
+//         // Repartir a los jugadores en mesas de 5 jugadores cada una
+//         let playersPerTable = 5;
+//         let tables = [];
+//         for (let i = 0; i < totalPlayers; i += playersPerTable) {
+//             tables.push(players.slice(i, i + playersPerTable));
+//         }
+//         // Si una mesa tiene menos de 4 jugadores, se elimina un jugador de una mesa de 5 y se añade a la nueva
+//         tables = tables.map(table => {
+//             if (table.length < 4) {
+//                 table.pop();
+//                 table.push(players[Math.floor(Math.random() * players.length)]);
+//             }
+//             return table;
+//         });
+//         // Se actualizan los jugadores de las mesas
+//         for (let i = 0; i < tables.length; i++) {
+//             const table = tables[i];
+//             for (let j = 0; j < table.length; j++) {
+//                 const player = table[j];
+//                 await EventUsers.findOneAndUpdate({ eventId, userId: player }, { table: i + 1 });
+//             }
+//         }
+//         console.log('Las mesas han sido actualizadas');
+//         console.log('Numero de mesas: ', tables.length);
+//         res.status(200).json({ tables });
+
+//     }catch(error){
+//         console.log('Error al sortear las mesas: ', error);
+//         res.status(400).json({ error: error.message });
+//     }
+// }
 // SORTEAR MESAS DE UN EVENTO
 export const sortearMesa = async (req, res) => {
     try {
@@ -77,42 +119,51 @@ export const sortearMesa = async (req, res) => {
         if (!eventUsers) {
             return res.status(404).json({ error: 'No se encontraron usuarios inscritos en el evento' });
         }
-        
+
+        // Obtener el número de jugadores apuntados al torneo
         let players = eventUsers.userId.map(user => user._id);
-        const totalPlayers = players.length;
-        const tables = [];
-        
-        const minPlayersPerTable = 4;
-        const maxPlayersPerTable = 5;
+        let totalPlayers = players.length;
 
-        // Calcular el número óptimo de mesas
-        const numTables = Math.ceil(totalPlayers / minPlayersPerTable);
+        // Repartir a los jugadores en mesas de 5 jugadores cada una
+        let playersPerTable = 5;
+        let tables = [];
+        for (let i = 0; i < totalPlayers; i += playersPerTable) {
+            tables.push(players.slice(i, i + playersPerTable));
+        }
 
-        // Calcular el número inicial de jugadores por mesa
-        const initialPlayersPerTable = Math.floor(totalPlayers / numTables);
-        let extraPlayers = totalPlayers % numTables;
-
-        // Sortear jugadores en mesas
-        for (let i = 0; i < numTables; i++) {
-            const playersInThisTable = initialPlayersPerTable + (extraPlayers > 0 ? 1 : 0);
-            const table = [];
-            for (let j = 0; j < playersInThisTable; j++) {
-                const randomIndex = Math.floor(Math.random() * players.length);
-                table.push(players.splice(randomIndex, 1)[0]);
-            }
-            tables.push(table);
-            if (extraPlayers > 0) {
-                extraPlayers--;
+        // Si una mesa tiene menos de 4 jugadores, se elimina un jugador de una mesa de 5 y se añade a la nueva
+        while (tables.some(table => table.length < 4)) {
+            let tableWithFive = tables.find(table => table.length === 5);
+            if (tableWithFive) {
+                let playerToMove = tableWithFive.pop();
+                let lastTable = tables[tables.length - 1];
+                if (lastTable.length < 5) {
+                    lastTable.push(playerToMove);
+                } else {
+                    tables.push([playerToMove]);
+                }
+            } else {
+                break;
             }
         }
 
-        res.status(200).json(tables);
+        // Se actualizan los jugadores de las mesas
+        for (let i = 0; i < tables.length; i++) {
+            const table = tables[i];
+            for (let j = 0; j < table.length; j++) {
+                const player = table[j];
+                await EventUsers.findOneAndUpdate({ eventId, userId: player }, { table: i + 1 });
+            }
+        }
+
+        console.log('Las mesas han sido actualizadas');
+        console.log('Número de mesas: ', tables.length);
+        res.status(200).json({ tables });
     } catch (error) {
-        console.error('Error al sortear las mesas: ', error);
+        console.log('Error al sortear las mesas: ', error);
         res.status(400).json({ error: error.message });
     }
 };
-
 
 // Método para registrar las puntuaciones de las partidas
 export const registrarPuntuaciones = async (req, res) => {
