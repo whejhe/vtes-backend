@@ -12,6 +12,8 @@ router.post('/users/:eventId', addUserToEvent);
 router.post('/email/:eventId', addUserByEmail);
 router.get('/:eventId', getUsersForEvent);
 router.put('/:id', updateStatus);
-router.delete('/:id', auth, deleteUserFromEvent );
+// router.delete('/:id', auth, deleteUserFromEvent );
+router.delete('/:eventId/users/:userId', auth, deleteUserFromEvent);
+
 
 export default router;

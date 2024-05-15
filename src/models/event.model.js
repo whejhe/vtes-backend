@@ -55,7 +55,13 @@ const eventSchema = new Schema({
     numMaxParticipantes:{
         type: Number,
         required:false,
-    }
+    },
+    mesas:[
+        {
+            type: [String],
+            required: false
+        }
+    ]
 },
 {
     timestamps: false,

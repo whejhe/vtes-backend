@@ -69,9 +69,7 @@ const deleteEvent = async (req, res) => {
     }
 };
 
-import EventUsers from "../models/event-users.model.js";
-
-// Método para sortear las mesas de los jugadores inscritos en un torneo
+// SORTEAR MESAS DE UN EVENTO
 export const sortearMesa = async (req, res) => {
     try {
         const eventId = req.params.eventId;
@@ -79,26 +77,33 @@ export const sortearMesa = async (req, res) => {
         if (!eventUsers) {
             return res.status(404).json({ error: 'No se encontraron usuarios inscritos en el evento' });
         }
-
+        
         let players = eventUsers.userId.map(user => user._id);
         const totalPlayers = players.length;
         const tables = [];
-        const playersPerTable = 5;
+        
         const minPlayersPerTable = 4;
+        const maxPlayersPerTable = 5;
 
-        // Agregar jugadores ficticios si es necesario
-        while ((players.length % minPlayersPerTable !== 0) && (players.length % playersPerTable !== 0)) {
-            players.push("Jugador Ficticio");
-        }
+        // Calcular el número óptimo de mesas
+        const numTables = Math.ceil(totalPlayers / minPlayersPerTable);
+
+        // Calcular el número inicial de jugadores por mesa
+        const initialPlayersPerTable = Math.floor(totalPlayers / numTables);
+        let extraPlayers = totalPlayers % numTables;
 
         // Sortear jugadores en mesas
-        while (players.length >= minPlayersPerTable) {
+        for (let i = 0; i < numTables; i++) {
+            const playersInThisTable = initialPlayersPerTable + (extraPlayers > 0 ? 1 : 0);
             const table = [];
-            for (let i = 0; i < playersPerTable && players.length > 0; i++) {
+            for (let j = 0; j < playersInThisTable; j++) {
                 const randomIndex = Math.floor(Math.random() * players.length);
                 table.push(players.splice(randomIndex, 1)[0]);
             }
             tables.push(table);
+            if (extraPlayers > 0) {
+                extraPlayers--;
+            }
         }
 
         res.status(200).json(tables);
@@ -107,6 +112,7 @@ export const sortearMesa = async (req, res) => {
         res.status(400).json({ error: error.message });
     }
 };
+
 
 // Método para registrar las puntuaciones de las partidas
 export const registrarPuntuaciones = async (req, res) => {

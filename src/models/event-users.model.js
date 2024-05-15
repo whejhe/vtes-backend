@@ -36,7 +36,7 @@ const eventUsersSchema = new Schema({
         type: String,
         enum: ['confirmed', 'pending', 'cancelled', 'abandoned'],
         default: 'pending'
-    },
+    }
     
 },{versionKey: false});
 

@@ -17,5 +17,5 @@ export {
     imageControllers,
     userControllers,
     adminControllers,
-    reportController
+    reportController,
 }
