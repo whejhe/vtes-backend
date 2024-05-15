@@ -1,8 +1,7 @@
 // backend/src/controllers/event.controller.js
 import Event from "../models/event.model.js";
-import User from "../models/user.models.js";
 import EventUsers from "../models/event-users.model.js";
-
+import User from "../models/user.models.js";
 
 // Crear un nuevo evento
 const createEvent = async (req, res) => {
@@ -70,12 +69,113 @@ const deleteEvent = async (req, res) => {
     }
 };
 
+import EventUsers from "../models/event-users.model.js";
+
+// Método para sortear las mesas de los jugadores inscritos en un torneo
+export const sortearMesa = async (req, res) => {
+    try {
+        const eventId = req.params.eventId;
+        const eventUsers = await EventUsers.findOne({ eventId }).populate('userId');
+        if (!eventUsers) {
+            return res.status(404).json({ error: 'No se encontraron usuarios inscritos en el evento' });
+        }
+
+        let players = eventUsers.userId.map(user => user._id);
+        const totalPlayers = players.length;
+        const tables = [];
+        const playersPerTable = 5;
+        const minPlayersPerTable = 4;
+
+        // Agregar jugadores ficticios si es necesario
+        while ((players.length % minPlayersPerTable !== 0) && (players.length % playersPerTable !== 0)) {
+            players.push("Jugador Ficticio");
+        }
+
+        // Sortear jugadores en mesas
+        while (players.length >= minPlayersPerTable) {
+            const table = [];
+            for (let i = 0; i < playersPerTable && players.length > 0; i++) {
+                const randomIndex = Math.floor(Math.random() * players.length);
+                table.push(players.splice(randomIndex, 1)[0]);
+            }
+            tables.push(table);
+        }
+
+        res.status(200).json(tables);
+    } catch (error) {
+        console.error('Error al sortear las mesas: ', error);
+        res.status(400).json({ error: error.message });
+    }
+};
+
+// Método para registrar las puntuaciones de las partidas
+export const registrarPuntuaciones = async (req, res) => {
+    try {
+        const eventId = req.params.eventId;
+        const matchResults = req.body.matchResults;
+
+        const usuariosEvento = await EventUsers.findOne({ eventId });
+        if (!usuariosEvento) {
+            return res.status(404).json({ error: 'No se encontraron usuarios inscritos en el evento' });
+        }
+
+        // matchResults es un array de objetos con la estructura:
+        // [{ userId: 'user1', eliminaciones: 2, sobrevivió: true, mesaId: 'mesa1' }, ...]
+
+        matchResults.forEach(resultado => {
+            const indiceJugador = usuariosEvento.userId.findIndex(user => user.toString() === resultado.userId);
+            if (indiceJugador !== -1) {
+                usuariosEvento.eliminationPoints[indiceJugador] += resultado.eliminaciones;
+                if (resultado.sobrevivió) {
+                    usuariosEvento.eliminationPoints[indiceJugador] += 0.5;
+                }
+            }
+        });
+
+        // Calcular puntos de mesa y actualizar tablePoints
+        const puntoDeMesa = 1; // Punto de mesa para el jugador con más puntos de victoria
+        const resultadosAgrupadosPorMesa = agruparPor(matchResults, 'mesaId');
+
+        Object.values(resultadosAgrupadosPorMesa).forEach(mesa => {
+            const mesaOrdenada = mesa.sort((a, b) => b.eliminaciones - a.eliminaciones);
+            const mayorPuntuacion = mesaOrdenada[0].eliminaciones;
+
+            mesaOrdenada.forEach(jugador => {
+                const indiceJugador = usuariosEvento.userId.findIndex(user => user.toString() === jugador.userId);
+                if (jugador.eliminaciones === mayorPuntuacion) {
+                    usuariosEvento.tablePoints[indiceJugador] += puntoDeMesa;
+                }
+            });
+        });
+
+        await usuariosEvento.save();
+        res.status(200).json(usuariosEvento);
+    } catch (error) {
+        console.error('Error al registrar las puntuaciones: ', error);
+        res.status(400).json({ error: error.message });
+    }
+};
+
+// Función auxiliar para agrupar por clave especificada
+const agruparPor = (array, clave) => {
+    return array.reduce((resultado, valorActual) => {
+        (resultado[valorActual[clave]] = resultado[valorActual[clave]] || []).push(valorActual);
+        return resultado;
+    }, {});
+};
+
+
+
+
+
 const eventControllers = {
     createEvent,
     getEvents,
     getEventById,
     updateEvent,
-    deleteEvent
+    deleteEvent,
+    sortearMesa,
+    registrarPuntuaciones
 };
 
 export default eventControllers;

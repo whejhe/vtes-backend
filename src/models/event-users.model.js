@@ -24,6 +24,14 @@ const eventUsersSchema = new Schema({
         type: Number,
         default : 0
     },
+    eliminationPoints: {
+        type: Number,
+        default: 0
+    },
+    tablePoints: {
+        type: Number,
+        default: 0
+    },
     registrationStatus: {
         type: String,
         enum: ['confirmed', 'pending', 'cancelled', 'abandoned'],
