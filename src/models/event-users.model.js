@@ -20,24 +20,11 @@ const eventUsersSchema = new Schema({
         {type: String,
         ref: 'User',}
     ],
-    score: {
-        type: Number,
-        default : 0
-    },
-    eliminationPoints: {
-        type: Number,
-        default: 0
-    },
-    tablePoints: {
-        type: Number,
-        default: 0
-    },
     registrationStatus: {
         type: String,
         enum: ['confirmed', 'pending', 'cancelled', 'abandoned'],
         default: 'pending'
     }
-    
 },{versionKey: false});
 
 

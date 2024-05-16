@@ -44,7 +44,7 @@ const options = {
     cert: fs.readFileSync('cert/fullchain.pem')
 }
 
-https.createServer(options, app).listen(443, () => {
+https.createServer(options, app).listen(process.env.PORT, () => {
     console.log("Servidor corriendo en el puerto: ", app.get("port"));
     console.log("En el modo: ", process.env.NODE_ENV);
 })

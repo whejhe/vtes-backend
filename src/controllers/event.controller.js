@@ -69,7 +69,6 @@ const deleteEvent = async (req, res) => {
     }
 };
 
-
 // SORTEAR MESAS DE UN EVENTO
 export const sortearMesa = async (req, res) => {
     try {
@@ -79,18 +78,16 @@ export const sortearMesa = async (req, res) => {
             return res.status(404).json({ error: 'No se encontraron usuarios inscritos en el evento' });
         }
 
-        // Obtener el número de jugadores apuntados al torneo
+        // Obtener los IDs de los jugadores del evento
         let players = eventUsers.userId.map(user => user._id);
         let totalPlayers = players.length;
 
-        // Repartir a los jugadores en mesas de 5 jugadores cada una
         let playersPerTable = 5;
         let tables = [];
         for (let i = 0; i < totalPlayers; i += playersPerTable) {
             tables.push(players.slice(i, i + playersPerTable));
         }
 
-        // Si una mesa tiene menos de 4 jugadores, se elimina un jugador de una mesa de 5 y se añade a la nueva
         while (tables.some(table => table.length < 4)) {
             let tableWithFive = tables.find(table => table.length === 5);
             if (tableWithFive) {
@@ -102,46 +99,57 @@ export const sortearMesa = async (req, res) => {
                     tables.push([playerToMove]);
                 }
             } else {
-                // Si hay una mesa con menos de 4 jugadores y es la única mesa restante, buscar al usuario anónimo y agregarlo
                 const tableWithLessThanFour = tables.find(table => table.length < 4);
-                console.log("tableWithLessThanFour:", tableWithLessThanFour);
-                console.log("tables.length:", tables.length);
                 if (tableWithLessThanFour) {
-                    console.log("Pase por aqui");
                     const anonymousUser = await User.findOne({ email: 'anonimo@gmail.com' });
-                    if(!anonymousUser){
+                    if (!anonymousUser) {
                         return res.status(404).json({ error: 'Jugador ficticio no encontrado' });
                     }
-                    // console.log("anonymousUser:", anonymousUser);
-                    if (anonymousUser) {
-                        tableWithLessThanFour.push(anonymousUser._id);
-                    } else {
-                        break;
-                    }
+                    tableWithLessThanFour.push(anonymousUser._id);
                 } else {
                     break;
                 }
             }
         }
 
-        // Se actualizan los jugadores de las mesas
-        for (let i = 0; i < tables.length; i++) {
-            const table = tables[i];
-            for (let j = 0; j < table.length; j++) {
-                const player = table[j];
-                await EventUsers.findOneAndUpdate({ eventId, userId: player }, { table: i + 1 });
-            }
-        }
+        // Se actualizan los jugadores de las mesas en el evento
+        let mesas = tables.map((table, index) => ({
+            numero: index + 1,
+            players: table.map(playerId => ({
+                userId: playerId, 
+                tiradaAleatoria: Math.floor(Math.random() * 1000) + 1,
+                tablePoints: 0,
+                points: 0
+            }))
+        }));
 
-        
+        // await Event.findByIdAndUpdate(eventId, { mesas });
+        const updatedEvent = await Event.findByIdAndUpdate(eventId, { mesas }, { new: true }).populate('mesas.players.userId', 'name email avatarUrl');
+
         console.log('Las mesas han sido actualizadas');
         console.log('Número de mesas: ', tables.length);
-        res.status(200).json({ tables });
+        // res.status(200).json({ tables });
+        res.status(200).json(updatedEvent);
     } catch (error) {
         console.log('Error al sortear las mesas: ', error);
         res.status(400).json({ error: error.message });
     }
 };
+
+
+
+// const updateTiradaAleatoria = async (req, res) => {
+//     try {
+//         const eventId = req.params.eventId;
+//         const userId = req.params.userId;
+//         const tiradaAleatoria = Math.floor(Math.random() * 1000) + 1;
+//         const updatedEvent = await EventUsers.findOneAndUpdate({ eventId, userId }, { tiradaAleatoria }, { new: true });
+//         res.status(200).json(updatedEvent);
+//     } catch (error) {
+//         console.log('Error al actualizar la tirada aleatoria: ', error);
+//         res.status(400).json({ error: error.message });
+//     }
+// };
 
 // Método para registrar las puntuaciones de las partidas
 export const registrarPuntuaciones = async (req, res) => {
