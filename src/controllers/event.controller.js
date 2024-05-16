@@ -80,10 +80,14 @@ export const sortearMesa = async (req, res) => {
 
         // Obtener los IDs de los jugadores del evento
         let players = eventUsers.userId.map(user => user._id);
-        let totalPlayers = players.length;
+        
+        // Mezclar los jugadores aleatoriamente
+        players = players.sort(() => Math.random() - 0.5);
 
+        let totalPlayers = players.length;
         let playersPerTable = 5;
         let tables = [];
+
         for (let i = 0; i < totalPlayers; i += playersPerTable) {
             tables.push(players.slice(i, i + playersPerTable));
         }
@@ -117,18 +121,16 @@ export const sortearMesa = async (req, res) => {
             numero: index + 1,
             players: table.map(playerId => ({
                 userId: playerId, 
-                tiradaAleatoria: Math.floor(Math.random() * 1000) + 1,
+                // tiradaAleatoria: Math.floor(Math.random() * 1000) + 1,
                 tablePoints: 0,
                 points: 0
             }))
         }));
 
-        // await Event.findByIdAndUpdate(eventId, { mesas });
         const updatedEvent = await Event.findByIdAndUpdate(eventId, { mesas }, { new: true }).populate('mesas.players.userId', 'name email avatarUrl');
 
         console.log('Las mesas han sido actualizadas');
         console.log('Número de mesas: ', tables.length);
-        // res.status(200).json({ tables });
         res.status(200).json(updatedEvent);
     } catch (error) {
         console.log('Error al sortear las mesas: ', error);
@@ -137,77 +139,43 @@ export const sortearMesa = async (req, res) => {
 };
 
 
-
-// const updateTiradaAleatoria = async (req, res) => {
-//     try {
-//         const eventId = req.params.eventId;
-//         const userId = req.params.userId;
-//         const tiradaAleatoria = Math.floor(Math.random() * 1000) + 1;
-//         const updatedEvent = await EventUsers.findOneAndUpdate({ eventId, userId }, { tiradaAleatoria }, { new: true });
-//         res.status(200).json(updatedEvent);
-//     } catch (error) {
-//         console.log('Error al actualizar la tirada aleatoria: ', error);
-//         res.status(400).json({ error: error.message });
-//     }
-// };
-
-// Método para registrar las puntuaciones de las partidas
+// REGISTRAR PUNTUACIONES DE LOS JUGADORES
 export const registrarPuntuaciones = async (req, res) => {
     try {
-        const eventId = req.params.eventId;
-        const matchResults = req.body.matchResults;
+        const { eventId, tableNumber, playerScores } = req.body;
 
-        const usuariosEvento = await EventUsers.findOne({ eventId });
-        if (!usuariosEvento) {
-            return res.status(404).json({ error: 'No se encontraron usuarios inscritos en el evento' });
+        // Validar la entrada
+        if (!eventId || !tableNumber || !Array.isArray(playerScores)) {
+            return res.status(400).json({ error: 'Datos inválidos' });
         }
 
-        // matchResults es un array de objetos con la estructura:
-        // [{ userId: 'user1', eliminaciones: 2, sobrevivió: true, mesaId: 'mesa1' }, ...]
+        const event = await Event.findById(eventId);
+        if (!event) {
+            return res.status(404).json({ error: 'Evento no encontrado' });
+        }
 
-        matchResults.forEach(resultado => {
-            const indiceJugador = usuariosEvento.userId.findIndex(user => user.toString() === resultado.userId);
-            if (indiceJugador !== -1) {
-                usuariosEvento.eliminationPoints[indiceJugador] += resultado.eliminaciones;
-                if (resultado.sobrevivió) {
-                    usuariosEvento.eliminationPoints[indiceJugador] += 0.5;
-                }
+        const table = event.mesas.find(mesa => mesa.numero === tableNumber);
+        if (!table) {
+            return res.status(404).json({ error: 'Mesa no encontrada' });
+        }
+
+        // Actualizar los puntajes de los jugadores
+        playerScores.forEach(({ userId, points, tablePoints }) => {
+            const player = table.players.find(player => player.userId === userId);
+            if (player) {
+                player.points = points;
+                player.tablePoints = tablePoints;
             }
         });
 
-        // Calcular puntos de mesa y actualizar tablePoints
-        const puntoDeMesa = 1; // Punto de mesa para el jugador con más puntos de victoria
-        const resultadosAgrupadosPorMesa = agruparPor(matchResults, 'mesaId');
+        await event.save();
 
-        Object.values(resultadosAgrupadosPorMesa).forEach(mesa => {
-            const mesaOrdenada = mesa.sort((a, b) => b.eliminaciones - a.eliminaciones);
-            const mayorPuntuacion = mesaOrdenada[0].eliminaciones;
-
-            mesaOrdenada.forEach(jugador => {
-                const indiceJugador = usuariosEvento.userId.findIndex(user => user.toString() === jugador.userId);
-                if (jugador.eliminaciones === mayorPuntuacion) {
-                    usuariosEvento.tablePoints[indiceJugador] += puntoDeMesa;
-                }
-            });
-        });
-
-        await usuariosEvento.save();
-        res.status(200).json(usuariosEvento);
+        res.status(200).json({ message: 'Puntuaciones actualizadas correctamente' });
     } catch (error) {
-        console.error('Error al registrar las puntuaciones: ', error);
-        res.status(400).json({ error: error.message });
+        console.error('Error al registrar puntuaciones: ', error);
+        res.status(500).json({ error: 'Error al registrar puntuaciones' });
     }
 };
-
-// Función auxiliar para agrupar por clave especificada
-const agruparPor = (array, clave) => {
-    return array.reduce((resultado, valorActual) => {
-        (resultado[valorActual[clave]] = resultado[valorActual[clave]] || []).push(valorActual);
-        return resultado;
-    }, {});
-};
-
-
 
 
 

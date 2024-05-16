@@ -1,4 +1,4 @@
-//front/src/models/event.model.js
+// //front/src/models/event.model.js
 
 import mongoose from "mongoose";
 import { connectDB } from "../service/mongoDB.js";
@@ -10,10 +10,6 @@ const playerSchema = new Schema({
     userId: {
         type: String,
         ref: 'User',
-        required: true
-    },
-    tiradaAleatoria: {
-        type: Number,
         required: true
     },
     points: {
