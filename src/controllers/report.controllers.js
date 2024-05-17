@@ -11,8 +11,8 @@ const url = process.env.URL || 'https://localhost';
 const createReport = async (req, res) => {
     try {
         
-        const { name, email, comment, authorOfCard, nameOfCard, notification } = req.body;
-        const newReport = new Report({ name, email, comment, authorOfCard, nameOfCard, notification });
+        const { name, email, comment, authorOfCard, nameOfCard, notification, isChecked } = req.body;
+        const newReport = new Report({ name, email, comment, authorOfCard, nameOfCard, notification, isChecked });
         await newReport.save();
         res.status(201).json(newReport);
     } catch (error) {
@@ -45,6 +45,22 @@ const getReportById = async (req, res) => {
         res.status(400).json({ error: error.message });
     }
 };
+
+// Marcar como visto
+const updateIsChecked = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { isChecked } = req.body;
+        const updatedReport = await Report.findByIdAndUpdate(id,{ isChecked }, { new: true });
+        if (!updatedReport) {
+            return res.status(404).json({ message: 'Reporte no encontrado' });
+        }
+        res.status(200).json(updatedReport);
+    } catch (error) {
+        console.log("Error al actualizar el reporte: ",error);
+        res.status(400).json({ error: error.message });
+    }
+}
 
 // Actualizar estado de reporte
 const updateReport = async (req, res) => {
@@ -82,6 +98,7 @@ const reportController = {
     getReports,
     getReportById,
     updateReport,
+    updateIsChecked,
     deleteReportById
 }
 

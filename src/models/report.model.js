@@ -40,6 +40,10 @@ const reportSchema = new Schema({
     nameOfCard: {
         type: String,
         ref: 'CustomCard',
+    },
+    isChecked: {
+        type: Boolean,
+        default: false
     }
 },{
     timestamps: false,
