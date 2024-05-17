@@ -7,7 +7,7 @@ import User from "../models/user.models.js";
 const createEvent = async (req, res) => {
     try {
         const { name, email, type, precio, provincia, localidad, direccion, description, fecha, hora, numMaxParticipantes } = req.body;
-        const newEvent = new Event({ creatorId: req.user._id, name, email, type, precio, provincia, localidad, direccion, description, fecha, hora, numMaxParticipantes });
+        const newEvent = new Event({ creatorId: req.user._id, name, email, type, precio, provincia, localidad, direccion, description, fecha, hora, numMaxParticipantes, participantesInscritos });
         await newEvent.save();
         const newEventUsers = new EventUsers({ eventId: newEvent._id });
         await newEventUsers.save();
@@ -80,7 +80,7 @@ export const sortearMesa = async (req, res) => {
 
         // Obtener los IDs de los jugadores del evento
         let players = eventUsers.userId.map(user => user._id);
-        
+
         // Mezclar los jugadores aleatoriamente
         players = players.sort(() => Math.random() - 0.5);
 
@@ -120,7 +120,7 @@ export const sortearMesa = async (req, res) => {
         let mesas = tables.map((table, index) => ({
             numero: index + 1,
             players: table.map(playerId => ({
-                userId: playerId, 
+                userId: playerId,
                 // tiradaAleatoria: Math.floor(Math.random() * 1000) + 1,
                 tablePoints: 0,
                 points: 0
@@ -137,6 +137,57 @@ export const sortearMesa = async (req, res) => {
         res.status(400).json({ error: error.message });
     }
 };
+
+// REORDENAR MESAS
+// const reordenarMesas = async (req, res) => {
+//     try {
+//         const eventId = req.params.eventId;
+//         const event = await Event.findById(eventId).populate('mesas.players.userId');
+
+//         if (!event) {
+//             return res.status(404).json({ error: 'Evento no encontrado' });
+//         }
+
+        
+//         const newTables = [];
+
+//         // Recolectar todos los jugadores
+//         let players = [];
+//         previousRounds.forEach(table => {
+//             table.players.forEach(player => {
+//                 players.push(player.userId._id);
+//             });
+//         });
+
+//         // Shuffle players
+//         players = players.sort(() => Math.random() - 0.5);
+
+//         // Asignar jugadores a nuevas mesas
+//         const playersPerTable = 5;
+//         for (let i = 0; i < players.length; i += playersPerTable) {
+//             newTables.push(players.slice(i, i + playersPerTable));
+//         }
+
+//         // Crear nuevas mesas asegurando que no se repitan posiciones relativas
+//         const newMesas = newTables.map((table, index) => ({
+//             numero: index + 1,
+//             players: table.map(playerId => ({
+//                 userId: playerId,
+//                 tablePoints: 0,
+//                 points: 0
+//             }))
+//         }));
+
+//         event.mesas = newMesas;
+//         await event.save();
+
+//         res.status(200).json(event);
+//     } catch (error) {
+//         console.log('Error al reordenar las mesas: ', error);
+//         res.status(400).json({ error: error.message });
+//     }
+// };
+
 
 
 // REGISTRAR PUNTUACIONES DE LOS JUGADORES
@@ -186,6 +237,7 @@ const eventControllers = {
     updateEvent,
     deleteEvent,
     sortearMesa,
+    // reordenarMesas,
     registrarPuntuaciones
 };
 

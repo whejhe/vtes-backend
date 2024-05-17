@@ -14,6 +14,7 @@ router.get('/users/:id', getEventById);
 router.put('/admin/:id',auth, updateEvent);
 router.delete('/admin/:id',auth, deleteEvent);
 router.post('/admin/sort-tables/:eventId', auth, sortearMesa);
+// router.put('/admin/sort-tables/:eventId/reordenar', reordenarMesas )
 router.put('/registrarPuntuaciones', registrarPuntuaciones);
 
 export default router;

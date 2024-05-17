@@ -24,6 +24,10 @@ const eventUsersSchema = new Schema({
         type: String,
         enum: ['confirmed', 'pending', 'cancelled', 'abandoned'],
         default: 'pending'
+    },
+    numPlayers: {
+        type: Number,
+        default: 0
     }
 },{versionKey: false});
 
