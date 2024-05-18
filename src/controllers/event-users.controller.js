@@ -141,6 +141,53 @@ const addUserByEmail = async (req, res) => {
     }
 };
 
+export const tirada = async (req, res) => {
+    try {
+        const eventId = req.params.eventId;
+
+        // Validar que el eventId sea válido
+        const event = await Event.findById(eventId);
+        if (!event) {
+            return res.status(404).json({ error: 'Evento no encontrado' });
+        }
+
+        // Obtener los usuarios inscritos en el evento
+        const eventUsers = await EventUsers.find({ eventId }).populate('userId');
+
+        // Generar y almacenar las tiradas por usuario
+        const tiradas = await Promise.all(eventUsers.map(async (eventUser) => {
+            let availableNumbers = Array.from({ length: 1000 }, (_, i) => i + 1);
+
+            const round1 = getRandomNumber(availableNumbers);
+            const round2 = getRandomNumber(availableNumbers);
+            const round3 = getRandomNumber(availableNumbers);
+
+            // Actualizar los campos de tirada en el documento EventUsers
+            eventUser.tiradas.push({ userId: eventUser.userId._id, round1, round2, round3 });
+            await eventUser.save();
+
+            return {
+                userId: eventUser.userId._id,
+                round1,
+                round2,
+                round3,
+            };
+        }));
+
+        res.status(200).json(tiradas);
+    } catch (error) {
+        console.error('Error al realizar las tiradas:', error);
+        res.status(400).json({ error: error.message });
+    }
+};
+
+function getRandomNumber(availableNumbers) {
+    const randomIndex = Math.floor(Math.random() * availableNumbers.length);
+    const randomNumber = availableNumbers[randomIndex];
+    availableNumbers.splice(randomIndex, 1);
+    return randomNumber;
+}
+
 
 const eventUsersControllers = {
     addUserToEvent,
@@ -148,6 +195,7 @@ const eventUsersControllers = {
     updateStatus,
     deleteUserFromEvent,
     addUserByEmail,
+    tirada,
 };
 
 export default eventUsersControllers;

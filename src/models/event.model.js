@@ -6,40 +6,12 @@ import { v4 as uuidv4 } from "uuid";
 
 const { Schema } = mongoose;
 
-const playerSchema = new Schema({
-    userId: {
-        type: String,
-        ref: 'User',
-        required: true
-    },
-    points: {
-        type: Number,
-        required: true
-    },
-    tablePoints: {
-        type: Number,
-        required: true
-    },
-}, { _id: false });  // Deshabilitar generación automática de _id
-
-const tableSchema = new Schema({
-    ronda: {
-        type: Number,
-        default: 1,
-    },
-    numero: {
-        type: Number,
-        required: true
-    },
-    players: [playerSchema]
-}, { _id: false }); 
-
 const eventSchema = new Schema({
     _id: {
         type: String,
         default: uuidv4
     },
-    creatorId: {
+    userId: {
         type: String,
         ref: 'User',
     },
@@ -79,7 +51,10 @@ const eventSchema = new Schema({
         type: Number,
         required: false,
     },
-    mesas: [tableSchema]
+    participantesInscritos:{
+        type: Number,
+        required: false,
+    }
 },
 {
     timestamps: false,

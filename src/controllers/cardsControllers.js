@@ -56,7 +56,7 @@ const updateCard = async (req, res) => {
 const deleteCard = async (req, res) => {
     try {
         const { id } = req.params;
-        const deletedCard = await Cards.findByIdAndDelete({_id:id});
+        const deletedCard = await Cards.findByIdAndDelete({ _id: id });
         if (!deletedCard) {
             return res.status(404).json({ error: "Carta no encontrada" });
         }

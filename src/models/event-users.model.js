@@ -1,36 +1,48 @@
 // backend/src/models/event-users.model.js
 import mongoose from "mongoose";
-import { v4 as uuidv4 } from "uuid";
-import {connectDB} from "../service/mongoDB.js";
-
+import { connectDB } from "../service/mongoDB.js";
 
 const { Schema } = mongoose;
 
-const eventUsersSchema = new Schema({
-    _id: {
+const tiradaSchema = new Schema({
+    userId: {
         type: String,
-        default: uuidv4
+        ref: 'User',
+        required: true
     },
+    round1: {
+        type: Number,
+        default: null
+    },
+    round2: {
+        type: Number,
+        default: null
+    },
+    round3: {
+        type: Number,
+        default: null
+    }
+}, {
+    _id: false
+});
+
+const eventUsersSchema = new Schema({
     eventId: {
         type: String,
         ref: 'Event',
-        // required: [true, 'El identificador del evento es obligatorio']
+        required: true
     },
-    userId: [
-        {type: String,
-        ref: 'User',}
-    ],
-    registrationStatus: {
+    userId: {
         type: String,
-        enum: ['confirmed', 'pending', 'cancelled', 'abandoned'],
-        default: 'pending'
+        ref: 'User',
+        required: true
     },
-    numPlayers: {
-        type: Number,
-        default: 0
-    }
-},{versionKey: false});
-
+    tiradas: [tiradaSchema]
+}, {
+    versionKey: false,
+    autoCreate: false,
+    timestamps: false
+});
 
 const EventUsers = connectDB.model('EventUsers', eventUsersSchema);
 
