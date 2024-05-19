@@ -12,7 +12,7 @@ const router = express.Router();
 const { createDeck, getDecks ,getDeckById, getCardsByDeckId, getDecksByUserId, updateDeck ,updateDeckVisibility, addCardToDeck, deleteDeck } = deckControllers;
 
 // Rutas para la entidad Deck
-router.get('/', auth, getDecks);
+router.get('/', getDecks);
 router.post('/',auth, createDeck);
 router.get('/:id', getDeckById);
 router.get('/:id/cards', getCardsByDeckId);

@@ -55,9 +55,9 @@ const cambiarPermisos = async (req, res) => {
             return res.status(401).json({ error: "El usuario no existe" });
         }
 
-        // Comprobar si el usuario a cambiar es administrador
-        if(userToChange.role === 'ADMIN'){
-            return res.status(400).json({ error: 'No puedes cambiar el rol de un administrador' });
+        // Comprobar si el usuario a cambiar es super administrador
+        if(userToChange.role === 'SUPER_ADMIN'){
+            return res.status(400).json({ error: 'No puedes cambiar el rol del superadministrador' });
         }
         //Actualizar rol
         userToChange.role = newRole;

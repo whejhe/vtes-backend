@@ -15,7 +15,7 @@ const __dirname = path.resolve();
 const app = express();
 
 //CONFIGURACIONES
-app.set("port", process.env.PORT || 3000);
+app.set("port", process.env.PORT);
 
 //MIDDLEWARES
 app.use(morgan("dev"));

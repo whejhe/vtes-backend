@@ -28,13 +28,13 @@ const loginUser = async (req, res) => {
         const token = jwt.sign(
             {
                 _id: user._id,
+                role: user.role,
                 name: user.name,
+                nick: user.nick,
                 email: user.email,
                 profileImage: user.profileImage,
-                nick: user.nick,
-                blocked: user.blocked,
                 avatarUrl: user.avatarUrl,
-                role: user.role
+                blocked: user.blocked,
             }
             , process.env.JWT_SECRET, { expiresIn: "12h" });
         if (!token) return res.status(500).json({ error: "Error al generar el token" });

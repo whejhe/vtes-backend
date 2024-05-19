@@ -23,7 +23,6 @@ const createCustomCard = async (req, res) => {
 };
 
 const uploadCustomCard = async (req, res) => {
-    // const direction = process.env.URL || 'https://localhost';
     try {
         const userId = req.user._id;
         const user = await User.findById(userId);
