@@ -143,37 +143,36 @@ const addUserByEmail = async (req, res) => {
     }
 };
 
-export const tirada = async (req, res) => {
-    try {
-        const eventId = req.params.eventId;
+const getRandomNumber = () => {
+    return Math.floor(Math.random() * 10000) + 1;
+};
 
-        // Validar que el eventId sea válido
-        const event = await Event.findById(eventId);
-        if (!event) {
-            return res.status(404).json({ error: 'Evento no encontrado' });
+const tirada = async (req, res) => {
+    try {
+        const { eventId } = req.params;
+        const eventUser = await EventUsers.findOne({ eventId });
+        if (!eventUser) {
+            return res.status(404).json({ error: 'Evento sin usuarios asignados' });
         }
 
-        // Obtener los usuarios inscritos en el evento
-        const eventUsers = await EventUsers.find({ eventId }).populate('userId');
+        for (let i = 0; i < eventUser.userId.length; i++) {
+            const user = await User.findById(eventUser.userId[i]);
+            if (!user) {
+                return res.status(404).json({ error: 'Usuario no encontrado' });
+            }
+            const round1 = getRandomNumber();
+            const round2 = getRandomNumber();
+            const round3 = getRandomNumber();
+            eventUser.tiradas.push({ userId: eventUser.userId[i], round1, round2, round3 });
+        }
 
-        // Generar y almacenar las tiradas por usuario
-        const tiradas = await Promise.all(eventUsers.map(async (eventUser) => {
-            let availableNumbers = Array.from({ length: 1000 }, (_, i) => i + 1);
+        await eventUser.save();
 
-            const round1 = getRandomNumber(availableNumbers);
-            const round2 = getRandomNumber(availableNumbers);
-            const round3 = getRandomNumber(availableNumbers);
-
-            // Actualizar los campos de tirada en el documento EventUsers
-            eventUser.tiradas.push({ userId: eventUser.userId._id, round1, round2, round3 });
-            await eventUser.save();
-
-            return {
-                userId: eventUser.userId._id,
-                round1,
-                round2,
-                round3,
-            };
+        const tiradas = eventUser.tiradas.map(({ userId, round1, round2, round3 }) => ({
+            userId,
+            round1,
+            round2,
+            round3,
         }));
 
         res.status(200).json(tiradas);
@@ -183,12 +182,7 @@ export const tirada = async (req, res) => {
     }
 };
 
-function getRandomNumber(availableNumbers) {
-    const randomIndex = Math.floor(Math.random() * availableNumbers.length);
-    const randomNumber = availableNumbers[randomIndex];
-    availableNumbers.splice(randomIndex, 1);
-    return randomNumber;
-}
+
 
 
 const eventUsersControllers = {
