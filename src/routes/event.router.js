@@ -8,7 +8,7 @@ const router = express.Router();
 const { createEvent, getEvents, getEventById, updateEvent, deleteEvent, sortearMesa, registrarPuntuaciones } = eventsControllers;
 
 // Rutas para la entidad Event
-router.post('/admin/', createEvent);
+router.post('/admin/',auth, createEvent);
 router.get('/', getEvents);
 router.get('/users/:id', getEventById);
 router.put('/admin/:id',auth, updateEvent);

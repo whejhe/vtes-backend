@@ -18,7 +18,7 @@ const createEvent = async (req, res) => {
             userId, name, email, type, precio, provincia, localidad, direccion, description, fecha, hora, numMaxParticipantes , participantesInscritos
         });
         await newEvent.save();
-        const newEventUsers = new EventUsers({ eventId: newEvent._id, userId });
+        const newEventUsers = new EventUsers({ eventId: newEvent._id });
         await newEventUsers.save();
         res.status(201).json(newEvent);
     } catch (error) {

@@ -30,10 +30,11 @@ const eventUsersSchema = new Schema({
     eventId: {
         type: String,
         ref: 'Event',
-        required: true
+        required: true,
+        _id: true,
     },
     userId: {
-        type: String,
+        type: [String],
         ref: 'User',
         required: true
     },
@@ -41,7 +42,8 @@ const eventUsersSchema = new Schema({
 }, {
     versionKey: false,
     autoCreate: false,
-    timestamps: false
+    timestamps: false,
+    id: false,
 });
 
 const EventUsers = connectDB.model('EventUsers', eventUsersSchema);

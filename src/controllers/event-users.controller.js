@@ -100,7 +100,8 @@ const updateStatus = async (req, res) => {
 
 //AÑADIR DESDE ADMINISTRACION A USUARIOS POR EMAIL
 const addUserByEmail = async (req, res) => {
-    const { eventId, email } = req.body;
+    const { email } = req.body;
+    const { eventId } = req.params;
     const token = req.header('Authorization').replace('Bearer ', '');
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
     const user = await User.findById(decoded._id).select('-password -__v');
@@ -110,10 +111,11 @@ const addUserByEmail = async (req, res) => {
 
     try {
         let evento;
-        const { eventId } = req.params;
         if (eventId) {
             evento = await EventUsers.findOne({ eventId });
+            console.log('Evento: ', evento);
         }else{
+            console.log('No se proporcionó el ID del evento: ', eventId);
             return res.status(404).json({ error: 'ID de evento no proporcionado' });
         }
 

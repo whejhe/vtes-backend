@@ -6,6 +6,9 @@ import Deck from "../models/deck.model.js";
 
 export const printTxt = async (req, res, next) => {
     const deckId = req.params.id;
+    if(!deckId) {
+        return res.status(400).json({ error: 'No se proporciono el ID del Mazo' });
+    }
     const deck = await Deck.findById(deckId).populate('crypt._id').populate('library._id');
     if (!deck) {
         return res.status(404).json({ error: 'Deck not found' });

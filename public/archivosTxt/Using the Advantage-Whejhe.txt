@@ -1,6 +1,6 @@
 Deck: Using the Advantage
 ------------------------------------------------ 
-Description: Mazo de bleed basado en cailean
+Description: Mazo de Sangrada con Enkil Cog para mantener el filo y usar la ventaja para acumular pool 
 Category: Bleed
 Author: Whejhe
 ------------------------------------------------
@@ -18,7 +18,6 @@ Library:
 - Secure Haven, Quantity: 1
 - Using the Advantage, Clan(es): Nosferatu antitribu, Quantity: 10
 - Fiendish Tongue, Quantity: 14
-- Under Siege, Quantity: 4
 - Camera Phone, Quantity: 2
 - Mark V, Quantity: 2
 - J. S. Simmons, Esq., Quantity: 1
@@ -33,4 +32,4 @@ Library:
 - Cats' Guidance, Disciplina(s): ani, Quantity: 6
 - No Trace, Disciplina(s): obf, Quantity: 7
 ------------------------------------------------
-Total Cards: 25
+Total Cards: 24

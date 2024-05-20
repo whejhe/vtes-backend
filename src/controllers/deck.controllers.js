@@ -21,9 +21,14 @@ const createDeck = async (req, res) => {
 // Obtener todos los mazos
 const getDecks = async (req, res) => {
     try {
-        const decks = await Deck.find();
+        const userId = req.user._id;
+        console.log(req.user._id, '_id')
+        const decks = await Deck.find({
+            $or: [{ userId: { $in: [userId] } }, { isPublic: true }],
+        });
+
         console.log("decks:", decks);
-        res.status(200).json(decks); 
+        res.status(200).json(decks);
     } catch (error) {
         console.log("Error al obtener los Mazos:", error);
         res.status(400).json({ error: error.message });
