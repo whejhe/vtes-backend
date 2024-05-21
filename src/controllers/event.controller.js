@@ -84,7 +84,7 @@ export const sortearMesa = async (req, res) => {
     try {
         const eventId = req.params.eventId;
         const eventUsers = await EventUsers.findOne({ eventId }).populate('userId');
-        const evento = await Event.findOne({ _id: eventId })
+        // const evento = await Event.findOne({ _id: eventId })
         if (!eventUsers) {
             return res.status(404).json({ error: 'No se encontraron usuarios inscritos en el evento' });
         }

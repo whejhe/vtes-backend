@@ -11,6 +11,19 @@ const emailRegex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
 const passwordRegex = /^.{6,}$/;
 
 
+// userSchema.pre('save', async function(next) {
+//     try {
+//         // Comprobar si el email ya existe
+//         const existingUser = await User.findOne({ email: this.email });
+//         if (existingUser) {
+//             throw new Error('El email ya está registrado');
+//         }
+//         next();
+//     } catch (error) {
+//         next(error);
+//     }
+// });
+
 const userSchema = new Schema({
     _id:{
         type: String,
@@ -52,6 +65,15 @@ const userSchema = new Schema({
         validate:{
             validator: (v) => passwordRegex.test(v),
             message: 'La contraseña debe contener al menos 8 caracteres, una mayuscula, una minuscula, un numero y un caracter especial de entre !@#$%^&*'
+        }
+    },
+    confirmPassword:{
+        type: String,
+        validate:{
+            validator: function(v) {
+                return v === this.password;
+            },
+            message: 'Las contraseñas no coinciden'
         }
     },
     profileImage:{

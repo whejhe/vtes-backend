@@ -1,0 +1,36 @@
+Deck: Copy of Using the Advantage
+------------------------------------------------ 
+Description: Mazo de bleed basado en cailean
+Category: Bleed
+Author: Whejhe
+------------------------------------------------
+Crypt:
+- Cailean (G2), Clan: Nosferatu antitribu, Disciplinas: dom,ANI,OBF,POT,PRE, Quantity: 5
+- Olivia (G2), Clan: Nosferatu antitribu, Disciplinas: vic,OBF,POT, Quantity: 2
+- Basil (G2), Clan: Pander, Disciplinas: obf, Quantity: 2
+- Christanius Lionel, The Mad Chronicler (G2), Clan: Nosferatu antitribu, Disciplinas: pot,ANI,OBF, Quantity: 2
+- Roger Farnsworth (G3), Clan: Malkavian antitribu, Disciplinas: aus,OBF, Quantity: 1
+------------------------------------------------
+Library:
+- The Barrens, Quantity: 1
+- Dreams of the Sphinx, Quantity: 1
+- Giant's Blood, Quantity: 1
+- Secure Haven, Quantity: 1
+- Using the Advantage, Clan(es): Nosferatu antitribu, Quantity: 10
+- Fiendish Tongue, Quantity: 14
+- Under Siege, Quantity: 4
+- Camera Phone, Quantity: 2
+- Mark V, Quantity: 2
+- J. S. Simmons, Esq., Quantity: 1
+- Tasha Morgan, Quantity: 1
+- Cloak the Gathering, Disciplina(s): obf, Quantity: 5
+- Elder Impersonation, Disciplina(s): obf, Quantity: 5
+- Enkil Cog, Quantity: 5
+- Faceless Night, Disciplina(s): obf, Quantity: 6
+- Lost in Crowds, Disciplina(s): obf, Quantity: 6
+- Spying Mission, Disciplina(s): obf, Quantity: 5
+- Swallowed by the Night, Disciplina(s): obf, Quantity: 7
+- Cats' Guidance, Disciplina(s): ani, Quantity: 6
+- No Trace, Disciplina(s): obf, Quantity: 7
+------------------------------------------------
+Total Cards: 25

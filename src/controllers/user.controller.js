@@ -49,9 +49,12 @@ const loginUser = async (req, res) => {
 
 const registerUser = async (req, res) => {
     try {
-        let { name, nick, email, password, role, profileImage, avatarUrl } = req.body;
+        let { name, nick, email, password, confirmPassword, role, profileImage, avatarUrl } = req.body;
         if (!name || !nick || !email || !password) {
             return res.status(400).json({ error: 'Todos los campos son obligatorios' });
+        }
+        if(password !== confirmPassword) {
+            return res.status(400).json({ error: 'Las contraseñas no coinciden' });
         }
         if(!profileImage) {
             profileImage = "default-avatar.png";
@@ -60,7 +63,7 @@ const registerUser = async (req, res) => {
         // Verificar si el usuario ya existe
         const existingUser = await User.findOne({ email });
         if (existingUser) {
-            return res.status(400).json({ error: 'El usuario ya existe' });
+            return res.status(400).json({ error: 'El email ya esta en uso por otro usuario' });
         }
         // Hashear la contraseña
         const hashedPassword = await bcrypt.hash(password, 10);
