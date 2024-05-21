@@ -1,5 +1,4 @@
 // //front/src/models/event.model.js
-
 import mongoose from "mongoose";
 import { connectDB } from "../service/mongoDB.js";
 import { v4 as uuidv4 } from "uuid";
@@ -77,12 +76,46 @@ const eventSchema = new Schema({
     participantesInscritos:{
         type: Number,
         required: false,
-    }
+    },
+    ronda: [
+        {
+            numero: {
+                type: Number,
+                required: true
+            },
+            mesas: [
+                {
+                    numero: {
+                        type: Number,
+                        required: true
+                    },
+                    players: [
+                        {
+                            userId: {
+                                type: String,
+                                ref: 'User'
+                            },
+                            tablePoints: {
+                                type: Number,
+                                default: 0
+                            },
+                            points: {
+                                type: Number,
+                                default: 0
+                            }
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
 },
 {
     timestamps: false,
     versionKey: false
 });
+
+
 
 const Event = connectDB.model('Event', eventSchema);
 

@@ -14,8 +14,8 @@ const createEvent = async (req, res) => {
         }
         const { name, email, type, precio, provincia, localidad, direccion, description, fecha, hora, numMaxParticipantes } = req.body;
         const participantesInscritos = user.length;
-        const newEvent = new Event({ 
-            userId, name, email, type, precio, provincia, localidad, direccion, description, fecha, hora, numMaxParticipantes , participantesInscritos
+        const newEvent = new Event({
+            userId, name, email, type, precio, provincia, localidad, direccion, description, fecha, hora, numMaxParticipantes, participantesInscritos
         });
         await newEvent.save();
         const newEventUsers = new EventUsers({ eventId: newEvent._id });
@@ -127,17 +127,42 @@ export const sortearMesa = async (req, res) => {
         }
 
         // Se actualizan los jugadores de las mesas en el evento
-        let mesas = tables.map((table, index) => ({
-            numero: index + 1,
-            players: table.map(playerId => ({
-                userId: playerId,
-                // tiradaAleatoria: Math.floor(Math.random() * 1000) + 1,
-                tablePoints: 0,
-                points: 0
+        let ronda = [{
+            numero: 1,
+            mesas: tables.map((table, index) => ({
+                numero: index + 1,
+                players: table.map(playerId => ({
+                    userId: playerId,
+                    tablePoints: 0,
+                    points: 0
+                }))
             }))
-        }));
+        },
+        {
+            numero: 2,
+            mesas: tables.map((table, index) => ({
+                numero: index + 1,
+                players: table.map(playerId => ({
+                    userId: playerId,
+                    tablePoints: 0,
+                    points: 0
+                }))
+            }))
+        },
+        {
+            numero: 3,
+            mesas: tables.map((table, index) => ({
+                numero: index + 1,
+                players: table.map(playerId => ({
+                    userId: playerId,
+                    tablePoints: 0,
+                    points: 0
+                }))
+            }))
+        }];
 
-        const updatedEvent = await Event.findByIdAndUpdate(eventId, { mesas }, { new: true }).populate('mesas.players.userId', 'name email avatarUrl');
+        const updatedEvent = await Event.findByIdAndUpdate(
+            eventId, { ronda }, { new: true }).populate('ronda.mesas.players.userId', 'name email avatarUrl');
 
         console.log('Las mesas han sido actualizadas');
         console.log('Número de mesas: ', tables.length);
@@ -152,16 +177,21 @@ export const sortearMesa = async (req, res) => {
 // REGISTRAR PUNTUACIONES DE LOS JUGADORES
 export const registrarPuntuaciones = async (req, res) => {
     try {
-        const { eventId, tableNumber, playerScores } = req.body;
+        const { eventId, rondaNumber, tableNumber, playerScores } = req.body;
 
         // Validar la entrada
-        if (!eventId || !tableNumber || !Array.isArray(playerScores)) {
+        if (!eventId || !rondaNumber || !tableNumber || !Array.isArray(playerScores)) {
             return res.status(400).json({ error: 'Datos inválidos' });
         }
 
         const event = await Event.findById(eventId);
         if (!event) {
             return res.status(404).json({ error: 'Evento no encontrado' });
+        }
+
+        const ronda = event.ronda.find(r => r.numero === rondaNumber);
+        if (!ronda) {
+            return res.status(404).json({ error: 'Ronda no encontrada' });
         }
 
         const table = event.mesas.find(mesa => mesa.numero === tableNumber);
