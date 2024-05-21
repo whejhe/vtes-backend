@@ -9,6 +9,28 @@ const emailRegex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
 const timeRegex = /^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/;
 const priceRegex = /^\d+(\.\d{2})?$/;
 
+const tiradaSchema = new Schema({
+    userId: {
+        type: String,
+        ref: 'User',
+        required: true
+    },
+    round1: {
+        type: Number,
+        default: null
+    },
+    round2: {
+        type: Number,
+        default: null
+    },
+    round3: {
+        type: Number,
+        default: null
+    }
+}, {
+    _id: false
+});
+
 const eventSchema = new Schema({
     _id: {
         type: String,
@@ -108,13 +130,13 @@ const eventSchema = new Schema({
                 }
             ]
         }
-    ]
+    ],
+    tiradas: [tiradaSchema]
 },
 {
     timestamps: false,
     versionKey: false
 });
-
 
 
 const Event = connectDB.model('Event', eventSchema);

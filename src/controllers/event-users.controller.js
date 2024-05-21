@@ -143,44 +143,44 @@ const addUserByEmail = async (req, res) => {
     }
 };
 
-const getRandomNumber = () => {
-    return Math.floor(Math.random() * 10000) + 1;
-};
+// const getRandomNumber = () => {
+//     return Math.floor(Math.random() * 10000) + 1;
+// };
 
-const tirada = async (req, res) => {
-    try {
-        const { eventId } = req.params;
-        const eventUser = await EventUsers.findOne({ eventId });
-        if (!eventUser) {
-            return res.status(404).json({ error: 'Evento sin usuarios asignados' });
-        }
+// const tirada = async (req, res) => {
+//     try {
+//         const { eventId } = req.params;
+//         const eventUser = await EventUsers.findOne({ eventId });
+//         if (!eventUser) {
+//             return res.status(404).json({ error: 'Evento sin usuarios asignados' });
+//         }
 
-        for (let i = 0; i < eventUser.userId.length; i++) {
-            const user = await User.findById(eventUser.userId[i]);
-            if (!user) {
-                return res.status(404).json({ error: 'Usuario no encontrado' });
-            }
-            const round1 = getRandomNumber();
-            const round2 = getRandomNumber();
-            const round3 = getRandomNumber();
-            eventUser.tiradas.push({ userId: eventUser.userId[i], round1, round2, round3 });
-        }
+//         for (let i = 0; i < eventUser.userId.length; i++) {
+//             const user = await User.findById(eventUser.userId[i]);
+//             if (!user) {
+//                 return res.status(404).json({ error: 'Usuario no encontrado' });
+//             }
+//             const round1 = getRandomNumber();
+//             const round2 = getRandomNumber();
+//             const round3 = getRandomNumber();
+//             eventUser.tiradas.push({ userId: eventUser.userId[i], round1, round2, round3 });
+//         }
 
-        await eventUser.save();
+//         await eventUser.save();
 
-        const tiradas = eventUser.tiradas.map(({ userId, round1, round2, round3 }) => ({
-            userId,
-            round1,
-            round2,
-            round3,
-        }));
+//         const tiradas = eventUser.tiradas.map(({ userId, round1, round2, round3 }) => ({
+//             userId,
+//             round1,
+//             round2,
+//             round3,
+//         }));
 
-        res.status(200).json(tiradas);
-    } catch (error) {
-        console.error('Error al realizar las tiradas:', error);
-        res.status(400).json({ error: error.message });
-    }
-};
+//         res.status(200).json(tiradas);
+//     } catch (error) {
+//         console.error('Error al realizar las tiradas:', error);
+//         res.status(400).json({ error: error.message });
+//     }
+// };
 
 
 
@@ -191,7 +191,7 @@ const eventUsersControllers = {
     updateStatus,
     deleteUserFromEvent,
     addUserByEmail,
-    tirada,
+    // tirada,
 };
 
 export default eventUsersControllers;

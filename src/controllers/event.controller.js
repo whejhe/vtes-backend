@@ -84,6 +84,7 @@ export const sortearMesa = async (req, res) => {
     try {
         const eventId = req.params.eventId;
         const eventUsers = await EventUsers.findOne({ eventId }).populate('userId');
+        const evento = await Event.findOne({ _id: eventId })
         if (!eventUsers) {
             return res.status(404).json({ error: 'No se encontraron usuarios inscritos en el evento' });
         }
@@ -92,47 +93,83 @@ export const sortearMesa = async (req, res) => {
         let players = eventUsers.userId.map(user => user._id);
 
         // Mezclar los jugadores aleatoriamente
-        players = players.sort(() => Math.random() - 0.5);
+        // players = players.sort(() => Math.random() - 0.5);
 
+        let tiradas = [];
+        for (let i = 0; i < players.length; i++) {
+            tiradas.push({ userId: players[i], round1: getRandomNumber(), round2: getRandomNumber(), round3: getRandomNumber() });
+        }
+
+        // Ordenar los jugadores por cada ronda
+        let round1Players = [...tiradas].sort((a, b) => b.round1 - a.round1);
+        let round2Players = [...tiradas].sort((a, b) => b.round2 - a.round2);
+        let round3Players = [...tiradas].sort((a, b) => b.round3 - a.round3);
+
+        console.log(tiradas, 'tiradas \n\n ')
+        console.log(round1Players, 'jugadores ronda 1')
+
+        // Crear las mesas
         let totalPlayers = players.length;
         let playersPerTable = 5;
-        let tables = [];
+        let round1Tables = [];
+        let round2Tables = [];
+        let round3Tables = [];
 
         for (let i = 0; i < totalPlayers; i += playersPerTable) {
-            tables.push(players.slice(i, i + playersPerTable));
+            round1Tables.push(round1Players.slice(i, i + playersPerTable));
+            round2Tables.push(round2Players.slice(i, i + playersPerTable));
+            round3Tables.push(round3Players.slice(i, i + playersPerTable));
         }
 
-        while (tables.some(table => table.length < 4)) {
-            let tableWithFive = tables.find(table => table.length === 5);
-            if (tableWithFive) {
-                let playerToMove = tableWithFive.pop();
-                let lastTable = tables[tables.length - 1];
-                if (lastTable.length < 5) {
-                    lastTable.push(playerToMove);
-                } else {
-                    tables.push([playerToMove]);
-                }
-            } else {
-                const tableWithLessThanFour = tables.find(table => table.length < 4);
-                if (tableWithLessThanFour) {
-                    const anonymousUser = await User.findOne({ email: 'anonimo@gmail.com' });
-                    if (!anonymousUser) {
-                        return res.status(404).json({ error: 'Jugador ficticio no encontrado' });
-                    }
-                    tableWithLessThanFour.push(anonymousUser._id);
-                } else {
+        for (let i = 0; i < 3; i++) {
+            let tables
+            switch (i) {
+                case 0:
+                    tables = round1Tables
                     break;
+                case 1:
+                    tables = round2Tables
+                    break;
+                case 2:
+                    tables = round3Tables
+                    break;
+                default:
+                    console.log('Error en el switch')
+            }
+
+            while (tables.some(table => table.length < 4)) {
+                let tableWithFive = tables.find(table => table.length === 5);
+                if (tableWithFive) {
+                    let playerToMove = tableWithFive.pop();
+                    let lastTable = tables[tables.length - 1];
+                    if (lastTable.length < 5) {
+                        lastTable.push(playerToMove);
+                    } else {
+                        tables.push([playerToMove]);
+                    }
+                } else {
+                    const tableWithLessThanFour = tables.find(table => table.length < 4);
+                    if (tableWithLessThanFour) {
+                        const anonymousUser = await User.findOne({ email: 'anonimo@gmail.com' });
+                        if (!anonymousUser) {
+                            return res.status(404).json({ error: 'Jugador ficticio no encontrado' });
+                        }
+                        tableWithLessThanFour.push(anonymousUser._id);
+                    } else {
+                        break;
+                    }
                 }
             }
-        }
 
+        }
+        console.log(round1Tables, 'mesas ronda 1')
         // Se actualizan los jugadores de las mesas en el evento
         let ronda = [{
             numero: 1,
-            mesas: tables.map((table, index) => ({
+            mesas: round1Tables.map((table, index) => ({
                 numero: index + 1,
                 players: table.map(playerId => ({
-                    userId: playerId,
+                    userId: playerId.userId,
                     tablePoints: 0,
                     points: 0
                 }))
@@ -140,10 +177,10 @@ export const sortearMesa = async (req, res) => {
         },
         {
             numero: 2,
-            mesas: tables.map((table, index) => ({
+            mesas: round2Tables.map((table, index) => ({
                 numero: index + 1,
                 players: table.map(playerId => ({
-                    userId: playerId,
+                    userId: playerId.userId,
                     tablePoints: 0,
                     points: 0
                 }))
@@ -151,21 +188,21 @@ export const sortearMesa = async (req, res) => {
         },
         {
             numero: 3,
-            mesas: tables.map((table, index) => ({
+            mesas: round3Tables.map((table, index) => ({
                 numero: index + 1,
                 players: table.map(playerId => ({
-                    userId: playerId,
+                    userId: playerId.userId,
                     tablePoints: 0,
                     points: 0
                 }))
             }))
         }];
-
+        console.log(JSON.stringify(ronda), 'ronda entera a ver')
         const updatedEvent = await Event.findByIdAndUpdate(
             eventId, { ronda }, { new: true }).populate('ronda.mesas.players.userId', 'name email avatarUrl');
 
         console.log('Las mesas han sido actualizadas');
-        console.log('Número de mesas: ', tables.length);
+        console.log('Número de mesas: ', round1Tables.length);
         res.status(200).json(updatedEvent);
     } catch (error) {
         console.log('Error al sortear las mesas: ', error);
@@ -218,6 +255,51 @@ export const registrarPuntuaciones = async (req, res) => {
 };
 
 
+const getRandomNumber = () => {
+    return Math.floor(Math.random() * 10000) + 1;
+};
+
+const tirada = async (req, res) => {
+    try {
+        const { eventId } = req.params;
+        console.log('EventoID:', eventId);
+        // const Event = await Event.findById(eventId);
+        const evento = await Event.findOne({ _id: eventId });
+        const eventUsers = await EventUsers.findOne({ eventId })
+        if (!evento) {
+            return res.status(404).json({ error: 'Evento sin usuarios asignados' });
+        }
+        console.log('Evento:', evento);
+
+        for (let i = 0; i < eventUsers.userId.length; i++) {
+            const user = await User.findById(eventUsers.userId[i]);
+            if (!user) {
+                return res.status(404).json({ error: 'Usuario no encontrado' });
+            }
+            const round1 = getRandomNumber();
+            const round2 = getRandomNumber();
+            const round3 = getRandomNumber();
+            evento.tiradas.push({ userId: evento.userId[i], round1, round2, round3 });
+        }
+
+        await evento.save();
+
+        const tiradas = Event.tiradas.map(({ userId, round1, round2, round3 }) => ({
+            userId,
+            round1,
+            round2,
+            round3,
+        }));
+        console.log('Tiradas:', tiradas);
+        res.status(200).json(tiradas);
+    } catch (error) {
+        console.error('Error al realizar las tiradas:', error);
+        res.status(400).json({ error: error.message });
+    }
+};
+
+
+
 
 const eventControllers = {
     createEvent,
@@ -227,7 +309,8 @@ const eventControllers = {
     deleteEvent,
     sortearMesa,
     // reordenarMesas,
-    registrarPuntuaciones
+    registrarPuntuaciones,
+    tirada
 };
 
 export default eventControllers;
