@@ -31,7 +31,7 @@ const reportSchema = new Schema({
     },
     comment:{
         type: String,
-        required: [true, 'El comentario del reporte es obligatorio']
+        required: [true, 'No puedes mandar un reporte vacio'],
     },
     authorOfCard: {
         type: String,
