@@ -1,0 +1,12 @@
+Deck: Copy of Sin nombre
+------------------------------------------------ 
+Description: Descripcion
+Category: 
+Author: Whejhe
+------------------------------------------------
+Crypt:
+- Anson (G1), Clan: Toreador, Disciplinas: aus,dom,CEL,PRE, Quantity: 1
+------------------------------------------------
+Library:
+------------------------------------------------
+Total Cards: 1
