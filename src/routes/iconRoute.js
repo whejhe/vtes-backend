@@ -3,12 +3,13 @@ import { iconControllers } from '../controllers/index.js';
 
 const router = express.Router();
 
-const { createIcon, getIcons, getIconsByType, getIconByName } = iconControllers;
+const { createIcon, getIcons, getIconsByType, getIconByName, updatedIcon } = iconControllers;
 
 // Rutas para la entidad Icon
 router.post('/create', createIcon);
-router.get('/get', getIcons);
+router.get('/', getIcons);
 router.get('/getByType', getIconsByType);
 router.get('/getIconByName', getIconByName);
+router.put('/update/:id', updatedIcon);
 
 export default router;

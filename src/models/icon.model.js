@@ -12,6 +12,9 @@ const iconSchema = new Schema({
     type: {
         type: [String],
     },
+    isDiscipline: {
+        type: String,
+    },
     name: {
         type: String,
     },

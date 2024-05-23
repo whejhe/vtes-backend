@@ -4,9 +4,9 @@ import Icons from "../models/icon.model.js";
 // Guardar Iconos
 const createIcon = async (req, res) => {
     try {
-        const { type, name, extension } = req.body;
+        const { type, isDiscipline, name, extension } = req.body;
         const url = `/uploads/icons/${type}/${name}.${extension}`;
-        const newIcon = new Icons({ type, name, url, extension });
+        const newIcon = new Icons({ type, isDiscipline, name, url, extension });
         await newIcon.save();
         res.status(201).json(newIcon);
     }catch(error){
@@ -48,11 +48,25 @@ const getIconByName = async (req, res) => {
     }
 }
 
+const updatedIcon = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { type, isDiscipline, name, extension } = req.body;
+        const url = `/uploads/icons/${type}/${name}.${extension}`;
+        const updatedIcon = await Icons.findByIdAndUpdate(id, { type, isDiscipline, name, url, extension }, { new: true });
+        res.status(200).json(updatedIcon);
+    }catch(error){
+        console.log('Error al actualizar el icono: ', error);
+        res.status(400).json({error: 'Error al actualizar el icono'})
+    }
+}
+
 const iconControllers = {
     createIcon,
     getIcons,
     getIconsByType,
     getIconByName,
+    updatedIcon
 }
 
 export default iconControllers;
