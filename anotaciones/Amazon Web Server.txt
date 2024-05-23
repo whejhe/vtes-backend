@@ -85,4 +85,4 @@ sudo docker logs (id contenedor) //ver output de contenedor docker, para cuando 
 sudo docker exec -it (id contenedor) sh //por si alguna razon quiero meterme al contenedor para ver lo que sea
 
 
-sdasdasd
+sdasdasdaxsaxsa
