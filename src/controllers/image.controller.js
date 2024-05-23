@@ -149,6 +149,7 @@ const deleteImage = async (req, res) => {
     }
 };
 
+
 const imageControllers = {
     uploadAvatar,
     createImage,

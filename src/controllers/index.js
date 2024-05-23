@@ -7,6 +7,7 @@ import imageControllers from "./image.controller.js";
 import userControllers from "./user.controller.js";
 import adminControllers from "./admin.controllers.js";
 import reportController from "./report.controllers.js";
+import iconControllers from "./iconControllers.js";
 
 export {
     cardsControllers,
@@ -18,4 +19,5 @@ export {
     userControllers,
     adminControllers,
     reportController,
+    iconControllers,
 }

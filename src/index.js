@@ -45,7 +45,7 @@ const options = {
 }
 
 https.createServer(options, app).listen(process.env.PORT, () => {
-    console.log("Servidor corriendo en el puerto: ", app.get("port"));
+    console.log("Servidor corriendo en el puerto: ", app.get("port"), process.env.PORT);
     console.log("En el modo: ", process.env.NODE_ENV);
 })
 
