@@ -53,13 +53,13 @@ const registerUser = async (req, res) => {
         if (!name || !nick || !email || !password) {
             return res.status(400).json({ error: 'Todos los campos son obligatorios' });
         }
-        if(password !== confirmPassword) {
+        if(confirmPassword !== password) {
             return res.status(400).json({ error: 'Las contraseñas no coinciden' });
         }
         if(!profileImage) {
             profileImage = "default-avatar.png";
         }
-        const NewAvatarUrl = `/vtes-backend/uploads/avatars/${profileImage}`;
+        const NewAvatarUrl = `/uploads/avatars/${profileImage}`;
         // Verificar si el usuario ya existe
         const existingUser = await User.findOne({ email });
         if (existingUser) {
