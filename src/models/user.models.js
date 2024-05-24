@@ -57,9 +57,7 @@ const userSchema = new Schema({
     confirmPassword:{
         type: String,
         validate:{
-            validator: function(v) {
-                return v === this.password;
-            },
+            validator: (v) => passwordRegex.test(v),
             message: 'Las contraseñas no coinciden'
         }
     },

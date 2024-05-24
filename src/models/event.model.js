@@ -83,6 +83,10 @@ const eventSchema = new Schema({
         type: String,
         required: [true, 'La fecha es obligatoria'],
     },
+    iniciado: {
+        type: Boolean,
+        default: false
+    },
     hora: {
         type: String,
         required: [true, 'La hora es obligatoria'],

@@ -30,12 +30,12 @@ app.use(cors({
 //Configurar rutas de archivos estaticos (imagenes)
 app.use(express.static('./public'));
 app.use(express.static(path.join(__dirname, "../public/data")));
-app.use(express.static(path.join(__dirname, "../public/uploads")));
+app.use('/test/uploads',express.static(path.join(__dirname, "../public/uploads")));
 // app.use('/vtes-backend/uploads', express.static(path.join(__dirname, "uploads")));
 // app.use('/vtes-backend/uploads/avatars', express.static(path.join(__dirname, "uploads/avatars")));
 // app.use('/uploads/customCards', express.static(path.join(__dirname, "uploads/customCards")));
 app.use('/vtes-backend/public/uploads', express.static(path.join(__dirname, "uploads")));
-app.use('/vtes-backend/public/uploads/avatars', express.static(path.join(__dirname, "uploads/avatars")));
+app.use('/vtes-backend/public/uploads/avatars', express.static(path.join(__dirname, "../public/uploads/avatars")));
 app.use('/public/uploads/customCards', express.static(path.join(__dirname, "uploads/customCards")));
 
 

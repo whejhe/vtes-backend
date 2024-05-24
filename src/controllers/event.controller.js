@@ -22,7 +22,7 @@ const createEvent = async (req, res) => {
         await newEventUsers.save();
         res.status(201).json(newEvent);
     } catch (error) {
-        console.log('Error al crear el evento: ',error);
+        console.log('Error al crear el evento: ', error);
         res.status(400).json({ error: 'Error al crear el evento' });
     }
 };
@@ -40,7 +40,7 @@ const getEvents = async (req, res) => {
 // Obtener un evento por ID
 const getEventById = async (req, res) => {
     try {
-        const event = await Event.findById(req.params.id);
+        const event = await Event.findById(req.params.id).populate('ronda.mesas.players.userId', 'name email avatarUrl');;
         if (!event) {
             return res.status(404).json({ error: "Evento no encontrado" });
         }
@@ -80,10 +80,56 @@ const deleteEvent = async (req, res) => {
 };
 
 
+export const sumarPuntuaciones = async (req, res) => {
+    try {
+        const eventId = req.params.eventId;
+        console.log('EventID: ', eventId);
+        const event = await Event.findById(eventId);
+        const eventUsers = await EventUsers.findOne({ eventId });
+
+        if (!event) {
+            return res.status(404).json({ message: "Event not found" });
+        }
+
+        let ranking = [];
+
+        // Crear un objeto de ranking con los userId inicializados en 0
+        for (let p of eventUsers.userId) {
+            ranking.push({ _id: p, points: 0, tablePoints: 0 });
+        }
+
+        for (const ronda of event.ronda) {
+            for (const mesa of ronda.mesas) {
+                for (const jugador of mesa.players) {
+                    // Buscar el índice del jugador en el ranking
+                    const playerIndex = ranking.findIndex(player => player._id.toString() === jugador.userId.toString());
+                    if (playerIndex !== -1) {
+                        // Actualizar los puntos y tablePoints del jugador
+                        ranking[playerIndex].points += jugador.points;
+                        ranking[playerIndex].tablePoints += jugador.tablePoints;
+                    }
+                }
+            }
+        }
+
+        res.json({ ranking });
+    } catch (error) {
+        console.log('Error al sumar las puntuaciones: ', error);
+        res.status(500).json({ message: error.message });
+    }
+};
+
+
+
+
+
+
+
 // SORTEAR MESAS DE UN EVENTO
 export const sortearMesa = async (req, res) => {
     try {
         const eventId = req.params.eventId;
+        let foundEvento = await Event.findOne({ _id: eventId });
         const eventUsers = await EventUsers.findOne({ eventId }).populate('userId');
         // const evento = await Event.findOne({ _id: eventId })
         if (!eventUsers) {
@@ -199,12 +245,19 @@ export const sortearMesa = async (req, res) => {
             }))
         }];
         console.log(JSON.stringify(ronda), 'ronda entera a ver')
-        const updatedEvent = await Event.findByIdAndUpdate(
-            eventId, { ronda }, { new: true }).populate('ronda.mesas.players.userId', 'name email avatarUrl');
 
+        if (!foundEvento.iniciado) {
+            foundEvento.ronda = ronda;
+            foundEvento.iniciado = true;
+            foundEvento.save();
+        } else {
+            foundEvento.iniciado = false;
+            foundEvento.save();
+        }
+        foundEvento = await Event.findById(eventId).populate('ronda.mesas.players.userId', 'name email avatarUrl');
         console.log('Las mesas han sido actualizadas');
         console.log('Número de mesas: ', round1Tables.length);
-        res.status(200).json(updatedEvent);
+        res.status(200).json(foundEvento);
     } catch (error) {
         console.log('Error al sortear las mesas: ', error);
         res.status(400).json({ error: error.message });
@@ -213,47 +266,47 @@ export const sortearMesa = async (req, res) => {
 
 
 // REGISTRAR PUNTUACIONES DE LOS JUGADORES
-export const registrarPuntuaciones = async (req, res) => {
-    try {
-        const { eventId, rondaNumber, tableNumber, playerScores } = req.body;
+// export const registrarPuntuaciones = async (req, res) => {
+//     try {
+//         const { eventId, rondaNumber, tableNumber, playerScores } = req.body;
 
-        // Validar la entrada
-        if (!eventId || !rondaNumber || !tableNumber || !Array.isArray(playerScores)) {
-            return res.status(400).json({ error: 'Datos inválidos' });
-        }
+//         // Validar la entrada
+//         if (!eventId || !rondaNumber || !tableNumber || !Array.isArray(playerScores)) {
+//             return res.status(400).json({ error: 'Datos inválidos' });
+//         }
 
-        const event = await Event.findById(eventId);
-        if (!event) {
-            return res.status(404).json({ error: 'Evento no encontrado' });
-        }
+//         const event = await Event.findById(eventId);
+//         if (!event) {
+//             return res.status(404).json({ error: 'Evento no encontrado' });
+//         }
 
-        const ronda = event.ronda.find(r => r.numero === rondaNumber);
-        if (!ronda) {
-            return res.status(404).json({ error: 'Ronda no encontrada' });
-        }
+//         const ronda = event.ronda.find(r => r.numero === rondaNumber);
+//         if (!ronda) {
+//             return res.status(404).json({ error: 'Ronda no encontrada' });
+//         }
 
-        const table = event.mesas.find(mesa => mesa.numero === tableNumber);
-        if (!table) {
-            return res.status(404).json({ error: 'Mesa no encontrada' });
-        }
+//         const table = event.mesas.find(mesa => mesa.numero === tableNumber);
+//         if (!table) {
+//             return res.status(404).json({ error: 'Mesa no encontrada' });
+//         }
 
-        // Actualizar los puntajes de los jugadores
-        playerScores.forEach(({ userId, points, tablePoints }) => {
-            const player = table.players.find(player => player.userId === userId);
-            if (player) {
-                player.points = points;
-                player.tablePoints = tablePoints;
-            }
-        });
+//         // Actualizar los puntajes de los jugadores
+//         playerScores.forEach(({ userId, points, tablePoints }) => {
+//             const player = table.players.find(player => player.userId === userId);
+//             if (player) {
+//                 player.points = points;
+//                 player.tablePoints = tablePoints;
+//             }
+//         });
 
-        await event.save();
+//         await event.save();
 
-        res.status(200).json({ message: 'Puntuaciones actualizadas correctamente' });
-    } catch (error) {
-        console.error('Error al registrar puntuaciones: ', error);
-        res.status(500).json({ error: 'Error al registrar puntuaciones' });
-    }
-};
+//         res.status(200).json({ message: 'Puntuaciones actualizadas correctamente' });
+//     } catch (error) {
+//         console.error('Error al registrar puntuaciones: ', error);
+//         res.status(500).json({ error: 'Error al registrar puntuaciones' });
+//     }
+// };
 
 
 const getRandomNumber = () => {
@@ -302,6 +355,8 @@ const tirada = async (req, res) => {
 
 
 
+
+
 const eventControllers = {
     createEvent,
     getEvents,
@@ -309,8 +364,9 @@ const eventControllers = {
     updateEvent,
     deleteEvent,
     sortearMesa,
+    sumarPuntuaciones,
     // reordenarMesas,
-    registrarPuntuaciones,
+    // registrarPuntuaciones,
     tirada
 };
 
