@@ -19,6 +19,7 @@ const imageSchema = new Schema({
     },
     name: {
         type: String,
+        required: [true, 'El nombre de la imagen es obligatorio'],
     },
     image: {
         type: String,
