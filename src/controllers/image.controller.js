@@ -4,33 +4,6 @@ import User  from "../models/user.models.js";
 import path from "path";
 
 // Añadir Imagen a un usuario
-// const uploadAvatar = async (req, res) => {
-//     try{
-//         const userId = req.user._id;
-//         const user = await User.findById(userId);
-//         if (!user) {
-//             return res.status(404).json({ error: "Usuario no encontrado" });
-//         }
-//         const { name, filename } = req.body;
-//         // const imageUrl = path.join('/uploads', 'avatars', filename);
-//         const author = req.user.nick;
-//         const imageUrl = `/uploads/avatars/${filename}`;
-//         const type = 'private-avatar';
-        
-//         // Crear una nueva imagen
-//         const newAvatar = new Image({ userId, name, type, image: filename, imageUrl, author });
-//         await newAvatar.save();
-//         console.log('newAvatar: ', newAvatar);
-//         res.status(201).json(newAvatar);
-//     }catch(error){
-//         console.log('Error al subir imagen de Avatar: ',error);
-//         if(error.name === 'ValidationError') {
-//             return res.status(400).json({ error: error.message });
-//         }else{
-//             return res.status(500).json({ error: 'Error al subir la imagen' });
-//         }
-//     }
-// }
 const uploadAvatar = async (req, res) => {
     try {
         const userId = req.user._id;

@@ -74,7 +74,7 @@ const customCardsSchema = new Schema({
     }
 },{
     versionKey: false,
-    timestamps: true
+    timestamps: false
 });
 
 const Cards = connectDB.model('customCards', customCardsSchema);
