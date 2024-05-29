@@ -26,7 +26,8 @@ const tiradaSchema = new Schema({
     round3: {
         type: Number,
         default: null
-    }
+    },
+
 }, {
     _id: false
 });
@@ -99,7 +100,7 @@ const eventSchema = new Schema({
         type: Number,
         required: false,
     },
-    participantesInscritos:{
+    participantesInscritos: {
         type: Number,
         required: false,
     },
@@ -135,12 +136,26 @@ const eventSchema = new Schema({
             ]
         }
     ],
-    tiradas: [tiradaSchema]
+    tiradas: [tiradaSchema],
+    ranking: [
+        {
+            userId: {
+                type: String,
+                ref: 'User'
+            },
+            points: {
+                type: Number
+            },
+            tablePoints: {
+                type: Number
+            }
+        }
+    ]
 },
-{
-    timestamps: false,
-    versionKey: false
-});
+    {
+        timestamps: false,
+        versionKey: false
+    });
 
 
 const Event = connectDB.model('Event', eventSchema);

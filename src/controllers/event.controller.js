@@ -40,7 +40,7 @@ const getEvents = async (req, res) => {
 // Obtener un evento por ID
 const getEventById = async (req, res) => {
     try {
-        const event = await Event.findById(req.params.id).populate('ronda.mesas.players.userId', 'name email avatarUrl');;
+        const event = await Event.findById(req.params.id).populate('ronda.mesas.players.userId', 'name email avatarUrl').populate('ranking.userId', 'name email avatarUrl');
         if (!event) {
             return res.status(404).json({ error: "Evento no encontrado" });
         }
@@ -95,14 +95,14 @@ export const sumarPuntuaciones = async (req, res) => {
 
         // Crear un objeto de ranking con los userId inicializados en 0
         for (let p of eventUsers.userId) {
-            ranking.push({ _id: p, points: 0, tablePoints: 0 });
+            ranking.push({ userId: p, points: 0, tablePoints: 0 });
         }
 
         for (const ronda of event.ronda) {
             for (const mesa of ronda.mesas) {
                 for (const jugador of mesa.players) {
                     // Buscar el índice del jugador en el ranking
-                    const playerIndex = ranking.findIndex(player => player._id.toString() === jugador.userId.toString());
+                    const playerIndex = ranking.findIndex(player => player.userId.toString() === jugador.userId.toString());
                     if (playerIndex !== -1) {
                         // Actualizar los puntos y tablePoints del jugador
                         ranking[playerIndex].points += jugador.points;
@@ -112,7 +112,11 @@ export const sumarPuntuaciones = async (req, res) => {
             }
         }
 
-        res.json({ ranking });
+        let sortedRanking = ranking.sort((a, b) => b.tablePoints - a.tablePoints || b.points - a.points);
+        event.ranking = sortedRanking;
+        event.save()
+        // console.log(ev.ranking);
+        res.json({ sortedRanking });
     } catch (error) {
         console.log('Error al sumar las puntuaciones: ', error);
         res.status(500).json({ message: error.message });
