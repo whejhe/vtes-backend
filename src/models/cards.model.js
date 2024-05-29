@@ -31,6 +31,7 @@ const cardsSchema = new Schema({
     },
     clans:{
         type: [String],
+        default: null,
         required: false
     },
     capacity:{
