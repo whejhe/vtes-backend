@@ -21,7 +21,7 @@ export const generateDeckPDF = async (req, res) => {
 
             const fileName = path.basename(url);
             console.log(__dirname, 'dirname');
-            const filePath = `${__dirname}/uploads/vtesCards/${fileName}`;
+            const filePath = `${__dirname}/public/uploads/vtesCards/${fileName}`;
 
             // Verificar si el archivo ya existe
             if (fs.existsSync(filePath)) {
