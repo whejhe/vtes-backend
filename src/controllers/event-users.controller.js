@@ -7,21 +7,24 @@ import jwt from "jsonwebtoken";
 // Añadir usuarios a un evento
 const addUserToEvent = async (req, res) => {
     try {
-        let evento
+        let eventUsers, evento;
         const { eventId } = req.params;
         if (eventId) {
-            evento = await EventUsers.findOne({ eventId });
+            eventUsers = await EventUsers.findOne({ eventId });
+            evento = await Event.findOne({ _id: eventId });
         } else {
-            return res.status(400).json({ error: 'No se proporcionó el ID del evento' });
+            return res.status(400).json({ error: 'No se proporcionó el ID del eventUsers' });
         }
         const { userId } = req.body;
         if (!userId) {
             return res.status(400).json({ error: 'No se proporcionaron IDs de usuarios' });
-        } else if (evento.userId.includes(userId)) {
-            return res.status(400).json({ error: 'El usuario ya se encuentra en el evento' });
+        } else if (eventUsers.userId.includes(userId)) {
+            return res.status(400).json({ error: 'El usuario ya se encuentra en el eventUsers' });
         }
-        evento.userId.push(userId)
-        await evento.save();
+        eventUsers.userId.push(userId)
+        let updatedEvent = await eventUsers.save();
+
+
         res.status(201).json({ message: "Usuarios agregados correctamente" });
     } catch (error) {
         console.error('Error al añadir usuarios: ', error);
@@ -33,14 +36,14 @@ const addUserToEvent = async (req, res) => {
 // Obtener todos los usuarios asignados a un evento
 const getUsersForEvent = async (req, res) => {
     try {
-        const { eventId } = req.params;        
+        const { eventId } = req.params;
         const eventUsers = await EventUsers.findOne({ eventId }).populate('userId');
         if (!eventUsers) {
             return res.status(404).json({ error: "No se encontraron usuarios" });
         }
         res.status(200).json(eventUsers);
     } catch (error) {
-        console.log('Se produjo un error durante la busqueda de usuarios para el evento: ',error);
+        console.log('Se produjo un error durante la busqueda de usuarios para el evento: ', error);
         res.status(400).json({ error: error.message });
     }
 };
@@ -74,7 +77,7 @@ const deleteUserFromEvent = async (req, res) => {
             eventUser.userId.splice(userIndex, 1);
             await eventUser.save();
             res.status(200).json({ message: 'Usuario eliminado correctamente' });
-        }else{
+        } else {
             return res.status(404).json({ error: 'Usuario no es parte del evento' });
         }
     } catch (error) {
@@ -114,7 +117,7 @@ const addUserByEmail = async (req, res) => {
         if (eventId) {
             evento = await EventUsers.findOne({ eventId });
             console.log('Evento: ', evento);
-        }else{
+        } else {
             console.log('No se proporcionó el ID del evento: ', eventId);
             return res.status(404).json({ error: 'ID de evento no proporcionado' });
         }

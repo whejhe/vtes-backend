@@ -49,13 +49,11 @@ const loginUser = async (req, res) => {
 
 const registerUser = async (req, res) => {
     try {
-        let { name, nick, email, password, confirmPassword, role, profileImage, avatarUrl } = req.body;
+        let { name, nick, email, password, role, profileImage, avatarUrl } = req.body;
         if (!name || !nick || !email || !password) {
             return res.status(400).json({ error: 'Todos los campos son obligatorios' });
         }
-        if(confirmPassword !== password) {
-            return res.status(400).json({ error: 'Las contraseñas no coinciden' });
-        }
+        
         if(!profileImage) {
             profileImage = "default-avatar.png";
         }

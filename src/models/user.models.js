@@ -54,13 +54,6 @@ const userSchema = new Schema({
             message: 'La contraseña debe contener al menos 8 caracteres, una mayuscula, una minuscula, un numero y un caracter especial de entre !@#$%^&*'
         }
     },
-    confirmPassword:{
-        type: String,
-        validate:{
-            validator: (v) => passwordRegex.test(v),
-            message: 'Las contraseñas no coinciden'
-        }
-    },
     profileImage:{
         type: String,
         default: "default-avatar.png",

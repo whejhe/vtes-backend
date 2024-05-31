@@ -15,7 +15,7 @@ const createEvent = async (req, res) => {
         const { name, email, type, precio, provincia, localidad, direccion, description, fecha, hora, numMaxParticipantes } = req.body;
         const participantesInscritos = user.length;
         const newEvent = new Event({
-            userId, name, email, type, precio, provincia, localidad, direccion, description, fecha, hora, numMaxParticipantes, participantesInscritos
+            userId, name, email, type, precio, provincia, localidad, direccion, description, fecha, hora, numMaxParticipantes, participantesInscritos, ranking: []
         });
         await newEvent.save();
         const newEventUsers = new EventUsers({ eventId: newEvent._id });
@@ -147,9 +147,12 @@ export const sortearMesa = async (req, res) => {
         // players = players.sort(() => Math.random() - 0.5);
 
         let tiradas = [];
+        let ranking = []
         for (let i = 0; i < players.length; i++) {
             tiradas.push({ userId: players[i], round1: getRandomNumber(), round2: getRandomNumber(), round3: getRandomNumber() });
+            ranking.push({ userId: players[i], points: 0, tablePoints: 0 });
         }
+        foundEvento.ranking = ranking;
 
         // Ordenar los jugadores por cada ronda
         let round1Players = [...tiradas].sort((a, b) => b.round1 - a.round1);
@@ -198,17 +201,17 @@ export const sortearMesa = async (req, res) => {
                     } else {
                         tables.push([playerToMove]);
                     }
+                    // } else {
+                    //     // const tableWithLessThanFour = tables.find(table => table.length < 4);
+                    //     // if (tableWithLessThanFour) {
+                    //     //     const anonymousUser = await User.findOne({ email: 'anonimo@gmail.com' });
+                    //     //     if (!anonymousUser) {
+                    //     //         return res.status(404).json({ error: 'Jugador ficticio no encontrado' });
+                    //     //     }
+                    //     //     tableWithLessThanFour.push(anonymousUser);
+                    //     } 
                 } else {
-                    const tableWithLessThanFour = tables.find(table => table.length < 4);
-                    if (tableWithLessThanFour) {
-                        const anonymousUser = await User.findOne({ email: 'anonimo@gmail.com' });
-                        if (!anonymousUser) {
-                            return res.status(404).json({ error: 'Jugador ficticio no encontrado' });
-                        }
-                        tableWithLessThanFour.push(anonymousUser._id);
-                    } else {
-                        break;
-                    }
+                    break;
                 }
             }
 
