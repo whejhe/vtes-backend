@@ -146,6 +146,7 @@ const updateImage = async (req, res) => {
     }
 };
 
+
 // Eliminar una imagen por ID
 const deleteImage = async (req, res) => {
     try {

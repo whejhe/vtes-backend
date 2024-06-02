@@ -6,7 +6,9 @@ import { auth } from '../middlewares/auth.js';
 
 const router = express.Router();
 
-const { createImage, uploadAvatar, getImages, getAvatars,getAvatarByUserId,getImageByName, getImageById, getImagesByUserId, updateImage, deleteImage } = imageControllers;
+const { createImage, uploadAvatar, getImages, getAvatars,
+    getAvatarByUserId,getImageByName, getImageById, 
+    getImagesByUserId, updateImage, deleteImage } = imageControllers;
 
 // Rutas para la entidad Image
 router.post('/', createImage);
