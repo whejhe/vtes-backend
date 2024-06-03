@@ -4,28 +4,6 @@ import { connectDB } from "../service/mongoDB.js";
 
 const { Schema } = mongoose;
 
-// const tiradaSchema = new Schema({
-//     userId: {
-//         type: String,
-//         ref: 'User',
-//         required: true
-//     },
-//     round1: {
-//         type: Number,
-//         default: null
-//     },
-//     round2: {
-//         type: Number,
-//         default: null
-//     },
-//     round3: {
-//         type: Number,
-//         default: null
-//     }
-// }, {
-//     _id: false
-// });
-
 const eventUsersSchema = new Schema({
     eventId: {
         type: String,
