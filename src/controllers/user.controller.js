@@ -104,6 +104,13 @@ const newAvatar = async (req, res) => {
 
         user.profileImage = profileImage;
         user.avatarUrl = `/uploads/avatars/${profileImage}`;
+        
+        //actualizar token
+        const token = jwt.sign({ _id: user._id }, process.env.JWT_SECRET, { expiresIn: '3h' });
+        if (!token) {
+            throw new Error('Error al generar el token');
+        }
+        res.cookie('token', token, { httpOnly: true });
 
         await user.save();
 
