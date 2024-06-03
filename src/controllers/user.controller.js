@@ -104,6 +104,7 @@ const newAvatar = async (req, res) => {
 
         user.profileImage = profileImage;
         user.avatarUrl = `/uploads/avatars/${profileImage}`;
+
         await user.save();
 
         res.status(200).json({ message: 'Avatar actualizado correctamente' });

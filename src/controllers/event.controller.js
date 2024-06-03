@@ -84,7 +84,7 @@ export const sumarPuntuaciones = async (req, res) => {
     try {
         const eventId = req.params.eventId;
         console.log('EventID: ', eventId);
-        const event = await Event.findById(eventId);
+        let event = await Event.findById(eventId);
         const eventUsers = await EventUsers.findOne({ eventId });
 
         if (!event) {
@@ -115,8 +115,9 @@ export const sumarPuntuaciones = async (req, res) => {
         let sortedRanking = ranking.sort((a, b) => b.tablePoints - a.tablePoints || b.points - a.points);
         event.ranking = sortedRanking;
         event.save()
+        event = await event.populate('ranking.userId', 'name email avatarUrl');
         // console.log(ev.ranking);
-        res.json({ sortedRanking });
+        res.json( event );
     } catch (error) {
         console.log('Error al sumar las puntuaciones: ', error);
         res.status(500).json({ message: error.message });
