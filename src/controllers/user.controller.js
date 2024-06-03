@@ -85,6 +85,35 @@ const registerUser = async (req, res) => {
     }
 };
 
+const newAvatar = async (req, res) => {
+    try {
+        const id = req.user && req.user._id;
+        if (!id) {
+            throw new Error('ID de usuario no definido');
+        }
+
+        const user = await User.findById(id);
+        if (!user) {
+            throw new Error('Usuario no encontrado');
+        }
+
+        const { profileImage } = req.body;
+        if (!profileImage) {
+            throw new Error('Imagen de perfil no proporcionada');
+        }
+
+        user.profileImage = profileImage;
+        user.avatarUrl = `/uploads/avatars/${profileImage}`;
+        await user.save();
+
+        res.status(200).json({ message: 'Avatar actualizado correctamente' });
+    } catch (error) {
+        console.log('Error al actualizar el avatar: ', error);
+        res.status(400).json({ error: 'Error al actualizar el avatar' });
+    }
+};
+
+
 
 
 const forgotPassword = async (req, res) => {
@@ -314,7 +343,8 @@ const userControllers = {
     getProfileImage,
     updateProfileImage,
     blockUser,
-    unblockUser
+    unblockUser,
+    newAvatar
 };
 
 export default userControllers;

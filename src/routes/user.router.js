@@ -19,7 +19,9 @@ const {
     loginUser,
     blockUser, 
     unblockUser,
-    forgotPassword } = userControllers;
+    forgotPassword,
+    newAvatar 
+} = userControllers;
 
 // Rutas para usuarios
 router.get("/avatar-options", getAvatarOptions);
@@ -34,5 +36,6 @@ router.put("/:id",updateProfileImage);
 router.delete("/:id", auth, deleteUser);
 router.post("/blockUser/:id", auth, blockUser);
 router.post("/unblockUser/:id", auth, unblockUser);
+router.put('/newAvatar/:id',auth, newAvatar)
 
 export default router;
