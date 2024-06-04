@@ -37,7 +37,7 @@ const uploadCustomCard = async (req, res) => {
         await newCustomCard.save();
         res.status(201).json(newCustomCard);
     } catch (error) {
-        console.log('Error al subir la Imagen: ', error);
+        
         if(error.name === 'ValidationError') {
             return res.status(400).json({ error: error.message });
         }else{

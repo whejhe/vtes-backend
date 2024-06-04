@@ -16,7 +16,7 @@ const createReport = async (req, res) => {
         await newReport.save();
         res.status(201).json(newReport);
     } catch (error) {
-        console.log("Error al crear el reporte: ",error);
+        
         res.status(400).json({ error: error.message });
     }
 };
@@ -27,7 +27,7 @@ const getReports = async (req, res) => {
         const reports = await Report.find();
         res.status(200).json(reports);
     } catch (error) {
-        console.log("Error al obtener los reportes: ",error);
+        
         res.status(400).json({ error: error.message });
     }
 };
@@ -41,7 +41,7 @@ const getReportById = async (req, res) => {
         }
         res.status(200).json(report);
     } catch (error) {
-        console.log("Error al obtener el reporte: ",error);
+        
         res.status(400).json({ error: error.message });
     }
 };
@@ -57,7 +57,7 @@ const updateIsChecked = async (req, res) => {
         }
         res.status(200).json(updatedReport);
     } catch (error) {
-        console.log("Error al actualizar el reporte: ",error);
+        
         res.status(400).json({ error: error.message });
     }
 }
@@ -73,7 +73,7 @@ const updateReport = async (req, res) => {
         }
         res.status(200).json(updatedReport);
     } catch (error) {
-        console.log("Error al actualizar el reporte: ",error);
+        
         res.status(400).json({ error: error.message });
     }
 };
@@ -88,7 +88,7 @@ const deleteReportById = async (req, res) => {
         }
         res.status(200).json({ message: 'Reporte eliminado correctamente' });
     } catch (error) {
-        console.log("Error al eliminar el reporte: ",error);
+        
         res.status(400).json({ error: error.message });
     }
 };

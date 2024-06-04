@@ -8,7 +8,7 @@ const createEvent = async (req, res) => {
     try {
         const userId = req.user._id;
         const user = await User.findById(userId);
-        console.log('Usuario: ', user);
+        
         if (!user) {
             return res.status(400).json({ error: "Usuario no encontrado" });
         }
@@ -22,7 +22,7 @@ const createEvent = async (req, res) => {
         await newEventUsers.save();
         res.status(201).json(newEvent);
     } catch (error) {
-        console.log('Error al crear el evento: ', error);
+        
         res.status(400).json({ error: 'Error al crear el evento' });
     }
 };
@@ -83,7 +83,7 @@ const deleteEvent = async (req, res) => {
 export const sumarPuntuaciones = async (req, res) => {
     try {
         const eventId = req.params.eventId;
-        console.log('EventID: ', eventId);
+        
         let event = await Event.findById(eventId);
         const eventUsers = await EventUsers.findOne({ eventId });
 
@@ -116,10 +116,10 @@ export const sumarPuntuaciones = async (req, res) => {
         event.ranking = sortedRanking;
         event.save()
         event = await event.populate('ranking.userId', 'name email avatarUrl');
-        // console.log(ev.ranking);
+        // 
         res.json( event );
     } catch (error) {
-        console.log('Error al sumar las puntuaciones: ', error);
+        
         res.status(500).json({ message: error.message });
     }
 };
@@ -160,8 +160,8 @@ export const sortearMesa = async (req, res) => {
         let round2Players = [...tiradas].sort((a, b) => b.round2 - a.round2);
         let round3Players = [...tiradas].sort((a, b) => b.round3 - a.round3);
 
-        console.log(tiradas, 'tiradas \n\n ')
-        console.log(round1Players, 'jugadores ronda 1')
+        
+        
 
         // Crear las mesas
         let totalPlayers = players.length;
@@ -189,7 +189,7 @@ export const sortearMesa = async (req, res) => {
                     tables = round3Tables
                     break;
                 default:
-                    console.log('Error en el switch')
+                    
             }
 
             while (tables.some(table => table.length < 4)) {
@@ -217,7 +217,7 @@ export const sortearMesa = async (req, res) => {
             }
 
         }
-        console.log(round1Tables, 'mesas ronda 1')
+        
         // Se actualizan los jugadores de las mesas en el evento
         let ronda = [{
             numero: 1,
@@ -252,7 +252,7 @@ export const sortearMesa = async (req, res) => {
                 }))
             }))
         }];
-        console.log(JSON.stringify(ronda), 'ronda entera a ver')
+        
 
         if (!foundEvento.iniciado) {
             foundEvento.ronda = ronda;
@@ -263,11 +263,11 @@ export const sortearMesa = async (req, res) => {
             foundEvento.save();
         }
         foundEvento = await Event.findById(eventId).populate('ronda.mesas.players.userId', 'name email avatarUrl');
-        console.log('Las mesas han sido actualizadas');
-        console.log('Número de mesas: ', round1Tables.length);
+        
+        
         res.status(200).json(foundEvento);
     } catch (error) {
-        console.log('Error al sortear las mesas: ', error);
+        
         res.status(400).json({ error: error.message });
     }
 };
@@ -324,14 +324,14 @@ const getRandomNumber = () => {
 const tirada = async (req, res) => {
     try {
         const { eventId } = req.params;
-        console.log('EventoID:', eventId);
+        
         // const Event = await Event.findById(eventId);
         const evento = await Event.findOne({ _id: eventId });
         const eventUsers = await EventUsers.findOne({ eventId })
         if (!evento) {
             return res.status(404).json({ error: 'Evento sin usuarios asignados' });
         }
-        console.log('Evento:', evento);
+        
 
         for (let i = 0; i < eventUsers.userId.length; i++) {
             const user = await User.findById(eventUsers.userId[i]);
@@ -352,7 +352,7 @@ const tirada = async (req, res) => {
             round2,
             round3,
         }));
-        console.log('Tiradas:', tiradas);
+        
         res.status(200).json(tiradas);
     } catch (error) {
         console.error('Error al realizar las tiradas:', error);

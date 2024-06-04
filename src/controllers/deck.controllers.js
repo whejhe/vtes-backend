@@ -6,14 +6,14 @@ import Cards from "../models/cards.model.js";
 // Crear un nuevo mazo
 const createDeck = async (req, res) => {
     try {
-        console.log("Dentro de crear mazo ::: ", req.body);
+        
         const { userId, name, description, category, isPublic, crypt, library, author } = req.body;
         //Obtener nick del usuario
         const newDeck = new Deck({ userId, name, description, category, isPublic, crypt, library, author });
         await newDeck.save();
         res.status(201).json({ id: newDeck._id, ...newDeck });
     } catch (error) {
-        console.log(error);
+        
         res.status(400).json({ error: error.message });
     }
 };
@@ -22,15 +22,15 @@ const createDeck = async (req, res) => {
 const getDecks = async (req, res) => {
     try {
         const userId = req.user._id;
-        console.log(req.user._id, '_id')
+        
         const decks = await Deck.find({
             $or: [{ userId: { $in: [userId] } }, { isPublic: true }],
         });
 
-        console.log("decks:", decks);
+        
         res.status(200).json(decks);
     } catch (error) {
-        console.log("Error al obtener los Mazos:", error);
+        
         res.status(400).json({ error: error.message });
     }
 };
@@ -62,10 +62,10 @@ const getCardsByDeckId = async (req, res) => {
         if (!deck.cardIds || deck.cardIds.length === 0) {
             return res.status(404).json({ error: "Mazo no contiene cartas" });
         }
-        console.log(deck, ' deck')
+        
         res.status(200).json(cards);
     } catch (error) {
-        console.log(error)
+        
         res.status(400).send(error);
     }
 };

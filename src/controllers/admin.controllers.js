@@ -17,11 +17,11 @@ const loginAdmin = async (req, res) => {
         }catch(error){
             res.status(400).json({ error: error.message });
         }
-        console.log('Request', req.body)
-        console.log('Email: ', email, 'Password: ', password);
+        
+        
         // Buscar el usuario por email y contraseña
         const user = await User.findOne({ email });
-        console.log('Usuario encontrado: ', user);
+        
         if (!user) {
             return res.status(401).json({ error: "El usuario no existe" });
         } else if (user.password !== password) {
@@ -65,7 +65,7 @@ const cambiarPermisos = async (req, res) => {
 
         res.status(200).json({ message: 'Rol cambiado correctamente' });
     }catch(error){
-        console.log('Error al cambiar el rol del Usuario: ',error);
+        
         if(error.name === 'CastError'){
             return res.status(401).json({ error: `No se encontro el usuario con ID ${req.user._id}` });
         }

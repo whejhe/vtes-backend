@@ -33,7 +33,7 @@ const uploadAvatar = async (req, res) => {
 
         res.status(201).json(newAvatar);
     } catch (error) {
-        console.log('Error al subir imagen de Avatar: ', error);
+        
         if (error.name === 'ValidationError') {
             return res.status(400).json({ error: error.message });
         } else {
@@ -48,7 +48,7 @@ const uploadAvatar = async (req, res) => {
 const createImage = async (req, res) => {
     try {
         const { userId,customCardId, name, type,extension, publico } = req.body;
-        console.log('Req body ==> ', req.protocol);
+        
         //Ruta para la imagen
         const imageUrl =  req.protocol + '://' + req.get('host') + `/vtes-backend/uploads/${type}/${name}${extension}`;
         const newImage = new Image({ userId, customCardId, name, type, imageUrl ,extension, publico });

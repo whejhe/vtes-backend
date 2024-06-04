@@ -19,6 +19,8 @@ npm install fs
 npm install sharp @types/sharp
 npm install got
 
+eliminar cosole.log:
+console.log.*$ (desde el buscador y replace all)
 
 .env
 URL=http://localhost:3000

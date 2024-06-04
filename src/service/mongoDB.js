@@ -8,7 +8,7 @@ const uri = process.env.MONGODB_URL;
 export let connectDB = null; 
 try {
   mongoose.set('strictQuery', false);
-  console.log('Conexión exitosa a la base de datos');
+  
   connectDB = mongoose.createConnection(uri)
 } catch (error) {
   console.error('Error al conectar a la base de datos:', error);

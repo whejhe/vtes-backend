@@ -41,7 +41,7 @@ const loginUser = async (req, res) => {
         res.cookie("token", token, { httpOnly: true });
         res.status(200).json({ user: user2, token });
     } catch (error) {
-        console.log(error);
+        
         res.status(400).json({ msg: 'Error al iniciar sesión', error });
     }
 };
@@ -116,7 +116,7 @@ const newAvatar = async (req, res) => {
 
         res.status(200).json({ message: 'Avatar actualizado correctamente' });
     } catch (error) {
-        console.log('Error al actualizar el avatar: ', error);
+        
         res.status(400).json({ error: 'Error al actualizar el avatar' });
     }
 };

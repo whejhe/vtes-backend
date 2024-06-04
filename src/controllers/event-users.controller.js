@@ -43,7 +43,7 @@ const getUsersForEvent = async (req, res) => {
         }
         res.status(200).json(eventUsers);
     } catch (error) {
-        console.log('Se produjo un error durante la busqueda de usuarios para el evento: ', error);
+        
         res.status(400).json({ error: error.message });
     }
 };
@@ -54,7 +54,7 @@ const deleteUserFromEvent = async (req, res) => {
     const token = req.header('Authorization').replace('Bearer ', '');
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
     const user = await User.findById(decoded._id).select('-password -__v');
-    console.log('Usuario: ', user);
+    
     if (user.role !== 'ADMIN' && user.role !== 'COLLABORATOR' && user.role !== 'SUPER_ADMIN') {
         return res.status(403).json({ error: 'No tienes los permisos para eliminar este usuario' });
     }
@@ -81,7 +81,7 @@ const deleteUserFromEvent = async (req, res) => {
             return res.status(404).json({ error: 'Usuario no es parte del evento' });
         }
     } catch (error) {
-        console.log('Error al eliminar usuario del evento: ', error);
+        
         res.status(400).json({ error: error.message });
     }
 };
@@ -116,9 +116,9 @@ const addUserByEmail = async (req, res) => {
         let evento;
         if (eventId) {
             evento = await EventUsers.findOne({ eventId });
-            console.log('Evento: ', evento);
+            
         } else {
-            console.log('No se proporcionó el ID del evento: ', eventId);
+            
             return res.status(404).json({ error: 'ID de evento no proporcionado' });
         }
 

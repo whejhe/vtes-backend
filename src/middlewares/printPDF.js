@@ -10,7 +10,7 @@ import got from 'got';
 export const generateDeckPDF = async (req, res) => {
     try {
         const deckId = req.params.id;
-        console.log('Deck ID:', deckId);
+        
         const deck = await Deck.findById(deckId).populate('crypt._id').populate('library._id');
         if (!deck) {
             return res.status(404).json({ error: 'Mazo no encontrado' });
@@ -20,7 +20,7 @@ export const generateDeckPDF = async (req, res) => {
             const __dirname = path.resolve();
 
             const fileName = path.basename(url);
-            console.log(__dirname, 'dirname');
+            
             const filePath = `${__dirname}/public/uploads/vtesCards/${fileName}`;
 
             // Verificar si el archivo ya existe
@@ -98,7 +98,7 @@ export const generateDeckPDF = async (req, res) => {
         doc.end();
 
     } catch (error) {
-        console.log('Error: ', error);
+        
         return res.status(400).json({ error: error.message });
     }
 };

@@ -22,7 +22,7 @@ export const printTxt = async (req, res, next) => {
     const { name, description, category, crypt, library, author } = deck;
     fileData += `Deck: ${name}\n------------------------------------------------ \nDescription: ${description}\nCategory: ${category}\nAuthor: ${author}\n------------------------------------------------\n`;
     // Crypt: ${crypt}\nLibrary: ${library}\n`;
-    // console.log('Datos guardados: ', fileData);
+    // 
     try {
         fileData += "Crypt:\n";
         for (const id of crypt) {
@@ -43,17 +43,17 @@ export const printTxt = async (req, res, next) => {
         fileData += `------------------------------------------------\nTotal Cards: ${library.length + crypt.length}`
         fs.writeFile(filepath, fileData, (err) => {
             if (err) {
-                console.log(err);
+                
                 return res.status(500).send('Error en el servidor al escribir el archivo');
             } else {
-                console.log(filepath)
-                console.log('Archivo escrito con exito');
+                
+                
                 
                 res.download(filepath)
             }
         });
     } catch (error) {
-        console.log(error);
+        
         return res.status(500).send('Error en el servidor al escribir el archivo.txt');
     }
 }
