@@ -20,7 +20,8 @@ const {
     blockUser, 
     unblockUser,
     forgotPassword,
-    newAvatar 
+    newAvatar ,
+    darBaja
 } = userControllers;
 
 // Rutas para usuarios
@@ -36,6 +37,7 @@ router.put("/:id",updateProfileImage);
 router.delete("/:id", auth, deleteUser);
 router.post("/blockUser/:id", auth, blockUser);
 router.post("/unblockUser/:id", auth, unblockUser);
-router.put('/newAvatar/:id',auth, newAvatar)
+router.put('/newAvatar/:id',auth, newAvatar);
+router.post('/darBaja/:id', auth, darBaja);
 
 export default router;

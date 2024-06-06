@@ -1,5 +1,7 @@
 //backend/src/controllers/user.controller.js
 import User from "../models/user.models.js";
+import Event from '../models/event.model.js';
+import EventUsers from '../models/event-users.model.js';
 import jwt from "jsonwebtoken";
 import nodemailer from "nodemailer";
 import dotenv from "dotenv";
@@ -106,7 +108,7 @@ const newAvatar = async (req, res) => {
         user.avatarUrl = `/uploads/avatars/${profileImage}`;
         
         //actualizar token
-        const token = jwt.sign({ _id: user._id }, process.env.JWT_SECRET, { expiresIn: '3h' });
+        const token = jwt.sign({ _id: user._id, avatarUrl: user.avatarUrl }, process.env.JWT_SECRET, { expiresIn: '10h' });
         if (!token) {
             throw new Error('Error al generar el token');
         }
@@ -220,6 +222,58 @@ const updateUser = async (req, res) => {
     }
 };
 
+//Eliminar cuenta del usuario
+const darBaja = async (req, res) => {
+    try {
+        const { email, password } = req.body;
+
+        // Buscar el usuario por email
+        const user = await User.findOne({ email });
+        if (!user) {
+            return res.status(404).json({ error: "El email no coincide" });
+        }
+
+        // Verificar la contraseña
+        const isMatch = await bcrypt.compare(password, user.password);
+        if (!isMatch) {
+            return res.status(401).json({ error: "Contraseña incorrecta" });
+        }
+
+        // Eliminar el usuario
+        await User.findByIdAndDelete(user._id);
+
+        // Eliminar al usuario de la tabla EventUsers
+        await EventUsers.deleteMany({ userId: user._id });
+
+        // Eliminar al usuario de los eventos no iniciados
+        const events = await Event.find({ 'ranking.userId': user._id, iniciado: false });
+        for (const event of events) {
+            // Eliminar el usuario del ranking del evento
+            event.ranking = event.ranking.filter(r => r.userId !== user._id);
+
+            // Eliminar el usuario de las tiradas del evento
+            event.tiradas = event.tiradas.filter(t => t.userId !== user._id);
+
+            // Eliminar el usuario de los players en cada mesa
+            event.ronda.forEach(ronda => {
+                ronda.mesas.forEach(mesa => {
+                    mesa.players = mesa.players.filter(player => player.userId !== user._id);
+                });
+            });
+
+            await event.save();
+        }
+
+        res.status(200).json({
+            message: 'Cuenta dada de baja',
+        });
+    } catch (error) {
+        console.error('Error al darte de baja: ', error);
+        res.status(500).json({ error: 'Error al darte de baja' });
+    }
+};
+
+
 // Eliminar un usuario por ID
 const deleteUser = async (req, res) => {
     try {
@@ -331,6 +385,12 @@ const updateProfileImage = async (req, res) => {
         }
 
         user.profileImage = file ? file.filename : user.profileImage;
+        const token = jwt.sign({ _id: user._id, avatarUrl: user.avatarUrl }, process.env.JWT_SECRET, { expiresIn: '10h' });
+        if (!token) {
+            throw new Error('Error al generar el token');
+        }
+        res.cookie('token', token, { httpOnly: true });
+
         await user.save();
         res.status(200).json({ message: "Imagen actualizada correctamente" });
     } catch (error) {
@@ -352,7 +412,8 @@ const userControllers = {
     updateProfileImage,
     blockUser,
     unblockUser,
-    newAvatar
+    newAvatar,
+    darBaja
 };
 
 export default userControllers;

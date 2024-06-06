@@ -493,17 +493,5 @@
                 "extension": ".jpg",
                 "public": true,
                 "__v": 0
-        },
-        {
-                "_id": "b4f7dac7-b324-41ea-b4ba-ad3ddf7be575",
-                "userId": [
-                        "1ab3c847-2690-449c-a217-c0910f6d3eaa"
-                ],
-                "name": "Carlos",
-                "image": "Carlos-Whejhe.png",
-                "type": "private-avatar",
-                "author": "Whejhe",
-                "imageUrl": "/uploads/avatars/Carlos-Whejhe.png",
-                "public": true
         }
 ]
