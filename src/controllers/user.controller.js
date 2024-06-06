@@ -227,26 +227,27 @@ const darBaja = async (req, res) => {
     try {
         const { email, password } = req.body;
 
-        // Buscar el usuario por email
+        // Buscar el usuario por email y conmpara el email del token con el email del usuario
         const user = await User.findOne({ email });
-        if (!user) {
-            return res.status(404).json({ error: "El email no coincide" });
+        if(email !== req.user.email) {
+            return res.status(401).json({ error: "El email no coincide" });
         }
-
+        if (!user) {
+            return res.status(404).json({ error: "El usuario no existe" });
+        }
         // Verificar la contraseña
         const isMatch = await bcrypt.compare(password, user.password);
         if (!isMatch) {
             return res.status(401).json({ error: "Contraseña incorrecta" });
         }
-
         // Eliminar el usuario
         await User.findByIdAndDelete(user._id);
 
         // Eliminar al usuario de la tabla EventUsers
         await EventUsers.deleteMany({ userId: user._id });
 
-        // Eliminar al usuario de los eventos no iniciados
-        const events = await Event.find({ 'ranking.userId': user._id, iniciado: false });
+        // Eliminar al usuario de los eventos
+        const events = await Event.find({ 'ranking.userId': user._id });
         for (const event of events) {
             // Eliminar el usuario del ranking del evento
             event.ranking = event.ranking.filter(r => r.userId !== user._id);
@@ -260,7 +261,8 @@ const darBaja = async (req, res) => {
                     mesa.players = mesa.players.filter(player => player.userId !== user._id);
                 });
             });
-
+        // Elimina el evento de la base de datos
+            await Event.findByIdAndDelete(event._id);
             await event.save();
         }
 
