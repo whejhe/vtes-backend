@@ -66,13 +66,43 @@ const updateEvent = async (req, res) => {
 };
 
 // Eliminar un evento por ID
+// const deleteEvent = async (req, res) => {
+//     try {
+//         const { id } = req.params;
+//         const event = await Event.findByIdAndDelete(id);
+//         if (!event) {
+//             return res.status(404).json({ error: "Evento no encontrado" });
+//         }
+//         res.status(200).json({ message: "Evento eliminado correctamente" });
+//     } catch (error) {
+//         res.status(400).json({ error: error.message });
+//     }
+// };
 const deleteEvent = async (req, res) => {
     try {
         const { id } = req.params;
-        const event = await Event.findByIdAndDelete(id);
+        const userId = req.user._id;
+
+        // Verificar que el usuario está autenticado
+        if (!req.user || !req.user._id) {
+            return res.status(401).json({ error: "No autorizado" });
+        }
+
+        // Buscar el evento por ID
+        const event = await Event.findById(id);
         if (!event) {
             return res.status(404).json({ error: "Evento no encontrado" });
         }
+
+        // Verificar que el usuario es el creador del evento o un administrador
+        if (event.userId.toString() !== userId.toString() && req.user.role !== 'ADMIN' && req.user.role !== 'SUPER_ADMIN') {
+            return res.status(403).json({ error: "Acceso denegado" });
+        }
+
+        // Eliminar el evento y las entradas correspondientes en EventUsers
+        await EventUsers.deleteMany({ eventId: event._id });
+        await Event.findByIdAndDelete(id);
+
         res.status(200).json({ message: "Evento eliminado correctamente" });
     } catch (error) {
         res.status(400).json({ error: error.message });

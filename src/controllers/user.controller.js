@@ -118,7 +118,7 @@ const newAvatar = async (req, res) => {
 
         await user.save();
 
-        res.status(200).json({ message: 'Avatar actualizado correctamente' });
+        res.status(200).json({ message: 'Avatar actualizado correctamente', avatar: user.avatarUrl });
     } catch (error) {
 
         res.status(400).json({ error: 'Error al actualizar el avatar' });
