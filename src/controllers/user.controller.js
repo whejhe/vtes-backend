@@ -43,7 +43,7 @@ const loginUser = async (req, res) => {
         res.cookie("token", token, { httpOnly: true });
         res.status(200).json({ user: user2, token });
     } catch (error) {
-        
+
         res.status(400).json({ msg: 'Error al iniciar sesión', error });
     }
 };
@@ -55,8 +55,8 @@ const registerUser = async (req, res) => {
         if (!name || !nick || !email || !password) {
             return res.status(400).json({ error: 'Todos los campos son obligatorios' });
         }
-        
-        if(!profileImage) {
+
+        if (!profileImage) {
             profileImage = "default-avatar.png";
         }
         const NewAvatarUrl = `/uploads/avatars/${profileImage}`;
@@ -106,7 +106,7 @@ const newAvatar = async (req, res) => {
 
         user.profileImage = profileImage;
         user.avatarUrl = `/uploads/avatars/${profileImage}`;
-        
+
         //actualizar token
         const token = jwt.sign({ _id: user._id, avatarUrl: user.avatarUrl }, process.env.JWT_SECRET, { expiresIn: '10h' });
         if (!token) {
@@ -118,7 +118,7 @@ const newAvatar = async (req, res) => {
 
         res.status(200).json({ message: 'Avatar actualizado correctamente' });
     } catch (error) {
-        
+
         res.status(400).json({ error: 'Error al actualizar el avatar' });
     }
 };
@@ -223,13 +223,73 @@ const updateUser = async (req, res) => {
 };
 
 //Eliminar cuenta del usuario
+// const darBaja = async (req, res) => {
+//     try {
+//         const { email, password } = req.body;
+
+//         // Buscar el usuario por email y comparar el email del token con el email del usuario
+//         const user = await User.findOne({ email });
+//         if (email !== req.user.email) {
+//             return res.status(401).json({ error: "El email no coincide" });
+//         }
+//         if (!user) {
+//             return res.status(404).json({ error: "El usuario no existe" });
+//         }
+//         // Verificar la contraseña
+//         const isMatch = await bcrypt.compare(password, user.password);
+//         if (!isMatch) {
+//             return res.status(401).json({ error: "Contraseña incorrecta" });
+//         }
+
+//         // Eliminar al usuario de la tabla EventUsers sin eliminar el documento completo
+//         await EventUsers.updateMany(
+//             { userId: user._id },
+//             { $pull: { userId: user._id } }
+//         );
+
+//         // Encontrar todos los eventos en los que el usuario participa
+//         const events = await Event.find({ 'ranking.userId': user._id });
+//         for (const event of events) {
+//             // Eliminar el usuario del ranking del evento
+//             event.ranking = event.ranking.filter(r => r.userId !== user._id);
+
+//             // Eliminar el usuario de las tiradas del evento
+//             event.tiradas = event.tiradas.filter(t => t.userId !== user._id);
+
+//             // Eliminar el usuario de los players en cada mesa
+//             event.ronda.forEach(ronda => {
+//                 ronda.mesas.forEach(mesa => {
+//                     mesa.players = mesa.players.filter(player => player.userId !== user._id);
+//                 });
+//             });
+
+//             // Si el usuario es el creador del evento, eliminar el evento
+//             if (event.userId === user._id) {
+//                 await Event.findByIdAndDelete(event._id);
+//             } else {
+//                 await event.save();
+//             }
+//         }
+
+//         // Eliminar el usuario
+//         await User.findByIdAndDelete(user._id);
+
+//         res.status(200).json({
+//             message: 'Cuenta dada de baja',
+//         });
+//     } catch (error) {
+//         console.error('Error al darte de baja: ', error);
+//         res.status(500).json({ error: 'Error al darte de baja' });
+//     }
+// };
+
 const darBaja = async (req, res) => {
     try {
         const { email, password } = req.body;
 
-        // Buscar el usuario por email y conmpara el email del token con el email del usuario
+        // Buscar el usuario por email y comparar el email del token con el email del usuario
         const user = await User.findOne({ email });
-        if(email !== req.user.email) {
+        if (email !== req.user.email) {
             return res.status(401).json({ error: "El email no coincide" });
         }
         if (!user) {
@@ -240,13 +300,24 @@ const darBaja = async (req, res) => {
         if (!isMatch) {
             return res.status(401).json({ error: "Contraseña incorrecta" });
         }
-        // Eliminar el usuario
-        await User.findByIdAndDelete(user._id);
 
-        // Eliminar al usuario de la tabla EventUsers
-        await EventUsers.deleteMany({ userId: user._id });
+        // Eliminar los eventos creados por el usuario
+        const userEvents = await Event.find({ userId: user._id });
+        for (const event of userEvents) {
+            // Eliminar la entrada en EventUsers correspondiente al evento
+            await EventUsers.deleteMany({ eventId: event._id });
 
-        // Eliminar al usuario de los eventos
+            // Eliminar el evento
+            await Event.findByIdAndDelete(event._id);
+        }
+
+        // Eliminar al usuario de la tabla EventUsers sin eliminar el documento completo
+        await EventUsers.updateMany(
+            { userId: user._id },
+            { $pull: { userId: user._id } }
+        );
+
+        // Encontrar todos los eventos en los que el usuario participa
         const events = await Event.find({ 'ranking.userId': user._id });
         for (const event of events) {
             // Eliminar el usuario del ranking del evento
@@ -261,10 +332,12 @@ const darBaja = async (req, res) => {
                     mesa.players = mesa.players.filter(player => player.userId !== user._id);
                 });
             });
-        // Elimina el evento de la base de datos
-            await Event.findByIdAndDelete(event._id);
+
             await event.save();
         }
+
+        // Eliminar el usuario
+        await User.findByIdAndDelete(user._id);
 
         res.status(200).json({
             message: 'Cuenta dada de baja',
@@ -274,6 +347,10 @@ const darBaja = async (req, res) => {
         res.status(500).json({ error: 'Error al darte de baja' });
     }
 };
+
+
+
+
 
 
 // Eliminar un usuario por ID
@@ -294,7 +371,7 @@ const deleteUser = async (req, res) => {
     }
 };
 
-const blockUser = async (req,res) =>{
+const blockUser = async (req, res) => {
     if (req.user.role !== 'ADMIN' && req.user.role !== 'COLLABORATOR' && req.user.role !== 'SUPER_ADMIN') {
         return res.status(403).json({ error: 'Acceso denegado' });
     }
@@ -306,7 +383,7 @@ const blockUser = async (req,res) =>{
     res.status(200).json({ message: "Usuario bloqueado correctamente" });
 }
 
-const unblockUser = async (req,res) =>{
+const unblockUser = async (req, res) => {
     if (req.user.role !== 'ADMIN' && req.user.role !== 'COLLABORATOR' && req.user.role !== 'SUPER_ADMIN') {
         return res.status(403).json({ error: 'Acceso denegado' });
     }
