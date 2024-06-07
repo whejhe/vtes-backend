@@ -2,6 +2,8 @@
 import User from "../models/user.models.js";
 import Event from '../models/event.model.js';
 import EventUsers from '../models/event-users.model.js';
+import CustomCards from '../models/customCards.model.js';
+import Deck from '../models/deck.model.js';
 import jwt from "jsonwebtoken";
 import nodemailer from "nodemailer";
 import dotenv from "dotenv";
@@ -223,66 +225,6 @@ const updateUser = async (req, res) => {
 };
 
 //Eliminar cuenta del usuario
-// const darBaja = async (req, res) => {
-//     try {
-//         const { email, password } = req.body;
-
-//         // Buscar el usuario por email y comparar el email del token con el email del usuario
-//         const user = await User.findOne({ email });
-//         if (email !== req.user.email) {
-//             return res.status(401).json({ error: "El email no coincide" });
-//         }
-//         if (!user) {
-//             return res.status(404).json({ error: "El usuario no existe" });
-//         }
-//         // Verificar la contraseña
-//         const isMatch = await bcrypt.compare(password, user.password);
-//         if (!isMatch) {
-//             return res.status(401).json({ error: "Contraseña incorrecta" });
-//         }
-
-//         // Eliminar al usuario de la tabla EventUsers sin eliminar el documento completo
-//         await EventUsers.updateMany(
-//             { userId: user._id },
-//             { $pull: { userId: user._id } }
-//         );
-
-//         // Encontrar todos los eventos en los que el usuario participa
-//         const events = await Event.find({ 'ranking.userId': user._id });
-//         for (const event of events) {
-//             // Eliminar el usuario del ranking del evento
-//             event.ranking = event.ranking.filter(r => r.userId !== user._id);
-
-//             // Eliminar el usuario de las tiradas del evento
-//             event.tiradas = event.tiradas.filter(t => t.userId !== user._id);
-
-//             // Eliminar el usuario de los players en cada mesa
-//             event.ronda.forEach(ronda => {
-//                 ronda.mesas.forEach(mesa => {
-//                     mesa.players = mesa.players.filter(player => player.userId !== user._id);
-//                 });
-//             });
-
-//             // Si el usuario es el creador del evento, eliminar el evento
-//             if (event.userId === user._id) {
-//                 await Event.findByIdAndDelete(event._id);
-//             } else {
-//                 await event.save();
-//             }
-//         }
-
-//         // Eliminar el usuario
-//         await User.findByIdAndDelete(user._id);
-
-//         res.status(200).json({
-//             message: 'Cuenta dada de baja',
-//         });
-//     } catch (error) {
-//         console.error('Error al darte de baja: ', error);
-//         res.status(500).json({ error: 'Error al darte de baja' });
-//     }
-// };
-
 const darBaja = async (req, res) => {
     try {
         const { email, password } = req.body;
@@ -299,6 +241,18 @@ const darBaja = async (req, res) => {
         const isMatch = await bcrypt.compare(password, user.password);
         if (!isMatch) {
             return res.status(401).json({ error: "Contraseña incorrecta" });
+        }
+
+        // Elimina las customCards creadas por el usuario
+        const userCustomCards = await CustomCards.find({ userId: user._id });
+        for (const customCard of userCustomCards) {
+            await CustomCards.findByIdAndDelete(customCard._id);
+        }
+
+        // Elimina los decks creados por el usuario
+        const userDecks = await Deck.find({ userId: user._id });
+        for (const deck of userDecks) {
+            await Deck.findByIdAndDelete(deck._id);
         }
 
         // Eliminar los eventos creados por el usuario
@@ -349,27 +303,79 @@ const darBaja = async (req, res) => {
 };
 
 
-
-
-
-
 // Eliminar un usuario por ID
 const deleteUser = async (req, res) => {
     try {
-
+        // Verificar permisos
         if (req.user.role !== 'ADMIN' && req.user.role !== 'SUPER_ADMIN') {
             return res.status(403).json({ error: 'Acceso denegado' });
         }
+
         const { id } = req.params;
-        const user = await User.findByIdAndDelete(id);
+
+        // Buscar el usuario antes de proceder
+        const user = await User.findById(id);
         if (!user) {
             return res.status(404).json({ error: "Usuario no encontrado" });
         }
+
+        // Eliminar customCards del usuario
+        const userCustomCards = await CustomCards.find({ userId: id });
+        for (const customCard of userCustomCards) {
+            await CustomCards.findByIdAndDelete(customCard._id);
+        }
+
+        // Eliminar decks del usuario
+        const userDecks = await Deck.find({ userId: id });
+        for (const deck of userDecks) {
+            await Deck.findByIdAndDelete(deck._id);
+        }
+
+        // Eliminar los eventos creados por el usuario
+        const userEvents = await Event.find({ userId: id });
+        for (const event of userEvents) {
+            // Eliminar la entrada en EventUsers correspondiente al evento
+            await EventUsers.deleteMany({ eventId: event._id });
+
+            // Eliminar el evento
+            await Event.findByIdAndDelete(event._id);
+        }
+
+        // Eliminar al usuario de la tabla EventUsers sin eliminar el documento completo
+        await EventUsers.updateMany(
+            { userId: id },
+            { $pull: { userId: id } }
+        );
+
+        // Encontrar todos los eventos en los que el usuario participa
+        const events = await Event.find({ 'ranking.userId': id });
+        for (const event of events) {
+            // Eliminar el usuario del ranking del evento
+            event.ranking = event.ranking.filter(r => r.userId !== id);
+
+            // Eliminar el usuario de las tiradas del evento
+            event.tiradas = event.tiradas.filter(t => t.userId !== id);
+
+            // Eliminar el usuario de los players en cada mesa
+            event.ronda.forEach(ronda => {
+                ronda.mesas.forEach(mesa => {
+                    mesa.players = mesa.players.filter(player => player.userId !== id);
+                });
+            });
+
+            await event.save();
+        }
+
+        // Eliminar el usuario
+        await User.findByIdAndDelete(id);
+
         res.status(200).json({ message: "Usuario eliminado correctamente" });
     } catch (error) {
+        console.error('Error al eliminar el usuario: ', error);
         res.status(400).json({ error: error.message });
     }
 };
+
 
 const blockUser = async (req, res) => {
     if (req.user.role !== 'ADMIN' && req.user.role !== 'COLLABORATOR' && req.user.role !== 'SUPER_ADMIN') {

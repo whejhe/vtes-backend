@@ -39,6 +39,7 @@ const getDecks = async (req, res) => {
 //Obtener mazo por ID
 const getDeckById = async (req, res) => {
     try {
+        // Comprueba que el mazo pertenece al usuario actual, di es asi lo borra
         const { id } = req.params;
         const deck = await Deck.findById(id).populate('crypt._id').populate('library._id');
         if (!deck) {
@@ -157,23 +158,55 @@ const addCardToDeck = async (req, res) => {
 
 
 // Eliminar un mazo por ID
+// const deleteDeck = async (req, res) => {
+//     try {
+//         const { id } = req.params;
+//         const userId = req.user._id;
+//         const user = await User.findById(userId);
+//         if (!req.user || !req.user._id) {
+//             return res.status(401).json({ error: "No autorizado" });
+//         }
+//         const deletedDeck = await Deck.findByIdAndDelete(id);
+//         if (!deletedDeck) {
+//             return res.status(404).json({ error: "Mazo no encontrado" });
+//         }
+//         res.status(200).json({ message: "Mazo eliminado correctamente" });
+//     } catch (error) {
+//         res.status(400).json({ error: error.message });
+//     }
+// };
 const deleteDeck = async (req, res) => {
     try {
         const { id } = req.params;
         const userId = req.user._id;
-        const user = await User.findById(userId);
+
+        // Verificar que el usuario está autenticado
         if (!req.user || !req.user._id) {
+            message.error = "No tienes permisos para eliminar este mazo";
             return res.status(401).json({ error: "No autorizado" });
         }
-        const deletedDeck = await Deck.findByIdAndDelete(id);
-        if (!deletedDeck) {
+
+        // Buscar el mazo por ID
+        const deck = await Deck.findById(id);
+        if (!deck) {
             return res.status(404).json({ error: "Mazo no encontrado" });
         }
+
+        // Verificar que el usuario es el propietario del mazo o un administrador
+        if (deck.userId.toString() !== userId.toString() && req.user.role !== 'ADMIN' && req.user.role !== 'SUPER_ADMIN') {
+            message.error = "No tienes permisos para eliminar este mazo";
+            return res.status(403).json({ error: "Acceso denegado" });
+        }
+
+        // Eliminar el mazo
+        await Deck.findByIdAndDelete(id);
+
         res.status(200).json({ message: "Mazo eliminado correctamente" });
     } catch (error) {
         res.status(400).json({ error: error.message });
     }
 };
+
 
 
 const deckControllers = {
