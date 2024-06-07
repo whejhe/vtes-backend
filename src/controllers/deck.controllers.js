@@ -158,23 +158,6 @@ const addCardToDeck = async (req, res) => {
 
 
 // Eliminar un mazo por ID
-// const deleteDeck = async (req, res) => {
-//     try {
-//         const { id } = req.params;
-//         const userId = req.user._id;
-//         const user = await User.findById(userId);
-//         if (!req.user || !req.user._id) {
-//             return res.status(401).json({ error: "No autorizado" });
-//         }
-//         const deletedDeck = await Deck.findByIdAndDelete(id);
-//         if (!deletedDeck) {
-//             return res.status(404).json({ error: "Mazo no encontrado" });
-//         }
-//         res.status(200).json({ message: "Mazo eliminado correctamente" });
-//     } catch (error) {
-//         res.status(400).json({ error: error.message });
-//     }
-// };
 const deleteDeck = async (req, res) => {
     try {
         const { id } = req.params;

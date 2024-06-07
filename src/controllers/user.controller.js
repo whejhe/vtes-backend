@@ -19,16 +19,18 @@ const loginUser = async (req, res) => {
     const { email, password } = req.body;
     try {
         let user = await User.findOne({ email }).select("+password");
-        if (!user) return res.status(401).json({ error: "El usuario no existe" });
+        if (!user) {
+            return res.status(401).json({ error: "El usuario no existe" });
+        }
 
-        // Verificar la contraseña
         const isPasswordValid = await bcrypt.compare(password, user.password);
-        if (!isPasswordValid) return res.status(401).json({ error: "Contraseña incorrecta" });
+        if (!isPasswordValid) {
+            return res.status(401).json({ error: "Contraseña incorrecta" });
+        }
 
         delete user.password;
         let user2 = await User.findOne({ email }).select("-password");
 
-        //si se añaden cosas aqui, más cosas se traen al frontend
         const token = jwt.sign(
             {
                 _id: user._id,
@@ -39,14 +41,17 @@ const loginUser = async (req, res) => {
                 profileImage: user.profileImage,
                 avatarUrl: user.avatarUrl,
                 blocked: user.blocked,
-            }
-            , process.env.JWT_SECRET, { expiresIn: "12h" });
-        if (!token) return res.status(500).json({ error: "Error al generar el token" });
+            },
+            process.env.JWT_SECRET, 
+            { expiresIn: "12h" }
+        );
+        if (!token) {
+            return res.status(500).json({ error: "Error al generar el token" });
+        }
         res.cookie("token", token, { httpOnly: true });
         res.status(200).json({ user: user2, token });
     } catch (error) {
-
-        res.status(400).json({ msg: 'Error al iniciar sesión', error });
+        res.status(400).json({ error: 'Error al iniciar sesión', details: error.message });
     }
 };
 

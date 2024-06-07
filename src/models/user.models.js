@@ -1,40 +1,37 @@
 //backend/src/models/user.models.js
 import mongoose from "mongoose";
-import { v4 as uuidv4 } from 'uuid';
+import { v4 as uuidv4, validate } from 'uuid';
 import { connectDB } from "../service/mongoDB.js";
 
 const { Schema } = mongoose;
 
-
 const emailRegex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
-// const passwordRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*]).{6,}$/;
-const passwordRegex = /^.{6,}$/;
-
+const passwordRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*]).{8,}$/;
 
 const userSchema = new Schema({
-    _id:{
+    _id: {
         type: String,
         default: uuidv4     
     },
-    role:{
+    role: {
         type: String,
         enum: ["SUPER_ADMIN","ADMIN", "USER","COLLABORATOR"],
         default: "USER"
     },
-    name:{
+    name: {
         type: String,
         required: [true, 'El nombre es obligatorio'],
         minlength: [3, 'El nombre debe tener al menos 3 caracteres'],
-        maxlength: [30, 'El nombre debe tener un maximo de 30 caracteres'],
+        maxlength: [30, 'El nombre debe tener un máximo de 30 caracteres'],
     },
-    nick:{
+    nick: {
         type: String,
         unique: true,
         required: [true, 'El nick de usuario es obligatorio'],
         minlength: [3, 'El nick debe tener al menos 3 caracteres'],
-        maxlength: [30, 'El nick debe tener un maximo de 20 caracteres'],
+        maxlength: [30, 'El nick debe tener un máximo de 20 caracteres'],
     },
-    email:{
+    email: {
         type: String,
         trim: true,
         lowercase: true,
@@ -42,29 +39,28 @@ const userSchema = new Schema({
         required: [true, 'El email es obligatorio'],
         validate: {
             validator: (v) => emailRegex.test(v),
-            message: 'El email no es valido'
+            message: 'El email no es válido'
         }
     },
-    password:{
+    password: {
         type: String,
-        required: [true, 'La contraseña es obligatoria'],
-        minlength: [6, 'La contraseña debe tener al menos 6 caracteres'],
-        validate:{
+        required: [true, 'La contraseña es obligatoria'],
+        minlength: [8, 'La contraseña debe tener al menos 8 caracteres'],
+        validate: {
             validator: (v) => passwordRegex.test(v),
-            message: 'La contraseña debe contener al menos 8 caracteres, una mayuscula, una minuscula, un numero y un caracter especial de entre !@#$%^&*'
+            message: 'La contraseña debe contener al menos 8 caracteres, una mayúscula, una minúscula, un número y un carácter especial de entre !@#$%^&*'
         }
     },
-    profileImage:{
+    profileImage: {
         type: String,
         default: "default-avatar.png",
         trim: true,
     },
-    avatarUrl:{
+    avatarUrl: {
         type: String,
-        // default: "/vtes-backend/uploads/avatars/default-avatar.png",
         trim: true,
     },
-    blocked:{
+    blocked: {
         type: Boolean,
         default: false
     }
